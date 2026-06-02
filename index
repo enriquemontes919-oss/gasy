@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f2014">
+<meta name="description" content="Gasy — Encuentra la gasolina más barata cerca de ti en México">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gasy">
+<title>Gasy — Gasolina barata cerca de ti</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --verde: #0f2014;
+    --verde-mid: #1a3a20;
+    --verde-light: #2d5e38;
+    --amarillo: #f5c518;
+    --amarillo-soft: #fdd84e;
+    --blanco: #f8f5ee;
+    --gris: #8a9e8d;
+    --rojo: #e63946;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; background: var(--verde); font-family: 'DM Sans', sans-serif; color: var(--blanco); }
+
+  /* Header */
+  #header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--verde);
+    padding: 14px 20px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(245,197,24,0.15);
+  }
+  #logo {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px;
+    color: var(--amarillo); letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  #logo span { color: var(--blanco); font-weight: 700; }
+  #header-right { display: flex; align-items: center; gap: 10px; }
+  #fuel-toggle {
+    display: flex; background: var(--verde-mid); border-radius: 30px;
+    border: 1px solid rgba(245,197,24,0.2); overflow: hidden;
+  }
+  .fuel-btn {
+    padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+    border: none; background: transparent; color: var(--gris);
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .fuel-btn.active { background: var(--amarillo); color: var(--verde); border-radius: 30px; }
+
+  /* Mapa */
+  #map { position: fixed; top: 64px; left: 0; right: 0; bottom: 180px; z-index: 1; }
+
+  /* Leaflet override */
+  .leaflet-tile-pane { filter: saturate(0.6) brightness(0.85); }
+  .leaflet-control-attribution { display: none; }
+  .leaflet-control-zoom { border: none !important; }
+  .leaflet-control-zoom a {
+    background: var(--verde-mid) !important; color: var(--amarillo) !important;
+    border: 1px solid rgba(245,197,24,0.2) !important; border-radius: 8px !important;
+    font-size: 18px !important; line-height: 28px !important;
+    width: 32px !important; height: 32px !important;
+  }
+
+  /* Marcador personalizado */
+  .gas-marker {
+    width: 44px; height: 52px; position: relative; cursor: pointer;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  }
+  .gas-marker-pin {
+    width: 44px; height: 44px; border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg); display: flex; align-items: center; justify-content: center;
+    border: 2px solid white;
+  }
+  .gas-marker-pin.barato { background: #22c55e; }
+  .gas-marker-pin.medio  { background: #f59e0b; }
+  .gas-marker-pin.caro   { background: #ef4444; }
+  .gas-marker-text {
+    transform: rotate(45deg); font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 10px; color: white; text-align: center; line-height: 1.1;
+  }
+
+  /* Panel inferior */
+  #bottom-panel {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+    background: var(--verde-mid);
+    border-top: 1px solid rgba(245,197,24,0.15);
+    border-radius: 20px 20px 0 0;
+    padding: 16px 20px 28px;
+    min-height: 180px;
+  }
+  #panel-handle {
+    width: 36px; height: 4px; background: rgba(245,197,24,0.3);
+    border-radius: 2px; margin: 0 auto 14px;
+  }
+  #panel-title {
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--gris); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  }
+  #stations-list {
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  #stations-list::-webkit-scrollbar { display: none; }
+  .station-card {
+    min-width: 140px; background: var(--verde);
+    border: 1px solid rgba(245,197,24,0.15); border-radius: var(--radius-sm);
+    padding: 12px; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .station-card:hover, .station-card.selected {
+    border-color: var(--amarillo); background: rgba(245,197,24,0.08);
+  }
+  .station-brand {
+    font-size: 11px; font-weight: 600; color: var(--gris);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+  }
+  .station-price {
+    font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+    color: var(--amarillo); line-height: 1;
+  }
+  .station-price span { font-size: 13px; font-weight: 600; color: var(--gris); }
+  .station-dist {
+    font-size: 11px; color: var(--gris); margin-top: 4px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .price-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px; margin-top: 6px;
+  }
+  .price-badge.barato { background: rgba(34,197,94,0.2); color: #22c55e; }
+  .price-badge.medio  { background: rgba(245,158,11,0.2); color: #f59e0b; }
+  .price-badge.caro   { background: rgba(239,68,68,0.2);  color: #ef4444; }
+
+  /* Botón GPS */
+  #gps-btn {
+    position: fixed; right: 16px; bottom: 200px; z-index: 1001;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--amarillo); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(245,197,24,0.4);
+    transition: transform 0.2s;
+  }
+  #gps-btn:active { transform: scale(0.92); }
+  #gps-btn svg { width: 22px; height: 22px; }
+
+  /* Leyenda */
+  #legend {
+    position: fixed; left: 16px; bottom: 200px; z-index: 1001;
+    background: var(--verde-mid); border: 1px solid rgba(245,197,24,0.15);
+    border-radius: var(--radius-sm); padding: 8px 12px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--gris); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Loading overlay */
+  #loading {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--verde);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; transition: opacity 0.4s;
+  }
+  #loading.hide { opacity: 0; pointer-events: none; }
+  #loading-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 52px;
+    color: var(--amarillo);
+  }
+  #loading-logo span { color: var(--blanco); }
+  #loading-sub { font-size: 14px; color: var(--gris); }
+  #loading-bar-wrap {
+    width: 140px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
+  }
+  #loading-bar {
+    height: 100%; width: 0; background: var(--amarillo); border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 220px; left: 50%; transform: translateX(-50%);
+    background: var(--verde-light); color: var(--blanco);
+    padding: 10px 18px; border-radius: 30px; font-size: 13px;
+    z-index: 2000; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; white-space: nowrap;
+    border: 1px solid rgba(245,197,24,0.2);
+  }
+  #toast.show { opacity: 1; }
+
+  /* Popup info */
+  .leaflet-popup-content-wrapper {
+    background: var(--verde-mid) !important; color: var(--blanco) !important;
+    border: 1px solid rgba(245,197,24,0.3) !important; border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+  }
+  .leaflet-popup-tip { background: var(--verde-mid) !important; }
+  .popup-content { font-family: 'DM Sans', sans-serif; min-width: 160px; }
+  .popup-brand { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.5px; }
+  .popup-name { font-weight: 600; font-size: 14px; margin: 3px 0 8px; }
+  .popup-prices { display: flex; flex-direction: column; gap: 4px; }
+  .popup-price-row { display: flex; justify-content: space-between; align-items: center; }
+  .popup-fuel-label { font-size: 12px; color: var(--gris); }
+  .popup-fuel-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--amarillo); }
+  .popup-addr { font-size: 11px; color: var(--gris); margin-top: 8px; line-height: 1.4; }
+
+  /* Modo sin GPS */
+  #no-gps {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    align-items: center; justify-content: center;
+    background: rgba(15,32,20,0.92); flex-direction: column; gap: 12px; padding: 32px;
+    text-align: center;
+  }
+  #no-gps.show { display: flex; }
+  #no-gps h2 { font-family: 'Syne', sans-serif; font-size: 22px; color: var(--amarillo); }
+  #no-gps p { font-size: 14px; color: var(--gris); line-height: 1.6; }
+  #retry-btn {
+    margin-top: 8px; padding: 12px 28px; background: var(--amarillo); color: var(--verde);
+    border: none; border-radius: 30px; font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 15px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div id="loading-logo">Gas<span>y</span></div>
+  <div id="loading-sub">Buscando gasolineras cerca de ti…</div>
+  <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+</div>
+
+<!-- Header -->
+<div id="header">
+  <div id="logo">⛽ Gas<span>y</span></div>
+  <div id="header-right">
+    <div id="fuel-toggle">
+      <button class="fuel-btn active" data-fuel="magna" onclick="setFuel('magna',this)">Magna</button>
+      <button class="fuel-btn" data-fuel="premium" onclick="setFuel('premium',this)">Premium</button>
+      <button class="fuel-btn" data-fuel="diesel" onclick="setFuel('diesel',this)">Diésel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mapa -->
+<div id="map"></div>
+
+<!-- Botón GPS -->
+<button id="gps-btn" onclick="centerOnUser()" aria-label="Mi ubicación">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#0f2014" stroke-width="2.5" stroke-linecap="round">
+    <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
+    <circle cx="12" cy="12" r="9" stroke-opacity="0.3"/>
+  </svg>
+</button>
+
+<!-- Leyenda -->
+<div id="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Más barata</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Precio medio</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Más cara</div>
+</div>
+
+<!-- Panel inferior -->
+<div id="bottom-panel">
+  <div id="panel-handle"></div>
+  <div id="panel-title">Gasolineras cercanas</div>
+  <div id="stations-list"></div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Sin GPS -->
+<div id="no-gps">
+  <h2>📍 Activa tu ubicación</h2>
+  <p>Gasy necesita acceso a tu ubicación para mostrarte las gasolineras más baratas cerca de ti.</p>
+  <button id="retry-btn" onclick="initLocation()">Intentar de nuevo</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── Estado global ──
+let map, userMarker, userLat, userLng;
+let currentFuel = 'magna';
+let allMarkers = [];
+let allStations = [];
+let selectedCard = null;
+
+// ── Colores por precio relativo ──
+function priceClass(price, min, max) {
+  const range = max - min || 1;
+  const pct = (price - min) / range;
+  if (pct < 0.33) return 'barato';
+  if (pct < 0.66) return 'medio';
+  return 'caro';
+}
+function priceLabel(cls) {
+  return cls === 'barato' ? 'Más barata' : cls === 'medio' ? 'Precio normal' : 'Más cara';
+}
+
+// ── Progreso de loading ──
+function setProgress(p) {
+  document.getElementById('loading-bar').style.width = p + '%';
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Distancia en km ──
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ── Inicializar mapa ──
+function initMap(lat, lng) {
+  map = L.map('map', { zoomControl: true, attributionControl: false }).setView([lat, lng], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+  // Marcador de usuario
+  const userIcon = L.divIcon({
+    html: `<div style="width:18px;height:18px;background:#f5c518;border:3px solid white;border-radius:50%;box-shadow:0 0 0 4px rgba(245,197,24,0.3)"></div>`,
+    className: '', iconSize: [18,18], iconAnchor: [9,9]
+  });
+  userMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 })
+    .bindPopup('<div style="font-family:DM Sans,sans-serif;font-weight:600;color:#f8f5ee;font-size:13px">📍 Tu ubicación</div>')
+    .addTo(map);
+}
+
+// ── Generar precios simulados realistas (API CRE en producción) ──
+function generateStations(lat, lng) {
+  const brands = ['Pemex','BP','Shell','G500','Petro-7','Hidrosina','Orsan','Rendichicas'];
+  const streets = ['Insurgentes','Reforma','Revolución','Universidad','Patriotismo',
+                   'Tlalpan','Xochimilco','Taxqueña','Periférico','División del Norte'];
+  const stations = [];
+
+  for (let i = 0; i < 18; i++) {
+    const dlat = (Math.random() - 0.5) * 0.06;
+    const dlng = (Math.random() - 0.5) * 0.06;
+    const baseMagna   = 22.5 + Math.random() * 3.5;
+    const basePremium = 25.8 + Math.random() * 3.5;
+    const baseDiesel  = 23.1 + Math.random() * 3;
+    stations.push({
+      id: i,
+      name: `${brands[i % brands.length]} ${streets[i % streets.length]}`,
+      brand: brands[i % brands.length],
+      lat: lat + dlat,
+      lng: lng + dlng,
+      address: `${streets[i % streets.length]} ${Math.floor(Math.random()*2000+100)}, CDMX`,
+      prices: {
+        magna:   parseFloat(baseMagna.toFixed(2)),
+        premium: parseFloat(basePremium.toFixed(2)),
+        diesel:  parseFloat(baseDiesel.toFixed(2))
+      }
+    });
+  }
+  return stations;
+}
+
+// ── Crear marcadores en el mapa ──
+function renderMarkers(stations, fuel) {
+  allMarkers.forEach(m => map.removeLayer(m));
+  allMarkers = [];
+
+  const prices = stations.map(s => s.prices[fuel]);
+  const minP = Math.min(...prices), maxP = Math.max(...prices);
+
+  stations.forEach(s => {
+    const cls = priceClass(s.prices[fuel], minP, maxP);
+    const colorMap = { barato: '#22c55e', medio: '#f59e0b', caro: '#ef4444' };
+    const color = colorMap[cls];
+
+    const icon = L.divIcon({
+      html: `<div style="position:relative;width:40px;height:48px;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5))">
+               <div style="width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};display:flex;align-items:center;justify-content:center;border:2px solid white">
+                 <div style="transform:rotate(45deg);font-family:DM Sans,sans-serif;font-weight:800;font-size:9.5px;color:white;text-align:center;line-height:1.1">
+                   $${s.prices[fuel].toFixed(2).replace('.',',')}
+                 </div>
+               </div>
+             </div>`,
+      className: '', iconSize: [40,48], iconAnchor: [20,48]
+    });
+
+    const marker = L.marker([s.lat, s.lng], { icon })
+      .bindPopup(`
+        <div class="popup-content">
+          <div class="popup-brand">${s.brand}</div>
+          <div class="popup-name">${s.name}</div>
+          <div class="popup-prices">
+            <div class="popup-price-row"><span class="popup-fuel-label">Magna</span><span class="popup-fuel-val">$${s.prices.magna}</span></div>
+            <div class="popup-price-row"><span class="popup-fuel-label">Premium</span><span class="popup-fuel-val">$${s.prices.premium}</span></div>
+            <div class="popup-price-row"><span class="popup-fuel-label">Diésel</span><span class="popup-fuel-val">$${s.prices.diesel}</span></div>
+          </div>
+          <div class="popup-addr">📍 ${s.address}</div>
+        </div>
+      `)
+      .addTo(map);
+
+    marker.on('click', () => selectStation(s.id));
+    allMarkers.push(marker);
+  });
+}
+
+// ── Renderizar lista inferior ──
+function renderList(stations, fuel) {
+  const prices = stations.map(s => s.prices[fuel]);
+  const minP = Math.min(...prices), maxP = Math.max(...prices);
+
+  const sorted = [...stations]
+    .map(s => ({ ...s, dist: haversine(userLat, userLng, s.lat, s.lng) }))
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, 12);
+
+  const list = document.getElementById('stations-list');
+  list.innerHTML = sorted.map(s => {
+    const cls = priceClass(s.prices[fuel], minP, maxP);
+    const distStr = s.dist < 1 ? `${Math.round(s.dist*1000)}m` : `${s.dist.toFixed(1)}km`;
+    return `
+      <div class="station-card" id="card-${s.id}" onclick="selectStation(${s.id})">
+        <div class="station-brand">${s.brand}</div>
+        <div class="station-price">$${s.prices[fuel].toFixed(2).replace('.',',')}<span> MXN</span></div>
+        <div class="station-dist">📍 ${distStr} · ${s.address.split(',')[0]}</div>
+        <div class="price-badge ${cls}">${priceLabel(cls)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Seleccionar estación ──
+function selectStation(id) {
+  if (selectedCard) {
+    const prev = document.getElementById('card-'+selectedCard);
+    if (prev) prev.classList.remove('selected');
+  }
+  selectedCard = id;
+  const card = document.getElementById('card-'+id);
+  if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+
+  const s = allStations.find(x => x.id === id);
+  if (s) {
+    map.flyTo([s.lat, s.lng], 16, { animate: true, duration: 0.8 });
+    allMarkers[id]?.openPopup();
+  }
+}
+
+// ── Cambiar combustible ──
+function setFuel(fuel, btn) {
+  currentFuel = fuel;
+  document.querySelectorAll('.fuel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (allStations.length) {
+    renderMarkers(allStations, fuel);
+    renderList(allStations, fuel);
+    showToast(`Mostrando precios de ${fuel === 'magna' ? 'Magna' : fuel === 'premium' ? 'Premium' : 'Diésel'}`);
+  }
+}
+
+// ── Centrar en usuario ──
+function centerOnUser() {
+  if (userLat) {
+    map.flyTo([userLat, userLng], 14, { animate: true, duration: 0.8 });
+    showToast('Centrando en tu ubicación');
+  }
+}
+
+// ── Cargar estaciones (simula CRE API) ──
+function loadStations(lat, lng) {
+  setProgress(60);
+  setTimeout(() => {
+    allStations = generateStations(lat, lng);
+    setProgress(90);
+    renderMarkers(allStations, currentFuel);
+    renderList(allStations, currentFuel);
+    setProgress(100);
+    setTimeout(() => {
+      const loading = document.getElementById('loading');
+      loading.classList.add('hide');
+      setTimeout(() => loading.style.display = 'none', 400);
+      showToast('✓ ' + allStations.length + ' gasolineras encontradas');
+    }, 300);
+  }, 800);
+}
+
+// ── Inicializar ubicación ──
+function initLocation() {
+  document.getElementById('no-gps').classList.remove('show');
+  setProgress(20);
+
+  if (!navigator.geolocation) {
+    fallbackLocation();
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      setProgress(40);
+      initMap(userLat, userLng);
+      loadStations(userLat, userLng);
+    },
+    err => {
+      console.warn('GPS error:', err.code);
+      if (err.code === 1) {
+        document.getElementById('loading').classList.add('hide');
+        document.getElementById('no-gps').classList.add('show');
+      } else {
+        fallbackLocation();
+      }
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+}
+
+function fallbackLocation() {
+  // CDMX centro como fallback
+  userLat = 19.4326; userLng = -99.1332;
+  setProgress(40);
+  initMap(userLat, userLng);
+  loadStations(userLat, userLng);
+  showToast('Mostrando CDMX — activa GPS para tu zona');
+}
+
+// ── Arrancar ──
+window.addEventListener('load', () => {
+  setTimeout(initLocation, 300);
+});
+</script>
+
+<!-- PWA Service Worker registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

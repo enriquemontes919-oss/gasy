@@ -114,6 +114,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .bg{background:var(--green-bg);color:var(--green);}
 .ba{background:var(--amber-bg);color:var(--amber);}
 .br{background:var(--red-bg);color:var(--red);}
+.bstar{background:rgba(255,215,0,0.15);color:#FFD700;border:1px solid rgba(255,215,0,0.3);}
+.card-star{border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.05);}
+.card-star::before{background:#FFD700!important;box-shadow:0 0 8px #FFD700!important;}
 
 /* CRE badge */
 #cre-badge{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:400;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--green);display:none;white-space:nowrap;backdrop-filter:blur(10px);}
@@ -177,9 +180,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 </button>
 
 <div id="legend">
-  <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Más barata</div>
-  <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>Media</div>
-  <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Más cara</div>
+  <div class="leg"><div class="leg-dot" style="background:#FFD700"></div>La más barata</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Hasta $0.20 más</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>$0.20–$0.50 más</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Más de $0.50</div>
 </div>
 
 <div id="panel">
@@ -225,8 +229,9 @@ function hav(a,b,c,d){
   const h=Math.sin(f/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(g/2)**2;
   return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
 }
-// Verde: hasta $0.40 sobre el mínimo | Amarillo: $0.40-$0.80 | Rojo: más de $0.80
-const pclass=(p,mn)=>{const d=p-mn;return d<=0.40?'g':d<=0.80?'a':'r';};
+// Verde: hasta $0.20 sobre mínimo | Amarillo: $0.20-$0.50 | Rojo: más de $0.50
+// Estrella: la más barata exacta (precio === mínimo)
+const pclass=(p,mn)=>{if(p===mn)return'star';const d=p-mn;return d<=0.20?'g':d<=0.50?'a':'r';};
 function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
 
 function toast(msg){
@@ -642,35 +647,50 @@ function generateDemo(lat,lng){
 function renderMarkers(f){
   markers.forEach(m=>map.removeLayer(m));
   markers=[];
-  // Solo mostrar estaciones con precio conocido
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length) return;
   const prices=valid.map(s=>s.prices[f]);
   const mn=Math.min(...prices);
-  const colors={g:'#00e676',a:'#ffc400',r:'#ff3d57'};
-  const glows={g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
+  const colors={star:'#FFD700',g:'#00e676',a:'#ffc400',r:'#ff3d57'};
+  const glows={star:'rgba(255,215,0,0.8)',g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
 
-  valid.forEach((s,idx)=>{
+  valid.forEach((s)=>{
     const p=s.prices[f];
     const pc=pclass(p,mn);
     const c=colors[pc];
     const glow=glows[pc];
     const label=p.toFixed(2).replace('.',',');
+    const isStar=pc==='star';
 
-    const icon=L.divIcon({
-      html:`<div style="width:44px;height:52px;filter:drop-shadow(0 3px 10px ${glow})">
-        <div style="width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.2)">
-          <div style="transform:rotate(45deg);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9.5px;color:#0a0f14;text-align:center">${label}</div>
-        </div></div>`,
-      className:'',iconSize:[44,52],iconAnchor:[22,52]
-    });
+    // Pin estrella especial para la más barata
+    const pinHtml = isStar
+      ? `<div style="width:52px;height:62px;filter:drop-shadow(0 4px 14px ${glow})">
+          <div style="width:52px;height:52px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:3px solid white">
+            <div style="transform:rotate(45deg);text-align:center;line-height:1.1">
+              <div style="font-size:14px">⭐</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:8.5px;color:#0a0f14">${label}</div>
+            </div>
+          </div>
+        </div>`
+      : `<div style="width:44px;height:52px;filter:drop-shadow(0 3px 10px ${glow})">
+          <div style="width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.2)">
+            <div style="transform:rotate(45deg);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9.5px;color:#0a0f14;text-align:center">${label}</div>
+          </div>
+        </div>`;
+
+    const iconSize = isStar ? [52,62] : [44,52];
+    const iconAnchor = isStar ? [26,62] : [22,52];
+
+    const icon=L.divIcon({html:pinHtml,className:'',iconSize,iconAnchor});
 
     const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
     const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
     const srcColor=s.source==='merged'?'var(--green)':s.source==='osm'||s.source==='osm_only'?'#7d95aa':'var(--amber)';
-    const srcLabel=s.source==='merged'?'OSM + CRE':s.source==='osm'||s.source==='osm_only'?'OpenStreetMap':s.source==='cre_only'?'CRE':'Demo';
+    const srcLabel=s.source==='merged'?'OSM + CRE':s.source==='cre_only'?'CRE':'Demo';
+    const starBadge=isStar?'<div style="background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FFD700;margin-bottom:8px;text-align:center">⭐ MÁS BARATA DE LA ZONA</div>':'';
 
     const popup=`<div class="pop">
+      ${starBadge}
       <div class="pop-brand">${s.brand}</div>
       <div class="pop-name">${s.name}</div>
       <div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div>
@@ -687,7 +707,8 @@ function renderMarkers(f){
       <div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div>
     </div>`;
 
-    const mk=L.marker([s.lat,s.lng],{icon, zIndexOffset:1000}).bindPopup(popup,{maxWidth:280}).addTo(map);
+    const zIdx = isStar ? 2000 : 1000;
+    const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:280}).addTo(map);
     mk.on('click',()=>selectStation(s.id));
     markers[s.id]=mk;
   });
@@ -699,8 +720,12 @@ function updateStats(f){
   const sorted=[...valid].sort((a,b)=>a.prices[f]-b.prices[f]);
   const prices=valid.map(s=>s.prices[f]);
   const avg=prices.reduce((a,b)=>a+b,0)/prices.length;
+  const cheapest=sorted[0];
   $('st-min').textContent=fmt(Math.min(...prices));
-  $('st-min-n').textContent=sorted[0]?.brand||'—';
+  // Mostrar dirección de la más barata si está disponible
+  $('st-min-n').textContent=cheapest?.addr
+    ? cheapest.addr.split(',')[0]
+    : cheapest?.brand||'—';
   $('st-avg').textContent=fmt(avg);
   $('st-count').textContent=valid.length+' estaciones';
   $('st-max').textContent=fmt(Math.max(...prices));
@@ -714,16 +739,17 @@ function renderCards(f){
   const prices=valid.map(s=>s.prices[f]);
   const mn=Math.min(...prices);
   const sorted=[...valid].map(s=>({...s,d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a.d-b.d).slice(0,14);
-  const btxt={g:'Más barata',a:'Normal',r:'Más cara'};
+  const btxt={star:'⭐ La más barata',g:'Más barata',a:'Normal',r:'Más cara'};
+  const bcls={star:'bstar',g:'bg',a:'ba',r:'br'};
   $('cards').innerHTML=sorted.map(s=>{
     const p=s.prices[f];
     const pc=pclass(p,mn);
     const dstr=s.d<1?Math.round(s.d*1000)+'m':s.d.toFixed(1)+'km';
-    return`<div class="card${selId===s.id?' sel':''}" id="c${s.id}" onclick="selectStation(${s.id})">
+    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})">
       <div class="card-brand">${s.brand}</div>
       <div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div>
       <div class="card-dist">📍 ${dstr}</div>
-      <div class="card-badge b${pc}">${btxt[pc]}</div>
+      <div class="card-badge ${bcls[pc]}">${btxt[pc]}</div>
     </div>`;
   }).join('');
 }

@@ -225,7 +225,8 @@ function hav(a,b,c,d){
   const h=Math.sin(f/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(g/2)**2;
   return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
 }
-const pclass=(p,mn,mx)=>{const r=(mx-mn)||1,t=(p-mn)/r;return t<0.33?'g':t<0.66?'a':'r';};
+// Verde: hasta $0.40 sobre el mínimo | Amarillo: $0.40-$0.80 | Rojo: más de $0.80
+const pclass=(p,mn)=>{const d=p-mn;return d<=0.40?'g':d<=0.80?'a':'r';};
 function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
 
 function toast(msg){
@@ -641,20 +642,20 @@ function generateDemo(lat,lng){
 function renderMarkers(f){
   markers.forEach(m=>map.removeLayer(m));
   markers=[];
+  // Solo mostrar estaciones con precio conocido
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
-  if(!valid.length){renderAllMarkersNoPrices();return;}
+  if(!valid.length) return;
   const prices=valid.map(s=>s.prices[f]);
-  const mn=Math.min(...prices),mx=Math.max(...prices);
+  const mn=Math.min(...prices);
   const colors={g:'#00e676',a:'#ffc400',r:'#ff3d57'};
   const glows={g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
 
-  stations.forEach((s,idx)=>{
+  valid.forEach((s,idx)=>{
     const p=s.prices[f];
-    const hasPx=p!=null&&!isNaN(p);
-    const pc=hasPx?pclass(p,mn,mx):'g';
-    const c=hasPx?colors[pc]:'#4a6580';
-    const glow=hasPx?glows[pc]:'rgba(74,101,128,0.4)';
-    const label=hasPx?p.toFixed(2).replace('.',','):'?';
+    const pc=pclass(p,mn);
+    const c=colors[pc];
+    const glow=glows[pc];
+    const label=p.toFixed(2).replace('.',',');
 
     const icon=L.divIcon({
       html:`<div style="width:44px;height:52px;filter:drop-shadow(0 3px 10px ${glow})">
@@ -686,40 +687,11 @@ function renderMarkers(f){
       <div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div>
     </div>`;
 
-    const mk=L.marker([s.lat,s.lng],{icon}).bindPopup(popup,{maxWidth:280}).addTo(map);
+    const mk=L.marker([s.lat,s.lng],{icon, zIndexOffset:1000}).bindPopup(popup,{maxWidth:280}).addTo(map);
     mk.on('click',()=>selectStation(s.id));
-    markers[idx]=mk;
+    markers[s.id]=mk;
   });
 }
-
-function renderAllMarkersNoPrices(){
-  stations.forEach((s,idx)=>{
-    const icon=L.divIcon({
-      html:`<div style="width:44px;height:52px;filter:drop-shadow(0 2px 6px rgba(74,101,128,0.5))">
-        <div style="width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#4a6580;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.15)">
-          <div style="transform:rotate(45deg);font-size:16px">⛽</div>
-        </div></div>`,
-      className:'',iconSize:[44,52],iconAnchor:[22,52]
-    });
-    const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
-    const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
-    const popup=`<div class="pop">
-      <div class="pop-brand">${s.brand}</div>
-      <div class="pop-name">${s.name}</div>
-      <div class="pop-addr">📍 ${s.addr||'Dirección no disponible'}</div>
-      <div class="pop-divider"></div>
-      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Precio no disponible aún</p>
-      <div class="pop-nav">
-        <a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a>
-        <a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a>
-      </div>
-    </div>`;
-    const mk=L.marker([s.lat,s.lng],{icon}).bindPopup(popup,{maxWidth:280}).addTo(map);
-    mk.on('click',()=>selectStation(s.id));
-    markers[idx]=mk;
-  });
-}
-
 // ── STATS ──
 function updateStats(f){
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
@@ -730,29 +702,28 @@ function updateStats(f){
   $('st-min').textContent=fmt(Math.min(...prices));
   $('st-min-n').textContent=sorted[0]?.brand||'—';
   $('st-avg').textContent=fmt(avg);
-  $('st-count').textContent=stations.length+' estaciones';
+  $('st-count').textContent=valid.length+' estaciones';
   $('st-max').textContent=fmt(Math.max(...prices));
   $('st-max-n').textContent=sorted[sorted.length-1]?.brand||'—';
 }
 
-// ── CARDS ──
+// ── CARDS — solo estaciones con precio ──
 function renderCards(f){
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
+  if(!valid.length){$('cards').innerHTML='';return;}
   const prices=valid.map(s=>s.prices[f]);
-  const mn=prices.length?Math.min(...prices):0;
-  const mx=prices.length?Math.max(...prices):0;
-  const sorted=[...stations].map(s=>({...s,d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a.d-b.d).slice(0,14);
+  const mn=Math.min(...prices);
+  const sorted=[...valid].map(s=>({...s,d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a.d-b.d).slice(0,14);
   const btxt={g:'Más barata',a:'Normal',r:'Más cara'};
   $('cards').innerHTML=sorted.map(s=>{
     const p=s.prices[f];
-    const hasPx=p!=null&&!isNaN(p);
-    const pc=hasPx?pclass(p,mn,mx):'a';
+    const pc=pclass(p,mn);
     const dstr=s.d<1?Math.round(s.d*1000)+'m':s.d.toFixed(1)+'km';
     return`<div class="card${selId===s.id?' sel':''}" id="c${s.id}" onclick="selectStation(${s.id})">
       <div class="card-brand">${s.brand}</div>
-      <div class="card-price">${hasPx?p.toFixed(2).replace('.',','):'—'} <span class="card-unit">MXN/L</span></div>
+      <div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div>
       <div class="card-dist">📍 ${dstr}</div>
-      ${hasPx?`<div class="card-badge b${pc}">${btxt[pc]}</div>`:'<div class="card-badge ba">Sin precio</div>'}
+      <div class="card-badge b${pc}">${btxt[pc]}</div>
     </div>`;
   }).join('');
 }
@@ -766,8 +737,7 @@ function selectStation(id){
   const s=stations.find(x=>x.id===id);
   if(s){
     map.flyTo([s.lat,s.lng],16,{animate:true,duration:0.7});
-    const mi=markers.findIndex((_,i)=>stations[i]?.id===id);
-    if(markers[mi]) markers[mi].openPopup();
+    if(markers[s.id]) markers[s.id].openPopup();
   }
 }
 

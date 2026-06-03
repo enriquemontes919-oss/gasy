@@ -361,22 +361,18 @@ async function fetchOSM(lat,lng){
   return [];
 }
 
-// ── FETCH CRE — endpoint oficial CNE en Azure (permite CORS) ──
-// Fuente: https://www.cne.gob.mx/ConsultaPrecios/GasolinasyDiesel/GasolinasyDiesel.html
-// Actualizado diariamente a las 18:00 hrs GMT-6
+// ── FETCH CRE — vía Cloudflare Worker (proxy sin CORS) ──
+// Worker hace fetch a publicacionexterna.azurewebsites.net y agrega CORS headers
 async function fetchCRE(lat, lng){
   try{
-    const PRICES_URL = 'https://publicacionexterna.azurewebsites.net/publicaciones/prices';
-    const PLACES_URL = 'https://publicacionexterna.azurewebsites.net/publicaciones/places';
-
     const [pricesRes, placesRes] = await Promise.all([
       Promise.race([
-        fetch(PRICES_URL),
-        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),14000))
+        fetch(`${WORKER}?tipo=prices`),
+        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),16000))
       ]).catch(e=>{console.warn('CRE prices:',e.message);return null;}),
       Promise.race([
-        fetch(PLACES_URL),
-        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),14000))
+        fetch(`${WORKER}?tipo=places`),
+        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),16000))
       ]).catch(e=>{console.warn('CRE places:',e.message);return null;})
     ]);
 

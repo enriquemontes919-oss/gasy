@@ -4,10 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a0f14">
-<meta name="description" content="Gasy — Encuentra la gasolina más barata cerca de ti en México">
+<meta name="description" content="Gasy — Encuentra la gasolina más barata cerca de ti en México. Precios en tiempo real con datos oficiales de la CRE. Gratis, sin registro.">
+<meta name="keywords" content="gasolina barata, precio gasolina mexico, gasolinera cerca de mi, magna premium diesel, precio gasolina hoy, CRE gasolineras">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Gasy — Gasolina más barata cerca de ti">
+<meta property="og:description" content="Encuentra la gasolina más barata cerca de ti en México. Precios en tiempo real con datos oficiales de la CRE.">
+<meta property="og:url" content="https://gasy.mx/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://gasy.mx/og-gasy.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gasy — Gasolina más barata cerca de ti">
+<meta name="twitter:description" content="Precios de gasolina en tiempo real. Datos oficiales CRE. Gratis.">
+<link rel="canonical" href="https://gasy.mx/">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Gasy">
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6670443237202134" crossorigin="anonymous"></script>
+<!-- Schema.org -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Gasy","url":"https://gasy.mx","description":"Encuentra la gasolina más barata cerca de ti en México con datos oficiales de la CRE","applicationCategory":"UtilitiesApplication","operatingSystem":"Web, iOS, Android","offers":{"@type":"Offer","price":"0","priceCurrency":"MXN"},"areaServed":{"@type":"Country","name":"Mexico"}}
+</script>
 <title>Gasy — Gasolina inteligente</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -150,6 +167,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   </div>
   <button class="wlc-btn" onclick="startApp()">📍 Encontrar gasolineras</button>
   <p class="wlc-note">Se solicitará permiso de ubicación</p>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px;">
+    <a href="/ciudad-de-mexico" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">CDMX</a>
+    <a href="/guadalajara" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Guadalajara</a>
+    <a href="/monterrey" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Monterrey</a>
+    <a href="/puebla" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Puebla</a>
+    <a href="/tijuana" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Tijuana</a>
+  </div>
 </div>
 
 <div id="loading">
@@ -188,6 +212,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 <div id="panel">
   <div id="panel-handle"></div>
+  <!-- AdSense -->
+  <div style="text-align:center;margin-bottom:8px;">
+    <div style="font-size:9px;color:#3e5468;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:2px;">Publicidad</div>
+    <ins class="adsbygoogle" style="display:block;max-height:50px;" data-ad-client="ca-pub-6670443237202134" data-ad-slot="6618539960" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
   <div id="stats">
     <div class="stat"><div class="stat-label">Más barata</div><div class="stat-val" id="st-min">—</div><div class="stat-sub" id="st-min-n">buscando...</div></div>
     <div class="stat"><div class="stat-label">Promedio</div><div class="stat-val" id="st-avg">—</div><div class="stat-sub" id="st-count">—</div></div>

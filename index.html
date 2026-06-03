@@ -361,41 +361,33 @@ async function fetchOSM(lat,lng){
   return [];
 }
 
-// ── FETCH CRE — XMLs oficiales de datos.gob.mx ──
-// La CRE publica dos XMLs públicos que no requieren auth ni tienen CORS:
-// - places.xml: place_id, nombre, dirección, lat, lng
-// - prices.xml: place_id, precio magna, premium, diesel
+// ── FETCH CRE — endpoint oficial CNE en Azure (permite CORS) ──
+// Fuente: https://www.cne.gob.mx/ConsultaPrecios/GasolinasyDiesel/GasolinasyDiesel.html
+// Actualizado diariamente a las 18:00 hrs GMT-6
 async function fetchCRE(lat, lng){
   try{
-    const PLACES_URL = 'https://publicaciones.cre.gob.mx/ConsultaPrecios/Estaciones.aspx';
-    const PRICES_URL = 'https://publicaciones.cre.gob.mx/ConsultaPrecios/GasolinerasAux.aspx';
+    const PRICES_URL = 'https://publicacionexterna.azurewebsites.net/publicaciones/prices';
+    const PLACES_URL = 'https://publicacionexterna.azurewebsites.net/publicaciones/places';
 
-    // Intentar fetch directo primero (funciona en algunos browsers/contextos)
-    // Luego proxies CORS públicos como respaldo
-    const proxies = [
-      (u) => u, // directo
-      (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-      (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    ];
+    const [pricesRes, placesRes] = await Promise.all([
+      Promise.race([
+        fetch(PRICES_URL),
+        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),14000))
+      ]).catch(e=>{console.warn('CRE prices:',e.message);return null;}),
+      Promise.race([
+        fetch(PLACES_URL),
+        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),14000))
+      ]).catch(e=>{console.warn('CRE places:',e.message);return null;})
+    ]);
 
-    let placesXml = null, pricesXml = null;
+    let pricesXml = null, placesXml = null;
+    if(pricesRes && pricesRes.ok) pricesXml = await pricesRes.text();
+    if(placesRes && placesRes.ok) placesXml = await placesRes.text();
 
-    for(const proxy of proxies){
-      try{
-        const [pRes, prRes] = await Promise.all([
-          Promise.race([fetch(proxy(PLACES_URL)), new Promise((_,r)=>setTimeout(()=>r(new Error('to')),10000))]),
-          Promise.race([fetch(proxy(PRICES_URL)), new Promise((_,r)=>setTimeout(()=>r(new Error('to')),10000))]),
-        ]);
-        if(pRes.ok && prRes.ok){
-          placesXml = await pRes.text();
-          pricesXml = await prRes.text();
-          if(placesXml.length > 500) break; // tenemos datos reales
-        }
-      } catch(e){ continue; }
-    }
+    console.log('CRE prices length:', pricesXml?.length || 0);
+    console.log('CRE places length:', placesXml?.length || 0);
 
-    if(!placesXml || placesXml.length < 500) return [];
-
+    if(!pricesXml || pricesXml.length < 200) return [];
     return parseCREXml(placesXml, pricesXml, lat, lng);
 
   } catch(e){

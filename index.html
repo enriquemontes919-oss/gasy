@@ -361,20 +361,115 @@ async function fetchOSM(lat,lng){
   return [];
 }
 
-// ── FETCH CRE — el browser llama directo ──
-async function fetchCRE(lat,lng){
+// ── FETCH CRE — XMLs oficiales de datos.gob.mx ──
+// La CRE publica dos XMLs públicos que no requieren auth ni tienen CORS:
+// - places.xml: place_id, nombre, dirección, lat, lng
+// - prices.xml: place_id, precio magna, premium, diesel
+async function fetchCRE(lat, lng){
   try{
-    const res = await Promise.race([
-      fetch(`${WORKER}/cre?tipo=places`),
-      new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),12000))
-    ]);
-    if(!res.ok) throw new Error('CRE status '+res.status);
-    const html = await res.text();
-    return parseCREHtml(html, lat, lng);
+    const PLACES_URL = 'https://publicaciones.cre.gob.mx/ConsultaPrecios/Estaciones.aspx';
+    const PRICES_URL = 'https://publicaciones.cre.gob.mx/ConsultaPrecios/GasolinerasAux.aspx';
+
+    // Intentar fetch directo primero (funciona en algunos browsers/contextos)
+    // Luego proxies CORS públicos como respaldo
+    const proxies = [
+      (u) => u, // directo
+      (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+      (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    ];
+
+    let placesXml = null, pricesXml = null;
+
+    for(const proxy of proxies){
+      try{
+        const [pRes, prRes] = await Promise.all([
+          Promise.race([fetch(proxy(PLACES_URL)), new Promise((_,r)=>setTimeout(()=>r(new Error('to')),10000))]),
+          Promise.race([fetch(proxy(PRICES_URL)), new Promise((_,r)=>setTimeout(()=>r(new Error('to')),10000))]),
+        ]);
+        if(pRes.ok && prRes.ok){
+          placesXml = await pRes.text();
+          pricesXml = await prRes.text();
+          if(placesXml.length > 500) break; // tenemos datos reales
+        }
+      } catch(e){ continue; }
+    }
+
+    if(!placesXml || placesXml.length < 500) return [];
+
+    return parseCREXml(placesXml, pricesXml, lat, lng);
+
   } catch(e){
     console.warn('CRE fetch failed:', e.message);
     return [];
   }
+}
+
+// ── PARSER XML CRE ──
+function parseCREXml(placesXml, pricesXml, uLat, uLng){
+  const parser = new DOMParser();
+
+  // Parsear precios primero (índice por place_id)
+  const priceMap = {};
+  if(pricesXml){
+    try{
+      const prDoc = parser.parseFromString(pricesXml, 'text/xml');
+      prDoc.querySelectorAll('place').forEach(pl => {
+        const id = pl.getAttribute('place_id');
+        if(!id) return;
+        const getPrice = type => {
+          const el = pl.querySelector(`gas_price[type="${type}"]`);
+          return el ? parseFloat(el.textContent) : null;
+        };
+        priceMap[id] = {
+          magna:   getPrice('regular'),
+          premium: getPrice('premium'),
+          diesel:  getPrice('diesel'),
+        };
+      });
+    } catch(e){}
+  }
+
+  // Parsear lugares
+  const stations = [];
+  try{
+    const plDoc = parser.parseFromString(placesXml, 'text/xml');
+    plDoc.querySelectorAll('place').forEach(pl => {
+      const id    = pl.getAttribute('place_id');
+      const name  = pl.querySelector('name')?.textContent?.trim() || '';
+      const creId = pl.querySelector('cre_id')?.textContent?.trim() || '';
+      const x     = parseFloat(pl.querySelector('x')?.textContent); // longitud
+      const y     = parseFloat(pl.querySelector('y')?.textContent); // latitud
+
+      if(!name || isNaN(y) || isNaN(x)) return;
+      if(y < 14 || y > 33 || x < -118 || x > -86) return;
+
+      const d = hav(uLat, uLng, y, x);
+      if(d > 25) return; // solo dentro de 25km
+
+      const prices = priceMap[id] || {magna:null, premium:null, diesel:null};
+      if(prices.magna && (prices.magna < 19 || prices.magna > 36)) prices.magna = null;
+
+      stations.push({
+        cre_id: creId,
+        cre_name: name,
+        brand: normalizeBrand(name),
+        municipio: '',
+        estado: '',
+        lat: y,
+        lng: x,
+        prices,
+        _dist: d,
+        source: 'cre'
+      });
+    });
+  } catch(e){ console.warn('CRE XML parse error:', e); }
+
+  // Si el XML no era el formato esperado, intentar parsear como HTML tabla (formato legado)
+  if(stations.length === 0){
+    return parseCREHtml(placesXml, uLat, uLng);
+  }
+
+  return stations;
 }
 
 // ── PARSER OSM ──

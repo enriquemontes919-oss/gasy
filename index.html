@@ -181,9 +181,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 <div id="legend">
   <div class="leg"><div class="leg-dot" style="background:#FFD700"></div>La más barata</div>
-  <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Hasta $0.20 más</div>
-  <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>$0.20–$0.50 más</div>
-  <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Más de $0.50</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Tercio más barato</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>Precio medio</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Tercio más caro</div>
 </div>
 
 <div id="panel">
@@ -229,9 +229,14 @@ function hav(a,b,c,d){
   const h=Math.sin(f/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(g/2)**2;
   return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
 }
-// Verde: hasta $0.20 sobre mínimo | Amarillo: $0.20-$0.50 | Rojo: más de $0.50
-// Estrella: la más barata exacta (precio === mínimo)
-const pclass=(p,mn)=>{if(p===mn)return'star';const d=p-mn;return d<=0.20?'g':d<=0.50?'a':'r';};
+// Colores por percentil local — siempre habrá verde, amarillo y rojo
+// independientemente del rango absoluto de precios
+// Estrella: precio mínimo exacto
+// Verde: percentil 0-33% (tercio más barato)
+// Amarillo: percentil 33-66%
+// Rojo: percentil 66-100% (tercio más caro)
+// p33 y p66 se calculan en renderMarkers y se pasan como parámetros
+const pclass=(p,mn,p33,p66)=>{if(p===mn)return'star';return p<=p33?'g':p<=p66?'a':'r';};
 function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
 
 function toast(msg){
@@ -649,14 +654,17 @@ function renderMarkers(f){
   markers=[];
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length) return;
-  const prices=valid.map(s=>s.prices[f]);
-  const mn=Math.min(...prices);
+  const prices=valid.map(s=>s.prices[f]).sort((a,b)=>a-b);
+  const mn=prices[0];
+  // Percentiles: divide el rango en 3 tercios iguales por cantidad de estaciones
+  const p33=prices[Math.floor(prices.length*0.33)];
+  const p66=prices[Math.floor(prices.length*0.66)];
   const colors={star:'#FFD700',g:'#00e676',a:'#ffc400',r:'#ff3d57'};
   const glows={star:'rgba(255,215,0,0.8)',g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
 
   valid.forEach((s)=>{
     const p=s.prices[f];
-    const pc=pclass(p,mn);
+    const pc=pclass(p,mn,p33,p66);
     const c=colors[pc];
     const glow=glows[pc];
     const label=p.toFixed(2).replace('.',',');
@@ -736,14 +744,16 @@ function updateStats(f){
 function renderCards(f){
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length){$('cards').innerHTML='';return;}
-  const prices=valid.map(s=>s.prices[f]);
-  const mn=Math.min(...prices);
+  const prices=valid.map(s=>s.prices[f]).sort((a,b)=>a-b);
+  const mn=prices[0];
+  const p33=prices[Math.floor(prices.length*0.33)];
+  const p66=prices[Math.floor(prices.length*0.66)];
   const sorted=[...valid].map(s=>({...s,d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a.d-b.d).slice(0,14);
   const btxt={star:'⭐ La más barata',g:'Más barata',a:'Normal',r:'Más cara'};
   const bcls={star:'bstar',g:'bg',a:'ba',r:'br'};
   $('cards').innerHTML=sorted.map(s=>{
     const p=s.prices[f];
-    const pc=pclass(p,mn);
+    const pc=pclass(p,mn,p33,p66);
     const dstr=s.d<1?Math.round(s.d*1000)+'m':s.d.toFixed(1)+'km';
     return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})">
       <div class="card-brand">${s.brand}</div>

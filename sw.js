@@ -1,4 +1,4 @@
-const CACHE = 'gasy-v1';
+const CACHE = 'gasy-v4';
 const ASSETS = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
@@ -14,7 +14,12 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+
+  // SOLO cachear assets propios — nunca interceptar requests externos
+  if (url.origin !== self.location.origin) return;
   if (e.request.method !== 'GET') return;
+
   e.respondWith(
     fetch(e.request)
       .then(res => {

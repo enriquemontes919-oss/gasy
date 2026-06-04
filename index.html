@@ -170,58 +170,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 <body>
 
 <div id="welcome">
-  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:4px;">
-    <svg viewBox="0 0 320 140" width="300" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#b2f0f0"/>
-          <stop offset="50%" stop-color="#00d4ff"/>
-          <stop offset="100%" stop-color="#0097b2"/>
-        </linearGradient>
-        <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#00c4d4"/>
-          <stop offset="100%" stop-color="#006b80"/>
-        </linearGradient>
-        <radialGradient id="glowBg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#003344" stop-opacity="0.6"/>
-          <stop offset="100%" stop-color="#0a0f14" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-
-      <!-- Glow de fondo -->
-      <ellipse cx="160" cy="70" rx="150" ry="60" fill="url(#glowBg)"/>
-
-      <!-- Ícono rueda/flor multicolor arriba izquierda -->
-      <g transform="translate(18,14) scale(0.9)">
-        <!-- Segmentos de la rueda -->
-        <path d="M12,12 L19,5 A10,10 0 0,1 26,10 Z" fill="#00d4aa"/>
-        <path d="M12,12 L26,10 A10,10 0 0,1 26,20 Z" fill="#00b8d4"/>
-        <path d="M12,12 L26,20 A10,10 0 0,1 19,26 Z" fill="#0097b2"/>
-        <path d="M12,12 L19,26 A10,10 0 0,1 8,26 Z" fill="#e040fb"/>
-        <path d="M12,12 L8,26 A10,10 0 0,1 0,18 Z" fill="#00e5d4"/>
-        <path d="M12,12 L0,18 A10,10 0 0,1 2,8 Z" fill="#00c4aa"/>
-        <path d="M12,12 L2,8 A10,10 0 0,1 10,2 Z" fill="#00a8d4"/>
-        <path d="M12,12 L10,2 A10,10 0 0,1 19,5 Z" fill="#7c4dff" opacity="0.7"/>
-        <!-- Centro -->
-        <circle cx="12" cy="12" r="4" fill="#0a0f14"/>
-        <circle cx="12" cy="12" r="2" fill="#00d4ff" opacity="0.6"/>
-      </g>
-
-      <!-- Texto "Gasy" -->
-      <text x="42" y="100" font-family="Outfit, Arial Black, sans-serif" font-weight="900" font-size="88" fill="url(#textGrad)" letter-spacing="-3">Gasy</text>
-
-      <!-- Flecha con gota — superpuesta sobre la "y" -->
-      <g transform="translate(258,52)">
-        <!-- Cuerpo de la flecha apuntando abajo-derecha -->
-        <path d="M0,0 L28,0 L28,22 L38,10 L48,30 L28,18 L28,40 L0,40 Z"
-              fill="url(#arrowGrad)" opacity="0.85"/>
-        <!-- Gota de gasolina en la punta -->
-        <ellipse cx="44" cy="34" rx="5" ry="7" fill="url(#arrowGrad)" opacity="0.9"/>
-        <path d="M44,24 L44,28" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-      </g>
-    </svg>
-    <p style="font-size:13px;color:#7d95aa;letter-spacing:0.04em;">gasy.mx | encuentra tu gasolinera barata</p>
-  </div>
+  <img src="logo-welcome.png" style="width:300px;max-width:88vw;" alt="Gasy — encuentra tu gasolinera barata">
   <div class="wlc-features">
     <div class="wlc-feat"><span>⛽</span>Precios reales de todas las gasolineras</div>
     <div class="wlc-feat"><span>🗺️</span>Ubicaciones exactas en el mapa</div>

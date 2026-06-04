@@ -42,7 +42,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 /* WELCOME */
 #welcome{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;text-align:center;transition:opacity 0.4s ease;}
 #welcome.out{opacity:0;pointer-events:none;}
-.wlc-logo{font-family:var(--sans);font-weight:800;font-size:68px;letter-spacing:-3px;line-height:1;}
+.wlc-logo{font-family:var(--sans);font-weight:800;font-size:68px;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,#00e5ff 0%,#00b8d9 60%,#0097b2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .wlc-logo em{color:var(--accent);font-style:normal;text-shadow:0 0 40px rgba(0,212,255,0.35);}
 .wlc-sub{font-size:15px;color:var(--text2);max-width:270px;line-height:1.6;}
 .wlc-sub strong{color:var(--text);font-weight:600;}
@@ -66,13 +66,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 /* HEADER */
 #hdr{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;background:rgba(10,15,20,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;}
-<!-- Logo styles -->
-<style>
 #logo{font-family:var(--sans);font-weight:800;font-size:21px;letter-spacing:-0.5px;display:flex;align-items:center;gap:7px;text-decoration:none;}
 #logo .logo-icon{width:26px;height:26px;flex-shrink:0;}
 #logo .logo-text{background:linear-gradient(135deg,#00e5ff 0%,#00b8d9 60%,#0097b2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;}
 .logo-dot{display:none;}
-</style>
 #fuel-wrap{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:30px;overflow:hidden;padding:3px;gap:2px;}
 .fbtn{padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text2);font-family:var(--sans);border-radius:20px;transition:all 0.18s;white-space:nowrap;}
 .fbtn.on{background:var(--accent);color:var(--bg);}

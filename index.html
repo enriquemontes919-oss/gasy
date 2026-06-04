@@ -26,6 +26,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Gasy","url":"https://gasy.mx","description":"Encuentra la gasolina más barata cerca de ti en México con datos oficiales de la CRE","applicationCategory":"UtilitiesApplication","operatingSystem":"Web, iOS, Android","offers":{"@type":"Offer","price":"0","priceCurrency":"MXN"},"areaServed":{"@type":"Country","name":"Mexico"}}
 </script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
 <title>Gasy — Gasolina inteligente</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,10 +66,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 /* HEADER */
 #hdr{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;background:rgba(10,15,20,0.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;}
-#logo{font-family:var(--sans);font-weight:800;font-size:21px;letter-spacing:-0.5px;display:flex;align-items:center;gap:7px;}
-#logo em{color:var(--accent);font-style:normal;}
-.logo-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pdot 2s ease-in-out infinite;}
-@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.5)}}
+<!-- Logo styles -->
+<style>
+#logo{font-family:var(--sans);font-weight:800;font-size:21px;letter-spacing:-0.5px;display:flex;align-items:center;gap:7px;text-decoration:none;}
+#logo .logo-icon{width:26px;height:26px;flex-shrink:0;}
+#logo .logo-text{background:linear-gradient(135deg,#00e5ff 0%,#00b8d9 60%,#0097b2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;}
+.logo-dot{display:none;}
+</style>
 #fuel-wrap{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:30px;overflow:hidden;padding:3px;gap:2px;}
 .fbtn{padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text2);font-family:var(--sans);border-radius:20px;transition:all 0.18s;white-space:nowrap;}
 .fbtn.on{background:var(--accent);color:var(--bg);}
@@ -168,7 +173,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 <body>
 
 <div id="welcome">
-  <div class="wlc-logo"><em>Gas</em><span>y</span></div>
+  <div class="wlc-logo" style="background:linear-gradient(135deg,#00e5ff 0%,#00b8d9 60%,#0097b2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Gasy</div>
   <p class="wlc-sub">Encuentra la gasolina <strong>más barata</strong> cerca de ti — datos oficiales CRE actualizados diario.</p>
   <div class="wlc-features">
     <div class="wlc-feat"><span>⛽</span>Precios reales de todas las gasolineras</div>
@@ -187,14 +192,33 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 </div>
 
 <div id="loading">
-  <div class="load-logo"><em>Gas</em><span>y</span></div>
+  <div class="load-logo" style="background:linear-gradient(135deg,#00e5ff 0%,#00b8d9 60%,#0097b2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Gasy</div>
   <div class="load-ring"></div>
   <div class="load-txt" id="load-txt">LOCALIZANDO GPS...</div>
   <div class="load-bar-wrap"><div class="load-bar" id="load-bar"></div></div>
 </div>
 
 <header id="hdr">
-  <div id="logo"><div class="logo-dot"></div><em>Gas</em><span>y</span></div>
+  <a href="/" id="logo">
+    <svg class="logo-icon" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00e5ff"/>
+          <stop offset="100%" stop-color="#0097b2"/>
+        </linearGradient>
+      </defs>
+      <!-- Ícono de gasolinera estilizado -->
+      <rect x="3" y="8" width="14" height="14" rx="2" stroke="url(#iconGrad)" stroke-width="1.8" fill="none"/>
+      <rect x="6" y="11" width="8" height="5" rx="1" fill="url(#iconGrad)" opacity="0.3"/>
+      <path d="M17 10.5 L20 8 L20 20 L17 20" stroke="url(#iconGrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="20" cy="8" r="2" fill="url(#iconGrad)"/>
+      <path d="M6 22 L14 22" stroke="url(#iconGrad)" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Punto de ubicación -->
+      <circle cx="22" cy="5" r="3" fill="#00e5ff" opacity="0.8"/>
+      <circle cx="22" cy="5" r="1.2" fill="#0a0f14"/>
+    </svg>
+    <span class="logo-text">Gasy</span>
+  </a>
   <div id="fuel-wrap">
     <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
     <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>

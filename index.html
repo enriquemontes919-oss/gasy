@@ -361,7 +361,7 @@ function initMap(lat,lng){
 async function fetchAll(lat,lng){
   setBar(45);setTxt('BUSCANDO GASOLINERAS...');
 
-  // Fetch en paralelo: OSM + CRE
+  // Esperar ambas fuentes antes de renderizar nada
   const [osmResult, creResult] = await Promise.allSettled([
     fetchOSM(lat, lng),
     fetchCRE(lat, lng)
@@ -370,7 +370,10 @@ async function fetchAll(lat,lng){
   const osmStations = osmResult.status==='fulfilled' ? osmResult.value : [];
   const creStations = creResult.status==='fulfilled' ? creResult.value : [];
 
-  setBar(75);setTxt('CRUZANDO DATOS...');
+  setBar(80);setTxt('CRUZANDO DATOS...');
+
+  // Usar setTimeout(0) para no bloquear el UI durante el merge
+  await new Promise(resolve => setTimeout(resolve, 0));
 
   let merged = [];
   if(osmStations.length > 0 && creStations.length > 0){
@@ -381,7 +384,7 @@ async function fetchAll(lat,lng){
     merged = creStations.filter(s=>s.lat&&s.lng).slice(0,50).map((s,i)=>({...s,id:i}));
   }
 
-  const usedCRE = merged.length > 0;
+  const usedCRE = creStations.length > 0;
   const usedOSM = osmStations.length > 0;
 
   if(merged.length === 0){
@@ -410,16 +413,16 @@ async function fetchAll(lat,lng){
 
 // ── FETCH OSM — el browser llama directo a Overpass ──
 async function fetchOSM(lat,lng){
-  const radio = 6000;
-  const query = `[out:json][timeout:20];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
+  const radio = 8000; // aumentar radio para más cobertura
+  const query = `[out:json][timeout:25];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
 
-  // Intentar mirrors directamente desde el browser
   const mirrors = [
     'https://overpass-api.de/api/interpreter',
     'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
-    // Worker como último recurso
     `${WORKER}/osm?lat=${lat}&lng=${lng}&radio=${radio}`,
   ];
+
+  let bestResult = [];
 
   for(const mirror of mirrors){
     try{
@@ -436,16 +439,20 @@ async function fetchOSM(lat,lng){
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body:'data='+encodeURIComponent(query)
           }),
-          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),12000))
+          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),15000))
         ]);
       }
       if(!res.ok) continue;
       const data = await res.json();
       const parsed = parseOSM(data, lat, lng);
-      if(parsed.length > 0) return parsed;
+      // Solo aceptar si tiene suficientes estaciones (al menos 10)
+      // Si tiene pocas, guardar como respaldo y seguir intentando
+      if(parsed.length >= 10) return parsed;
+      if(parsed.length > bestResult.length) bestResult = parsed;
     } catch(e){ console.warn('OSM mirror failed:', mirror, e.message); }
   }
-  return [];
+  // Devolver el mejor resultado que encontramos aunque sea pequeño
+  return bestResult;
 }
 
 // ── FETCH CRE — vía Cloudflare Worker (proxy sin CORS) ──
@@ -603,17 +610,28 @@ function parseCREHtml(html, uLat, uLng){
   return stations;
 }
 
-// ── CRUCE OSM + CRE ──
+// ── CRUCE OSM + CRE — optimizado con índice por marca ──
 function mergeData(osmList, creList){
   const merged=[];
   const usedCRE=new Set();
+
+  // Construir índice de CRE por marca normalizada para búsqueda O(1)
+  const creByBrand={};
+  creList.forEach((cre,i)=>{
+    const key=norm(cre.brand);
+    if(!creByBrand[key]) creByBrand[key]=[];
+    creByBrand[key].push(i);
+  });
+
   for(const osm of osmList){
+    const osmKey=norm(osm.brand);
+    // Solo buscar en CRE de la misma marca — evita iterar todo el array
+    const candidates=(creByBrand[osmKey]||[]);
     let best=null,bestScore=0;
-    for(let i=0;i<creList.length;i++){
+
+    for(const i of candidates){
       if(usedCRE.has(i)) continue;
       const cre=creList[i];
-      const bs=brandSim(osm.brand,cre.brand);
-      if(bs<0.35) continue;
       let ds=0.5;
       if(cre.lat&&cre.lng){
         const d=hav(osm.lat,osm.lng,cre.lat,cre.lng);
@@ -621,10 +639,11 @@ function mergeData(osmList, creList){
         ds=Math.max(0,1-d/2.5);
       }
       const ms=munSim(osm.municipio,cre.municipio);
-      const score=bs*0.5+ds*0.3+ms*0.2;
+      const score=0.6*ds+0.4*ms;
       if(score>bestScore){bestScore=score;best={cre,index:i};}
     }
-    if(best&&bestScore>0.4){
+
+    if(best&&bestScore>0.3){
       usedCRE.add(best.index);
       merged.push({
         id:merged.length, osm_id:osm.osm_id,

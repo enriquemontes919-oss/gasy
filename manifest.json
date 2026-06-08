@@ -1,24 +1,28 @@
 {
   "name": "Gasy — Gasolina barata cerca de ti",
   "short_name": "Gasy",
-  "description": "Encuentra la gasolina más barata cerca de ti en México",
+  "description": "Gasolina inteligente, decisiones que ahorran.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0f14",
-  "theme_color": "#0a0f14",
+  "background_color": "#4b02f3",
+  "theme_color": "#4b02f3",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "android-chrome-192x192.png",
-      "sizes": "192x192",
+      "src": "icon.png",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
       "src": "android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "apple-touch-icon.png",

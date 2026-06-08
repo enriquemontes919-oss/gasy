@@ -894,5 +894,38 @@ function closeAd(){
 }
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});</script>
+
+<!-- Cookie Consent Banner -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;background:rgba(11,16,22,0.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.1);padding:14px 16px;font-family:'Outfit',sans-serif;">
+  <div style="max-width:700px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:200px;">
+      <p style="font-size:12px;color:#7d95aa;line-height:1.6;margin:0;">
+        Usamos cookies y GPS para mostrarte gasolineras cercanas y publicidad relevante. 
+        Al continuar aceptas nuestra 
+        <a href="/privacidad" style="color:#00d4ff;text-decoration:none;font-weight:600;">Política de Privacidad y Términos de Uso</a>.
+      </p>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0;">
+      <a href="/privacidad" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);font-size:12px;font-weight:600;color:#7d95aa;text-decoration:none;white-space:nowrap;">Ver más</a>
+      <button onclick="acceptCookies()" style="padding:8px 20px;border-radius:20px;background:#00d4ff;border:none;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;color:#0a0f14;cursor:pointer;white-space:nowrap;">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Mostrar banner solo si no ha aceptado antes
+function initCookieBanner(){
+  if(!localStorage.getItem('gasy_cookies_accepted')){
+    setTimeout(()=>{
+      document.getElementById('cookie-banner').style.display='block';
+    }, 2000); // Aparece 2 segundos después de cargar
+  }
+}
+function acceptCookies(){
+  localStorage.setItem('gasy_cookies_accepted','1');
+  document.getElementById('cookie-banner').style.display='none';
+}
+window.addEventListener('load', initCookieBanner);
+</script>
 </body>
 </html>

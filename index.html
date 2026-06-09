@@ -404,8 +404,8 @@ async function fetchAll(lat,lng){
 
 async function fetchOSM(lat,lng){
   const radio = currentRadio;
-  const timeout = radio >= 20000 ? 35 : 25;
-  const fetchTimeout = radio >= 20000 ? 30000 : 15000;
+  const timeout = radio >= 40000 ? 40 : radio >= 15000 ? 30 : 25;
+  const fetchTimeout = radio >= 40000 ? 35000 : radio >= 15000 ? 25000 : 15000;
   const query = `[out:json][timeout:${timeout}];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
   const mirrors = [
     'https://overpass-api.de/api/interpreter',

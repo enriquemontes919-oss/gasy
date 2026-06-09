@@ -221,10 +221,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
       <span class="logo-text">Gasy</span>
     </a>
     <div id="fuel-wrap">
-        <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
-        <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
-        <button class="fbtn" onclick="setFuel('diesel',this)">Diésel</button>
-      </div>
+      <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
+      <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
+      <button class="fbtn" onclick="setFuel('diesel',this)">Diésel</button>
+    </div>
   </div>
   <div id="hdr-row2">
     <div id="radio-label">📍 Radio de búsqueda: <span id="radio-txt">12km</span></div>
@@ -333,9 +333,14 @@ function hav(a,b,c,d){
   const h=Math.sin(f/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(g/2)**2;
   return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
 }
-// Colores por POSICIÓN en ranking — siempre habrá verde, amarillo y rojo
-// sin importar si muchas estaciones tienen el mismo precio
-const pclass=(p,mn,p33,p66)=>{if(Math.abs(p-mn)<0.001)return'star';return p<=p33?'g':p<=p66?'a':'r';};
+// Colores por percentil local — siempre habrá verde, amarillo y rojo
+// independientemente del rango absoluto de precios
+// Estrella: precio mínimo exacto
+// Verde: percentil 0-33% (tercio más barato)
+// Amarillo: percentil 33-66%
+// Rojo: percentil 66-100% (tercio más caro)
+// p33 y p66 se calculan en renderMarkers y se pasan como parámetros
+const pclass=(p,mn,p33,p66)=>{if(p===mn)return'star';return p<=p33?'g':p<=p66?'a':'r';};
 function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
 
 function toast(msg){
@@ -404,7 +409,7 @@ async function fetchAll(lat,lng){
   } else if(osmStations.length > 0){
     merged = osmStations.map((s,i)=>({...s,id:i}));
   } else if(creStations.length > 0){
-    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,200).map((s,i)=>({...s,id:i}));
+    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,50).map((s,i)=>({...s,id:i}));
   }
 
   const usedCRE = creStations.length > 0;
@@ -436,10 +441,8 @@ async function fetchAll(lat,lng){
 
 // ── FETCH OSM — el browser llama directo a Overpass ──
 async function fetchOSM(lat,lng){
-  const radio = currentRadio;
-  const timeout = radio >= 20000 ? 35 : 25; // más tiempo para radios grandes
-  const fetchTimeout = radio >= 20000 ? 30000 : 15000;
-  const query = `[out:json][timeout:${timeout}];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
+  const radio = currentRadio; // usa el radio seleccionado por el usuario
+  const query = `[out:json][timeout:25];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
 
   const mirrors = [
     'https://overpass-api.de/api/interpreter',
@@ -464,7 +467,7 @@ async function fetchOSM(lat,lng){
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body:'data='+encodeURIComponent(query)
           }),
-          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),fetchTimeout))
+          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),15000))
         ]);
       }
       if(!res.ok) continue;
@@ -780,6 +783,7 @@ function renderMarkers(f){
   markers=[];
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length) return;
+  const prices=valid.map(s=>s.prices[f]).sort((a,b)=>a-b);
 
   // Limitar a 200 markers máximo — priorizar los más cercanos al usuario
   const limited = uLat
@@ -788,13 +792,13 @@ function renderMarkers(f){
 
   const prices=limited.map(s=>s.prices[f]).sort((a,b)=>a-b);
   const mn=prices[0];
-  // Usar valores únicos para evitar que precios iguales colapsen los rangos
-  const unique=[...new Set(prices)];
-  const p33=unique[Math.floor(unique.length*0.33)]??prices[Math.floor(prices.length*0.33)];
-  const p66=unique[Math.floor(unique.length*0.66)]??prices[Math.floor(prices.length*0.66)];
+  // Percentiles: divide el rango en 3 tercios iguales por cantidad de estaciones
+  const p33=prices[Math.floor(prices.length*0.33)];
+  const p66=prices[Math.floor(prices.length*0.66)];
   const colors={star:'#FFD700',g:'#00e676',a:'#ffc400',r:'#ff3d57'};
   const glows={star:'rgba(255,215,0,0.8)',g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
 
+  valid.forEach((s)=>{
   limited.forEach((s)=>{
     const p=s.prices[f];
     const pc=pclass(p,mn,p33,p66);
@@ -879,9 +883,8 @@ function renderCards(f){
   if(!valid.length){$('cards').innerHTML='';return;}
   const prices=valid.map(s=>s.prices[f]).sort((a,b)=>a-b);
   const mn=prices[0];
-  const unique=[...new Set(prices)];
-  const p33=unique[Math.floor(unique.length*0.33)]??prices[Math.floor(prices.length*0.33)];
-  const p66=unique[Math.floor(unique.length*0.66)]??prices[Math.floor(prices.length*0.66)];
+  const p33=prices[Math.floor(prices.length*0.33)];
+  const p66=prices[Math.floor(prices.length*0.66)];
   const sorted=[...valid].map(s=>({...s,d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a.d-b.d).slice(0,14);
   const btxt={star:'⭐ La más barata',g:'Más barata',a:'Normal',r:'Más cara'};
   const bcls={star:'bstar',g:'bg',a:'ba',r:'br'};

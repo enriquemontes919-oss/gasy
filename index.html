@@ -20,9 +20,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Gasy">
-<!-- AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6670443237202134" crossorigin="anonymous"></script>
-<!-- Schema.org -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Gasy","url":"https://gasy.mx","description":"Encuentra la gasolina más barata cerca de ti en México con datos oficiales de la CRE","applicationCategory":"UtilitiesApplication","operatingSystem":"Web, iOS, Android","offers":{"@type":"Offer","price":"0","priceCurrency":"MXN"},"areaServed":{"@type":"Country","name":"Mexico"}}
 </script>
@@ -63,8 +61,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 #loading{position:fixed;inset:0;z-index:9998;background:#4b02f3;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 0.4s;}
 #loading.show{display:flex;}
 #loading.out{opacity:0;pointer-events:none;}
-.load-logo{font-family:var(--sans);font-weight:800;font-size:50px;letter-spacing:-2px;color:#fff;}
-.load-logo em{color:#57d97b;font-style:normal;}
 .load-ring{width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);border-top-color:#57d97b;animation:spin 0.75s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .load-txt{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.12em;font-weight:600;}
@@ -83,14 +79,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 #fuel-wrap{display:flex;background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:30px;overflow:hidden;padding:3px;gap:2px;}
 .fbtn{padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.6);font-family:var(--sans);border-radius:20px;transition:all 0.18s;white-space:nowrap;}
 .fbtn.on{background:#57d97b;color:#0a0414;}
-/* Radio selector */
 #radio-label{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;display:flex;align-items:center;gap:6px;}
 #radio-label span{color:#57d97b;font-weight:600;}
 #radio-wrap{display:flex;background:rgba(75,2,243,0.2);border:1px solid rgba(75,2,243,0.4);border-radius:30px;overflow:hidden;padding:2px;gap:2px;}
 .rbtn{padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.5);font-family:var(--sans);border-radius:20px;transition:all 0.18s;white-space:nowrap;}
 .rbtn.on{background:#4b02f3;color:#fff;}
 
-/* MAP — más claro */
+/* MAP */
 #map{position:fixed;top:88px;left:0;right:0;bottom:196px;z-index:1;}
 #map.with-ad{bottom:256px;}
 .leaflet-tile-pane{filter:brightness(0.72) saturate(0.7) contrast(1.05);}
@@ -157,7 +152,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .card-star{border-color:rgba(255,215,0,0.4);background:rgba(255,215,0,0.05);}
 .card-star::before{background:#FFD700!important;box-shadow:0 0 8px #FFD700!important;}
 
-/* AD BAR — oculto por defecto, solo aparece si AdSense carga */
+/* AD BAR */
 #ad-bar{position:fixed;bottom:196px;left:0;right:0;z-index:499;background:rgba(10,15,20,0.97);border-top:1px solid var(--border);display:none;align-items:center;justify-content:center;max-height:60px;overflow:hidden;}
 #ad-bar.show{display:flex;}
 #ad-bar .ad-label{font-size:9px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;position:absolute;top:2px;left:8px;}
@@ -205,10 +200,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 <div id="loading">
   <img src="icon.png" style="width:80px;height:80px;border-radius:20px;margin-bottom:8px;" alt="Gasy">
-  <div class="load-ring"></div>
-  <div class="load-txt" id="load-txt">LOCALIZANDO GPS...</div>
-  <div class="load-bar-wrap"><div class="load-bar" id="load-bar"></div></div>
-</div>
   <div class="load-ring"></div>
   <div class="load-txt" id="load-txt">LOCALIZANDO GPS...</div>
   <div class="load-bar-wrap"><div class="load-bar" id="load-bar"></div></div>
@@ -262,7 +253,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   <ins class="adsbygoogle" style="display:block;width:100%;max-height:55px;" data-ad-client="ca-pub-6670443237202134" data-ad-slot="6618539960" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
-    // Detectar si AdSense cargó un anuncio real
     setTimeout(function(){
       const ins = document.querySelector('#ad-bar .adsbygoogle');
       const status = ins ? ins.getAttribute('data-ad-status') : null;
@@ -298,25 +288,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ── Config ──
-// Worker solo como proxy CORS si se necesita
 const WORKER = 'https://gasy-cre-proxy.enrique-montes919.workers.dev';
 
-// ── Estado ──
 let map, uMarker, uLat, uLng;
 let fuel = 'magna';
-let currentRadio = 12000; // metros, default 12km
+let currentRadio = 12000;
 let stations = [];
 let markers = [];
 let selId = null;
 
-// ── Utils ──
 const $ = id => document.getElementById(id);
 const fmt = n => (n != null && !isNaN(n)) ? '$' + parseFloat(n).toFixed(2).replace('.', ',') : 'N/D';
 const setBar = p => $('load-bar').style.width = p + '%';
 const setTxt = t => $('load-txt').textContent = t;
 
-// ── Cambiar radio de búsqueda ──
 function setRadio(km, btn){
   currentRadio = km * 1000;
   document.querySelectorAll('.rbtn').forEach(b => b.classList.remove('on'));
@@ -333,13 +318,6 @@ function hav(a,b,c,d){
   const h=Math.sin(f/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(g/2)**2;
   return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
 }
-// Colores por percentil local — siempre habrá verde, amarillo y rojo
-// independientemente del rango absoluto de precios
-// Estrella: precio mínimo exacto
-// Verde: percentil 0-33% (tercio más barato)
-// Amarillo: percentil 33-66%
-// Rojo: percentil 66-100% (tercio más caro)
-// p33 y p66 se calculan en renderMarkers y se pasan como parámetros
 const pclass=(p,mn,p33,p66)=>{if(p===mn)return'star';return p<=p33?'g':p<=p66?'a':'r';};
 function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');}
 
@@ -348,7 +326,6 @@ function toast(msg){
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2500);
 }
 
-// ── WELCOME → GPS (fix Safari) ──
 function startApp(){
   $('welcome').classList.add('out');
   setTimeout(()=>$('welcome').style.display='none',400);
@@ -377,7 +354,6 @@ function requestGPS(){
 function retryGPS(){$('errmsg').classList.remove('show');$('loading').classList.add('show');requestGPS();}
 function useFallback(){uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);fetchAll(uLat,uLng);toast('Sin GPS — mostrando CDMX');}
 
-// ── MAPA ──
 function initMap(lat,lng){
   map=L.map('map',{zoomControl:true,attributionControl:false}).setView([lat,lng],14);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
@@ -385,47 +361,34 @@ function initMap(lat,lng){
   uMarker=L.marker([lat,lng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
 }
 
-// ── FETCH PRINCIPAL — browser hace los requests directos ──
 async function fetchAll(lat,lng){
   setBar(45);setTxt('BUSCANDO GASOLINERAS...');
-
-  // Esperar ambas fuentes antes de renderizar nada
   const [osmResult, creResult] = await Promise.allSettled([
     fetchOSM(lat, lng),
     fetchCRE(lat, lng)
   ]);
-
   const osmStations = osmResult.status==='fulfilled' ? osmResult.value : [];
   const creStations = creResult.status==='fulfilled' ? creResult.value : [];
-
   setBar(80);setTxt('CRUZANDO DATOS...');
-
-  // Usar setTimeout(0) para no bloquear el UI durante el merge
   await new Promise(resolve => setTimeout(resolve, 0));
-
   let merged = [];
   if(osmStations.length > 0 && creStations.length > 0){
     merged = mergeData(osmStations, creStations, uLat, uLng);
   } else if(osmStations.length > 0){
     merged = osmStations.map((s,i)=>({...s,id:i}));
   } else if(creStations.length > 0){
-    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,50).map((s,i)=>({...s,id:i}));
+    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,200).map((s,i)=>({...s,id:i}));
   }
-
-  const usedCRE = creStations.length > 0;
-  const usedOSM = osmStations.length > 0;
-
   if(merged.length === 0){
     merged = generateDemo(lat, lng);
     toast('Demo — sin conexión a fuentes de datos');
   } else {
     let src = [];
-    if(usedOSM) src.push('OSM');
-    if(usedCRE) src.push('CRE');
+    if(osmStations.length > 0) src.push('OSM');
+    if(creStations.length > 0) src.push('CRE');
     $('cre-badge').textContent = `✦ Datos reales: ${src.join(' + ')}`;
     $('cre-badge').classList.add('show');
   }
-
   stations = merged;
   setBar(95);setTxt('CARGANDO MAPA...');
   renderMarkers(fuel);
@@ -439,86 +402,54 @@ async function fetchAll(lat,lng){
   },300);
 }
 
-// ── FETCH OSM — el browser llama directo a Overpass ──
 async function fetchOSM(lat,lng){
-  const radio = currentRadio; // usa el radio seleccionado por el usuario
-  const query = `[out:json][timeout:25];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
-
+  const radio = currentRadio;
+  const timeout = radio >= 20000 ? 35 : 25;
+  const fetchTimeout = radio >= 20000 ? 30000 : 15000;
+  const query = `[out:json][timeout:${timeout}];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
   const mirrors = [
     'https://overpass-api.de/api/interpreter',
     'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
     `${WORKER}/osm?lat=${lat}&lng=${lng}&radio=${radio}`,
   ];
-
   let bestResult = [];
-
   for(const mirror of mirrors){
     try{
       let res;
       if(mirror.includes(WORKER)){
-        res = await Promise.race([
-          fetch(mirror),
-          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),10000))
-        ]);
+        res = await Promise.race([fetch(mirror),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),10000))]);
       } else {
         res = await Promise.race([
-          fetch(mirror, {
-            method:'POST',
-            headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body:'data='+encodeURIComponent(query)
-          }),
-          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),15000))
+          fetch(mirror,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(query)}),
+          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),fetchTimeout))
         ]);
       }
       if(!res.ok) continue;
       const data = await res.json();
       const parsed = parseOSM(data, lat, lng);
-      // Solo aceptar si tiene suficientes estaciones (al menos 10)
-      // Si tiene pocas, guardar como respaldo y seguir intentando
       if(parsed.length >= 10) return parsed;
       if(parsed.length > bestResult.length) bestResult = parsed;
     } catch(e){ console.warn('OSM mirror failed:', mirror, e.message); }
   }
-  // Devolver el mejor resultado que encontramos aunque sea pequeño
   return bestResult;
 }
 
-// ── FETCH CRE — vía Cloudflare Worker (proxy sin CORS) ──
-// Worker hace fetch a publicacionexterna.azurewebsites.net y agrega CORS headers
 async function fetchCRE(lat, lng){
   try{
     const [pricesRes, placesRes] = await Promise.all([
-      Promise.race([
-        fetch(`${WORKER}?tipo=prices`),
-        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),16000))
-      ]).catch(e=>{console.warn('CRE prices:',e.message);return null;}),
-      Promise.race([
-        fetch(`${WORKER}?tipo=places`),
-        new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),16000))
-      ]).catch(e=>{console.warn('CRE places:',e.message);return null;})
+      Promise.race([fetch(`${WORKER}?tipo=prices`),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),16000))]).catch(e=>{console.warn('CRE prices:',e.message);return null;}),
+      Promise.race([fetch(`${WORKER}?tipo=places`),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),16000))]).catch(e=>{console.warn('CRE places:',e.message);return null;})
     ]);
-
     let pricesXml = null, placesXml = null;
     if(pricesRes && pricesRes.ok) pricesXml = await pricesRes.text();
     if(placesRes && placesRes.ok) placesXml = await placesRes.text();
-
-    console.log('CRE prices length:', pricesXml?.length || 0);
-    console.log('CRE places length:', placesXml?.length || 0);
-
     if(!pricesXml || pricesXml.length < 200) return [];
     return parseCREXml(placesXml, pricesXml, lat, lng);
-
-  } catch(e){
-    console.warn('CRE fetch failed:', e.message);
-    return [];
-  }
+  } catch(e){ console.warn('CRE fetch failed:', e.message); return []; }
 }
 
-// ── PARSER XML CRE ──
 function parseCREXml(placesXml, pricesXml, uLat, uLng){
   const parser = new DOMParser();
-
-  // Parsear precios primero (índice por place_id)
   const priceMap = {};
   if(pricesXml){
     try{
@@ -526,63 +457,33 @@ function parseCREXml(placesXml, pricesXml, uLat, uLng){
       prDoc.querySelectorAll('place').forEach(pl => {
         const id = pl.getAttribute('place_id');
         if(!id) return;
-        const getPrice = type => {
-          const el = pl.querySelector(`gas_price[type="${type}"]`);
-          return el ? parseFloat(el.textContent) : null;
-        };
-        priceMap[id] = {
-          magna:   getPrice('regular'),
-          premium: getPrice('premium'),
-          diesel:  getPrice('diesel'),
-        };
+        const getPrice = type => { const el = pl.querySelector(`gas_price[type="${type}"]`); return el ? parseFloat(el.textContent) : null; };
+        priceMap[id] = {magna:getPrice('regular'),premium:getPrice('premium'),diesel:getPrice('diesel')};
       });
     } catch(e){}
   }
-
-  // Parsear lugares
   const stations = [];
   try{
     const plDoc = parser.parseFromString(placesXml, 'text/xml');
     plDoc.querySelectorAll('place').forEach(pl => {
-      const id    = pl.getAttribute('place_id');
-      const name  = pl.querySelector('name')?.textContent?.trim() || '';
+      const id = pl.getAttribute('place_id');
+      const name = pl.querySelector('name')?.textContent?.trim() || '';
       const creId = pl.querySelector('cre_id')?.textContent?.trim() || '';
-      const x     = parseFloat(pl.querySelector('x')?.textContent); // longitud
-      const y     = parseFloat(pl.querySelector('y')?.textContent); // latitud
-
+      const x = parseFloat(pl.querySelector('x')?.textContent);
+      const y = parseFloat(pl.querySelector('y')?.textContent);
       if(!name || isNaN(y) || isNaN(x)) return;
       if(y < 14 || y > 33 || x < -118 || x > -86) return;
-
       const d = hav(uLat, uLng, y, x);
-      if(d > Math.max(currentRadio/1000 + 5, 25)) return; // radio dinámico + 5km de margen
-
-      const prices = priceMap[id] || {magna:null, premium:null, diesel:null};
+      if(d > Math.max(currentRadio/1000 + 5, 25)) return;
+      const prices = priceMap[id] || {magna:null,premium:null,diesel:null};
       if(prices.magna && (prices.magna < 19 || prices.magna > 36)) prices.magna = null;
-
-      stations.push({
-        cre_id: creId,
-        cre_name: name,
-        brand: normalizeBrand(name),
-        municipio: '',
-        estado: '',
-        lat: y,
-        lng: x,
-        prices,
-        _dist: d,
-        source: 'cre'
-      });
+      stations.push({cre_id:creId,cre_name:name,brand:normalizeBrand(name),municipio:'',estado:'',lat:y,lng:x,prices,_dist:d,source:'cre'});
     });
   } catch(e){ console.warn('CRE XML parse error:', e); }
-
-  // Si el XML no era el formato esperado, intentar parsear como HTML tabla (formato legado)
-  if(stations.length === 0){
-    return parseCREHtml(placesXml, uLat, uLng);
-  }
-
+  if(stations.length === 0) return parseCREHtml(placesXml, uLat, uLng);
   return stations;
 }
 
-// ── PARSER OSM ──
 function parseOSM(data, uLat, uLng){
   if(!data?.elements) return [];
   return data.elements.map(el=>{
@@ -594,18 +495,10 @@ function parseOSM(data, uLat, uLng){
     const name = t.name||t.brand||t.operator||'Gasolinera';
     const addr = buildAddr(t);
     const d = hav(uLat,uLng,parseFloat(slat),parseFloat(slng));
-    return {
-      osm_id:el.id, brand, name:cleanName(name,brand,''),
-      lat:parseFloat(slat), lng:parseFloat(slng),
-      addr, municipio:t['addr:city']||t['addr:municipality']||'',
-      estado:t['addr:state']||'',
-      prices:{magna:null,premium:null,diesel:null},
-      _dist:d, source:'osm'
-    };
+    return {osm_id:el.id,brand,name:cleanName(name,brand,''),lat:parseFloat(slat),lng:parseFloat(slng),addr,municipio:t['addr:city']||t['addr:municipality']||'',estado:t['addr:state']||'',prices:{magna:null,premium:null,diesel:null},_dist:d,source:'osm'};
   }).filter(Boolean);
 }
 
-// ── PARSER CRE HTML ──
 function parseCREHtml(html, uLat, uLng){
   const stations=[];
   const rowRe=/<tr[^>]*>([\s\S]*?)<\/tr>/gi;
@@ -614,8 +507,7 @@ function parseCREHtml(html, uLat, uLng){
     const cells=[];
     const cRe=/<td[^>]*>([\s\S]*?)<\/td>/gi;
     let c;
-    while((c=cRe.exec(m[1]))!==null)
-      cells.push(c[1].replace(/<[^>]+>/g,'').trim());
+    while((c=cRe.exec(m[1]))!==null) cells.push(c[1].replace(/<[^>]+>/g,'').trim());
     if(cells.length<7) continue;
     const magna=parseFloat(cells[4]?.replace(',','.'));
     const premium=parseFloat(cells[5]?.replace(',','.'));
@@ -624,39 +516,24 @@ function parseCREHtml(html, uLat, uLng){
     const sLng=parseFloat(cells[8]);
     if(isNaN(magna)||magna<19||magna>36) continue;
     const d=(sLat&&sLng)?hav(uLat,uLng,sLat,sLng):999;
-    stations.push({
-      cre_name:cells[0]?.trim()||'',
-      brand:normalizeBrand(cells[0]||''),
-      municipio:cells[2]?.trim()||'',
-      estado:cells[3]?.trim()||'',
-      lat:isNaN(sLat)?null:sLat,
-      lng:isNaN(sLng)?null:sLng,
-      prices:{magna,premium:isNaN(premium)?null:premium,diesel:isNaN(diesel)?null:diesel},
-      _dist:d, source:'cre'
-    });
+    stations.push({cre_name:cells[0]?.trim()||'',brand:normalizeBrand(cells[0]||''),municipio:cells[2]?.trim()||'',estado:cells[3]?.trim()||'',lat:isNaN(sLat)?null:sLat,lng:isNaN(sLng)?null:sLng,prices:{magna,premium:isNaN(premium)?null:premium,diesel:isNaN(diesel)?null:diesel},_dist:d,source:'cre'});
   }
   return stations;
 }
 
-// ── CRUCE OSM + CRE — optimizado con índice por marca ──
 function mergeData(osmList, creList, uLat, uLng){
   const merged=[];
   const usedCRE=new Set();
-
-  // Construir índice de CRE por marca normalizada para búsqueda O(1)
   const creByBrand={};
   creList.forEach((cre,i)=>{
     const key=norm(cre.brand);
     if(!creByBrand[key]) creByBrand[key]=[];
     creByBrand[key].push(i);
   });
-
   for(const osm of osmList){
     const osmKey=norm(osm.brand);
-    // Solo buscar en CRE de la misma marca — evita iterar todo el array
     const candidates=(creByBrand[osmKey]||[]);
     let best=null,bestScore=0;
-
     for(const i of candidates){
       if(usedCRE.has(i)) continue;
       const cre=creList[i];
@@ -670,49 +547,24 @@ function mergeData(osmList, creList, uLat, uLng){
       const score=0.6*ds+0.4*ms;
       if(score>bestScore){bestScore=score;best={cre,index:i};}
     }
-
     if(best&&bestScore>0.3){
       usedCRE.add(best.index);
-      merged.push({
-        id:merged.length, osm_id:osm.osm_id,
-        brand:osm.brand,
-        name:cleanName(osm.name,osm.brand,best.cre.cre_name),
-        lat:osm.lat, lng:osm.lng,
-        addr:osm.addr||`${best.cre.municipio}, ${best.cre.estado}`,
-        municipio:osm.municipio||best.cre.municipio,
-        estado:osm.estado||best.cre.estado,
-        prices:best.cre.prices,
-        source:'merged'
-      });
+      merged.push({id:merged.length,osm_id:osm.osm_id,brand:osm.brand,name:cleanName(osm.name,osm.brand,best.cre.cre_name),lat:osm.lat,lng:osm.lng,addr:osm.addr||`${best.cre.municipio}, ${best.cre.estado}`,municipio:osm.municipio||best.cre.municipio,estado:osm.estado||best.cre.estado,prices:best.cre.prices,source:'merged'});
     } else {
       merged.push({id:merged.length,...osm});
     }
   }
-  // CRE sin match OSM pero con coords válidas — filtrar por radio actual
   const radioKm = currentRadio / 1000;
   for(let i=0;i<creList.length;i++){
     if(usedCRE.has(i)) continue;
     const cre=creList[i];
     if(!cre.lat||!cre.lng||cre.lat<14||cre.lat>33) continue;
-    // Solo agregar si está dentro del radio actual + 5km de margen
-    if(uLat && uLng){
-      const d=hav(uLat,uLng,cre.lat,cre.lng);
-      if(d > radioKm + 5) continue;
-    }
-    merged.push({
-      id:merged.length,
-      brand:cre.brand,
-      name:cleanName(cre.cre_name,cre.brand,''),
-      lat:cre.lat,lng:cre.lng,
-      addr:`${cre.municipio}, ${cre.estado}`,
-      municipio:cre.municipio,estado:cre.estado,
-      prices:cre.prices,source:'cre_only'
-    });
+    if(uLat && uLng){ const d=hav(uLat,uLng,cre.lat,cre.lng); if(d > radioKm + 5) continue; }
+    merged.push({id:merged.length,brand:cre.brand,name:cleanName(cre.cre_name,cre.brand,''),lat:cre.lat,lng:cre.lng,addr:`${cre.municipio}, ${cre.estado}`,municipio:cre.municipio,estado:cre.estado,prices:cre.prices,source:'cre_only'});
   }
   return merged;
 }
 
-// ── HELPERS ──
 function normalizeBrand(n){
   const u=(n||'').toUpperCase();
   if(u.includes('PEMEX')||u.includes('FRANQUICIA')) return 'Pemex';
@@ -730,10 +582,8 @@ function normalizeBrand(n){
   return f.charAt(0).toUpperCase()+f.slice(1).toLowerCase();
 }
 function cleanName(osmName,brand,creName){
-  if(osmName&&osmName!=='Gasolinera'&&osmName.length>3)
-    return osmName.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
-  if(creName&&creName.length>3)
-    return creName.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
+  if(osmName&&osmName!=='Gasolinera'&&osmName.length>3) return osmName.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
+  if(creName&&creName.length>3) return creName.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
   return brand||'Gasolinera';
 }
 function buildAddr(t){
@@ -744,16 +594,6 @@ function buildAddr(t){
   if(t['addr:state']) p.push(t['addr:state']);
   return p.join(', ')||'';
 }
-function brandSim(a,b){
-  const na=norm(normalizeBrand(a)),nb=norm(normalizeBrand(b));
-  if(na===nb) return 1;
-  if(na.includes(nb)||nb.includes(na)) return 0.8;
-  const trig=s=>new Set([...Array(Math.max(0,s.length-2))].map((_,i)=>s.slice(i,i+3)));
-  const ta=trig(na),tb=trig(nb);
-  const inter=[...ta].filter(t=>tb.has(t)).length;
-  const union=new Set([...ta,...tb]).size;
-  return union?inter/union:0;
-}
 function munSim(a,b){
   const na=norm(a||''),nb=norm(b||'');
   if(!na||!nb) return 0.5;
@@ -762,43 +602,34 @@ function munSim(a,b){
   return 0.2;
 }
 
-// ── DEMO DATA ──
 function generateDemo(lat,lng){
   const brands=['Pemex','BP','Shell','G500','Petro-7','Hidrosina','Oxxo Gas','Exxon','Mobil','Orsan'];
   const calles=['Av. Insurgentes Sur','Blvd. Ávila Camacho','Calz. Tlalpan','Av. Revolución','Anillo Periférico','Av. Universidad','Vía Gustavo Baz','Av. Lomas Verdes'];
   return Array.from({length:18},(_,i)=>{
     const dlat=(Math.random()-0.5)*0.055,dlng=(Math.random()-0.5)*0.055;
     const base=22.5+Math.random()*3.0;
-    return{id:i,brand:brands[i%brands.length],name:`${brands[i%brands.length]} ${calles[i%calles.length].split(' ').pop()}`,
-      lat:lat+dlat,lng:lng+dlng,
-      addr:`${calles[i%calles.length]} ${Math.floor(Math.random()*1800+100)}`,
-      prices:{magna:parseFloat(base.toFixed(2)),premium:parseFloat((base+3.1+Math.random()*0.8).toFixed(2)),diesel:parseFloat((base+0.7+Math.random()*0.5).toFixed(2))},
-      source:'demo'};
+    return{id:i,brand:brands[i%brands.length],name:`${brands[i%brands.length]} ${calles[i%calles.length].split(' ').pop()}`,lat:lat+dlat,lng:lng+dlng,addr:`${calles[i%calles.length]} ${Math.floor(Math.random()*1800+100)}`,prices:{magna:parseFloat(base.toFixed(2)),premium:parseFloat((base+3.1+Math.random()*0.8).toFixed(2)),diesel:parseFloat((base+0.7+Math.random()*0.5).toFixed(2))},source:'demo'};
   });
 }
 
-// ── RENDER MARKERS ──
 function renderMarkers(f){
   markers.forEach(m=>map.removeLayer(m));
   markers=[];
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length) return;
-  const prices=valid.map(s=>s.prices[f]).sort((a,b)=>a-b);
 
-  // Limitar a 200 markers máximo — priorizar los más cercanos al usuario
+  // Limitar a 200 markers — priorizar los más cercanos
   const limited = uLat
     ? [...valid].map(s=>({...s,_d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a._d-b._d).slice(0,200)
     : valid.slice(0,200);
 
   const prices=limited.map(s=>s.prices[f]).sort((a,b)=>a-b);
   const mn=prices[0];
-  // Percentiles: divide el rango en 3 tercios iguales por cantidad de estaciones
   const p33=prices[Math.floor(prices.length*0.33)];
   const p66=prices[Math.floor(prices.length*0.66)];
   const colors={star:'#FFD700',g:'#00e676',a:'#ffc400',r:'#ff3d57'};
   const glows={star:'rgba(255,215,0,0.8)',g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
 
-  valid.forEach((s)=>{
   limited.forEach((s)=>{
     const p=s.prices[f];
     const pc=pclass(p,mn,p33,p66);
@@ -806,59 +637,25 @@ function renderMarkers(f){
     const glow=glows[pc];
     const label=p.toFixed(2).replace('.',',');
     const isStar=pc==='star';
-
-    // Pin estrella especial para la más barata
     const pinHtml = isStar
-      ? `<div style="width:52px;height:62px;filter:drop-shadow(0 4px 14px ${glow})">
-          <div style="width:52px;height:52px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:3px solid white">
-            <div style="transform:rotate(45deg);text-align:center;line-height:1.1">
-              <div style="font-size:14px">⭐</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:8.5px;color:#0a0f14">${label}</div>
-            </div>
-          </div>
-        </div>`
-      : `<div style="width:44px;height:52px;filter:drop-shadow(0 3px 10px ${glow})">
-          <div style="width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.2)">
-            <div style="transform:rotate(45deg);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9.5px;color:#0a0f14;text-align:center">${label}</div>
-          </div>
-        </div>`;
-
+      ? `<div style="width:52px;height:62px;filter:drop-shadow(0 4px 14px ${glow})"><div style="width:52px;height:52px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:3px solid white"><div style="transform:rotate(45deg);text-align:center;line-height:1.1"><div style="font-size:14px">⭐</div><div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:8.5px;color:#0a0f14">${label}</div></div></div></div>`
+      : `<div style="width:44px;height:52px;filter:drop-shadow(0 3px 10px ${glow})"><div style="width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.2)"><div style="transform:rotate(45deg);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9.5px;color:#0a0f14;text-align:center">${label}</div></div></div>`;
     const iconSize = isStar ? [52,62] : [44,52];
     const iconAnchor = isStar ? [26,62] : [22,52];
-
     const icon=L.divIcon({html:pinHtml,className:'',iconSize,iconAnchor});
-
     const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
     const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
-    const srcColor=s.source==='merged'?'var(--green)':s.source==='osm'||s.source==='osm_only'?'#7d95aa':'var(--amber)';
+    const srcColor=s.source==='merged'?'var(--green)':s.source==='osm'?'#7d95aa':'var(--amber)';
     const srcLabel=s.source==='merged'?'OSM + CRE':s.source==='cre_only'?'CRE':'Demo';
     const starBadge=isStar?'<div style="background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FFD700;margin-bottom:8px;text-align:center">⭐ MÁS BARATA DE LA ZONA</div>':'';
-
-    const popup=`<div class="pop">
-      ${starBadge}
-      <div class="pop-brand">${s.brand}</div>
-      <div class="pop-name">${s.name}</div>
-      <div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div>
-      <div class="pop-divider"></div>
-      <div class="pop-prices">
-        <div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div>
-        <div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div>
-        <div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div>
-      </div>
-      <div class="pop-nav">
-        <a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a>
-        <a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a>
-      </div>
-      <div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div>
-    </div>`;
-
+    const popup=`<div class="pop">${starBadge}<div class="pop-brand">${s.brand}</div><div class="pop-name">${s.name}</div><div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div><div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:280}).addTo(map);
     mk.on('click',()=>selectStation(s.id));
     markers[s.id]=mk;
   });
 }
-// ── STATS ──
+
 function updateStats(f){
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length){$('st-count').textContent=stations.length+' estaciones';return;}
@@ -867,17 +664,13 @@ function updateStats(f){
   const avg=prices.reduce((a,b)=>a+b,0)/prices.length;
   const cheapest=sorted[0];
   $('st-min').textContent=fmt(Math.min(...prices));
-  // Mostrar dirección de la más barata si está disponible
-  $('st-min-n').textContent=cheapest?.addr
-    ? cheapest.addr.split(',')[0]
-    : cheapest?.brand||'—';
+  $('st-min-n').textContent=cheapest?.addr ? cheapest.addr.split(',')[0] : cheapest?.brand||'—';
   $('st-avg').textContent=fmt(avg);
   $('st-count').textContent=valid.length+' estaciones';
   $('st-max').textContent=fmt(Math.max(...prices));
   $('st-max-n').textContent=sorted[sorted.length-1]?.brand||'—';
 }
 
-// ── CARDS — solo estaciones con precio ──
 function renderCards(f){
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length){$('cards').innerHTML='';return;}
@@ -892,26 +685,17 @@ function renderCards(f){
     const p=s.prices[f];
     const pc=pclass(p,mn,p33,p66);
     const dstr=s.d<1?Math.round(s.d*1000)+'m':s.d.toFixed(1)+'km';
-    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})">
-      <div class="card-brand">${s.brand}</div>
-      <div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div>
-      <div class="card-dist">📍 ${dstr}</div>
-      <div class="card-badge ${bcls[pc]}">${btxt[pc]}</div>
-    </div>`;
+    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})"><div class="card-brand">${s.brand}</div><div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div><div class="card-dist">📍 ${dstr}</div><div class="card-badge ${bcls[pc]}">${btxt[pc]}</div></div>`;
   }).join('');
 }
 
-// ── SELECT ──
 function selectStation(id){
   if(selId!=null){const p=document.getElementById('c'+selId);if(p)p.classList.remove('sel');}
   selId=id;
   const el=document.getElementById('c'+id);
   if(el){el.classList.add('sel');el.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}
   const s=stations.find(x=>x.id===id);
-  if(s){
-    map.flyTo([s.lat,s.lng],16,{animate:true,duration:0.7});
-    if(markers[s.id]) markers[s.id].openPopup();
-  }
+  if(s){map.flyTo([s.lat,s.lng],16,{animate:true,duration:0.7});if(markers[s.id]) markers[s.id].openPopup();}
 }
 
 function setFuel(f,btn){
@@ -937,15 +721,10 @@ function closeAd(){
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});</script>
 
-<!-- Cookie Consent Banner -->
 <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;background:rgba(11,16,22,0.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.1);padding:14px 16px;font-family:'Outfit',sans-serif;">
   <div style="max-width:700px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
     <div style="flex:1;min-width:200px;">
-      <p style="font-size:12px;color:#7d95aa;line-height:1.6;margin:0;">
-        Usamos cookies y GPS para mostrarte gasolineras cercanas y publicidad relevante. 
-        Al continuar aceptas nuestra 
-        <a href="/privacidad" style="color:#00d4ff;text-decoration:none;font-weight:600;">Política de Privacidad y Términos de Uso</a>.
-      </p>
+      <p style="font-size:12px;color:#7d95aa;line-height:1.6;margin:0;">Usamos cookies y GPS para mostrarte gasolineras cercanas y publicidad relevante. Al continuar aceptas nuestra <a href="/privacidad" style="color:#00d4ff;text-decoration:none;font-weight:600;">Política de Privacidad y Términos de Uso</a>.</p>
     </div>
     <div style="display:flex;gap:8px;flex-shrink:0;">
       <a href="/privacidad" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);font-size:12px;font-weight:600;color:#7d95aa;text-decoration:none;white-space:nowrap;">Ver más</a>
@@ -953,14 +732,10 @@ function closeAd(){
     </div>
   </div>
 </div>
-
 <script>
-// Mostrar banner solo si no ha aceptado antes
 function initCookieBanner(){
   if(!localStorage.getItem('gasy_cookies_accepted')){
-    setTimeout(()=>{
-      document.getElementById('cookie-banner').style.display='block';
-    }, 2000); // Aparece 2 segundos después de cargar
+    setTimeout(()=>{ document.getElementById('cookie-banner').style.display='block'; }, 2000);
   }
 }
 function acceptCookies(){

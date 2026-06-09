@@ -405,7 +405,7 @@ async function fetchAll(lat,lng){
 
   let merged = [];
   if(osmStations.length > 0 && creStations.length > 0){
-    merged = mergeData(osmStations, creStations);
+    merged = mergeData(osmStations, creStations, uLat, uLng);
   } else if(osmStations.length > 0){
     merged = osmStations.map((s,i)=>({...s,id:i}));
   } else if(creStations.length > 0){
@@ -554,7 +554,7 @@ function parseCREXml(placesXml, pricesXml, uLat, uLng){
       if(y < 14 || y > 33 || x < -118 || x > -86) return;
 
       const d = hav(uLat, uLng, y, x);
-      if(d > 25) return; // solo dentro de 25km
+      if(d > Math.max(currentRadio/1000 + 5, 25)) return; // radio dinámico + 5km de margen
 
       const prices = priceMap[id] || {magna:null, premium:null, diesel:null};
       if(prices.magna && (prices.magna < 19 || prices.magna > 36)) prices.magna = null;
@@ -639,7 +639,7 @@ function parseCREHtml(html, uLat, uLng){
 }
 
 // ── CRUCE OSM + CRE — optimizado con índice por marca ──
-function mergeData(osmList, creList){
+function mergeData(osmList, creList, uLat, uLng){
   const merged=[];
   const usedCRE=new Set();
 
@@ -688,11 +688,17 @@ function mergeData(osmList, creList){
       merged.push({id:merged.length,...osm});
     }
   }
-  // CRE sin match OSM pero con coords válidas
+  // CRE sin match OSM pero con coords válidas — filtrar por radio actual
+  const radioKm = currentRadio / 1000;
   for(let i=0;i<creList.length;i++){
     if(usedCRE.has(i)) continue;
     const cre=creList[i];
     if(!cre.lat||!cre.lng||cre.lat<14||cre.lat>33) continue;
+    // Solo agregar si está dentro del radio actual + 5km de margen
+    if(uLat && uLng){
+      const d=hav(uLat,uLng,cre.lat,cre.lng);
+      if(d > radioKm + 5) continue;
+    }
     merged.push({
       id:merged.length,
       brand:cre.brand,

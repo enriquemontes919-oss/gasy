@@ -227,10 +227,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     </div>
   </div>
   <div id="hdr-row2">
-    <div id="radio-label">📍 Radio de búsqueda: <span id="radio-txt">8km</span></div>
+    <div id="radio-label">📍 Radio de búsqueda: <span id="radio-txt">12km</span></div>
     <div id="radio-wrap">
       <button class="rbtn" onclick="setRadio(5,this)">5km</button>
-      <button class="rbtn on" onclick="setRadio(8,this)">8km</button>
+      <button class="rbtn" onclick="setRadio(8,this)">8km</button>
+      <button class="rbtn on" onclick="setRadio(12,this)">12km</button>
       <button class="rbtn" onclick="setRadio(20,this)">20km</button>
       <button class="rbtn" onclick="setRadio(50,this)">50km</button>
     </div>
@@ -304,7 +305,7 @@ const WORKER = 'https://gasy-cre-proxy.enrique-montes919.workers.dev';
 // ── Estado ──
 let map, uMarker, uLat, uLng;
 let fuel = 'magna';
-let currentRadio = 8000; // metros, default 8km
+let currentRadio = 12000; // metros, default 12km
 let stations = [];
 let markers = [];
 let selId = null;

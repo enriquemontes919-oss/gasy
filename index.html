@@ -453,8 +453,10 @@ async function fetchAll(lat,lng){
 
 // ── FETCH OSM — el browser llama directo a Overpass ──
 async function fetchOSM(lat,lng){
-  const radio = currentRadio; // usa el radio seleccionado por el usuario
-  const query = `[out:json][timeout:25];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
+  const radio = currentRadio;
+  const timeout = radio >= 20000 ? 35 : 25; // más tiempo para radios grandes
+  const fetchTimeout = radio >= 20000 ? 30000 : 15000;
+  const query = `[out:json][timeout:${timeout}];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
 
   const mirrors = [
     'https://overpass-api.de/api/interpreter',
@@ -479,7 +481,7 @@ async function fetchOSM(lat,lng){
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body:'data='+encodeURIComponent(query)
           }),
-          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),15000))
+          new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),fetchTimeout))
         ]);
       }
       if(!res.ok) continue;

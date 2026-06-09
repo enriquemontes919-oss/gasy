@@ -1,4 +1,4 @@
-const CACHE = 'gasy-v6';
+const CACHE = 'gasy-v7';
 const ASSETS = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {

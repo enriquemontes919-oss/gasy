@@ -1,4 +1,4 @@
-const CACHE = 'gasy-v5';
+const CACHE = 'gasy-v6';
 const ASSETS = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
@@ -7,7 +7,6 @@ self.addEventListener('install', e => {
 });
 
 self.addEventListener('activate', e => {
-  // Borrar TODOS los caches anteriores sin excepción
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.map(k => caches.delete(k)))
@@ -17,10 +16,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  // Solo cachear assets del propio dominio — nunca interceptar externos
-  if (url.origin !== self.location.origin) return;
-  if (e.request.method !== 'GET') return;
-
+  if(url.origin !== self.location.origin) return;
+  if(e.request.method !== 'GET') return;
   e.respondWith(
     fetch(e.request)
       .then(res => {

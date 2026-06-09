@@ -72,7 +72,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .load-bar{height:100%;width:0;background:#57d97b;transition:width 0.4s ease;box-shadow:0 0 8px #57d97b;}
 
 /* HEADER */
-#hdr{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;background:rgba(10,4,20,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(75,2,243,0.4);display:flex;align-items:center;justify-content:space-between;padding:0 14px;}
+#hdr{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(10,4,20,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(75,2,243,0.4);}
+#hdr-row1{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 6px;}
+#hdr-row2{display:flex;align-items:center;justify-content:space-between;padding:0 14px 8px;}
 #logo{font-family:var(--sans);font-weight:800;font-size:21px;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;text-decoration:none;}
 #logo .logo-icon{width:28px;height:28px;flex-shrink:0;}
 #logo .logo-text{color:#fff;font-weight:800;}
@@ -81,9 +83,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 #fuel-wrap{display:flex;background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:30px;overflow:hidden;padding:3px;gap:2px;}
 .fbtn{padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.6);font-family:var(--sans);border-radius:20px;transition:all 0.18s;white-space:nowrap;}
 .fbtn.on{background:#57d97b;color:#0a0414;}
+/* Radio selector */
+#radio-label{font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;display:flex;align-items:center;gap:6px;}
+#radio-label span{color:#57d97b;font-weight:600;}
+#radio-wrap{display:flex;background:rgba(75,2,243,0.2);border:1px solid rgba(75,2,243,0.4);border-radius:30px;overflow:hidden;padding:2px;gap:2px;}
+.rbtn{padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,0.5);font-family:var(--sans);border-radius:20px;transition:all 0.18s;white-space:nowrap;}
+.rbtn.on{background:#4b02f3;color:#fff;}
 
 /* MAP — más claro */
-#map{position:fixed;top:56px;left:0;right:0;bottom:196px;z-index:1;}
+#map{position:fixed;top:88px;left:0;right:0;bottom:196px;z-index:1;}
 #map.with-ad{bottom:256px;}
 .leaflet-tile-pane{filter:brightness(0.72) saturate(0.7) contrast(1.05);}
 .leaflet-control-attribution{display:none!important;}
@@ -155,7 +163,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 #ad-bar .ad-label{font-size:9px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;position:absolute;top:2px;left:8px;}
 #ad-close{position:absolute;top:2px;right:6px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;background:none;border:none;padding:0;}
 #ad-close:hover{color:var(--text2);}
-#cre-badge{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:400;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--green);display:none;white-space:nowrap;backdrop-filter:blur(10px);}
+#cre-badge{position:fixed;top:96px;left:50%;transform:translateX(-50%);z-index:400;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.25);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#57d97b;display:none;white-space:nowrap;backdrop-filter:blur(10px);}
 #cre-badge.show{display:block;}
 
 /* USER MARKER */
@@ -207,14 +215,25 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 </div>
 
 <header id="hdr">
-  <a href="/" id="logo">
-    <img class="logo-icon" src="icon.png" alt="Gasy" style="width:32px;height:32px;border-radius:8px;">
-    <span class="logo-text">Gasy</span>
-  </a>
-  <div id="fuel-wrap">
-    <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
-    <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
-    <button class="fbtn" onclick="setFuel('diesel',this)">Diésel</button>
+  <div id="hdr-row1">
+    <a href="/" id="logo">
+      <img class="logo-icon" src="icon.png" alt="Gasy" style="width:32px;height:32px;border-radius:8px;">
+      <span class="logo-text">Gasy</span>
+    </a>
+    <div id="fuel-wrap">
+      <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
+      <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
+      <button class="fbtn" onclick="setFuel('diesel',this)">Diésel</button>
+    </div>
+  </div>
+  <div id="hdr-row2">
+    <div id="radio-label">📍 Radio de búsqueda: <span id="radio-txt">8km</span></div>
+    <div id="radio-wrap">
+      <button class="rbtn" onclick="setRadio(5,this)">5km</button>
+      <button class="rbtn on" onclick="setRadio(8,this)">8km</button>
+      <button class="rbtn" onclick="setRadio(20,this)">20km</button>
+      <button class="rbtn" onclick="setRadio(50,this)">50km</button>
+    </div>
   </div>
 </header>
 
@@ -285,6 +304,7 @@ const WORKER = 'https://gasy-cre-proxy.enrique-montes919.workers.dev';
 // ── Estado ──
 let map, uMarker, uLat, uLng;
 let fuel = 'magna';
+let currentRadio = 8000; // metros, default 8km
 let stations = [];
 let markers = [];
 let selId = null;
@@ -294,6 +314,18 @@ const $ = id => document.getElementById(id);
 const fmt = n => (n != null && !isNaN(n)) ? '$' + parseFloat(n).toFixed(2).replace('.', ',') : 'N/D';
 const setBar = p => $('load-bar').style.width = p + '%';
 const setTxt = t => $('load-txt').textContent = t;
+
+// ── Cambiar radio de búsqueda ──
+function setRadio(km, btn){
+  currentRadio = km * 1000;
+  document.querySelectorAll('.rbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  $('radio-txt').textContent = km + 'km';
+  if(uLat && stations.length > 0){
+    toast('Buscando gasolineras en ' + km + 'km...');
+    fetchAll(uLat, uLng);
+  }
+}
 
 function hav(a,b,c,d){
   const R=6371,f=(c-a)*Math.PI/180,g=(d-b)*Math.PI/180;
@@ -408,7 +440,7 @@ async function fetchAll(lat,lng){
 
 // ── FETCH OSM — el browser llama directo a Overpass ──
 async function fetchOSM(lat,lng){
-  const radio = 8000; // aumentar radio para más cobertura
+  const radio = currentRadio; // usa el radio seleccionado por el usuario
   const query = `[out:json][timeout:25];(node["amenity"="fuel"](around:${radio},${lat},${lng});way["amenity"="fuel"](around:${radio},${lat},${lng}););out center tags;`;
 
   const mirrors = [

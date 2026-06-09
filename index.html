@@ -220,20 +220,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
       <img class="logo-icon" src="icon.png" alt="Gasy" style="width:32px;height:32px;border-radius:8px;">
       <span class="logo-text">Gasy</span>
     </a>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button id="ev-btn" onclick="toggleEV()" style="
-        padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;
-        border:1px solid rgba(99,102,241,0.4);background:rgba(99,102,241,0.1);
-        color:rgba(99,102,241,0.8);font-family:var(--sans);border-radius:20px;
-        transition:all 0.2s;white-space:nowrap;">
-        ⚡ Eléctrico
-      </button>
-      <div id="fuel-wrap">
+    <div id="fuel-wrap">
         <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
         <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
         <button class="fbtn" onclick="setFuel('diesel',this)">Diésel</button>
       </div>
-    </div>
   </div>
   <div id="hdr-row2">
     <div id="radio-label">📍 Radio de búsqueda: <span id="radio-txt">12km</span></div>
@@ -318,9 +309,6 @@ let currentRadio = 12000; // metros, default 12km
 let stations = [];
 let markers = [];
 let selId = null;
-let evActive = false;
-let evMarkers = [];
-let evStations = [];
 
 // ── Utils ──
 const $ = id => document.getElementById(id);
@@ -930,135 +918,6 @@ function setFuel(f,btn){
   document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   if(stations.length){renderMarkers(f);renderCards(f);updateStats(f);}
-}
-
-// ── CARGADORES ELÉCTRICOS ──
-async function toggleEV(){
-  evActive = !evActive;
-  const btn = document.getElementById('ev-btn');
-
-  if(evActive){
-    btn.style.background = 'rgba(99,102,241,0.9)';
-    btn.style.color = '#fff';
-    btn.style.borderColor = '#6366f1';
-    btn.textContent = '⚡ Eléctrico ✓';
-    if(evStations.length === 0 && uLat){
-      toast('Buscando cargadores eléctricos...');
-      await fetchEV(uLat, uLng);
-    }
-    renderEV();
-  } else {
-    btn.style.background = 'rgba(99,102,241,0.1)';
-    btn.style.color = 'rgba(99,102,241,0.8)';
-    btn.style.borderColor = 'rgba(99,102,241,0.4)';
-    btn.textContent = '⚡ Eléctrico';
-    evMarkers.forEach(m => map.removeLayer(m));
-    evMarkers = [];
-  }
-}
-
-async function fetchEV(lat, lng){
-  const radio = Math.max(currentRadio, 15000); // mínimo 15km para EV
-  const query = `[out:json][timeout:20];(node["amenity"="charging_station"](around:${radio},${lat},${lng});way["amenity"="charging_station"](around:${radio},${lat},${lng}););out center tags;`;
-  const mirrors = [
-    'https://overpass-api.de/api/interpreter',
-    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
-  ];
-  for(const mirror of mirrors){
-    try{
-      const res = await Promise.race([
-        fetch(mirror, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'data='+encodeURIComponent(query)}),
-        new Promise((_,r) => setTimeout(() => r(new Error('timeout')), 14000))
-      ]);
-      if(!res.ok) continue;
-      const data = await res.json();
-      if(!data?.elements) continue;
-      evStations = data.elements.map(el => {
-        const slat = el.type==='way' ? el.center?.lat : el.lat;
-        const slng = el.type==='way' ? el.center?.lon : el.lon;
-        if(!slat||!slng) return null;
-        const t = el.tags || {};
-        // Detectar marca/red
-        const network = t.network || t.operator || t.brand || t.name || '';
-        const brand = detectEVBrand(network);
-        const sockets = t['capacity'] || t['charging_station:output'] || '';
-        const connector = t['socket:type2'] ? 'Tipo 2' : t['socket:chademo'] ? 'CHAdeMO' : t['socket:tesla_supercharger'] ? 'Tesla' : t['socket:type1'] ? 'Tipo 1' : 'Estándar';
-        return {
-          osm_id: el.id,
-          brand, name: t.name || brand || 'Cargador eléctrico',
-          lat: parseFloat(slat), lng: parseFloat(slng),
-          addr: [t['addr:street'], t['addr:housenumber'], t['addr:city']].filter(Boolean).join(', '),
-          network, sockets, connector,
-          source: 'osm_ev'
-        };
-      }).filter(Boolean);
-      if(evStations.length > 0){
-        toast('⚡ ' + evStations.length + ' cargadores encontrados');
-        return;
-      }
-    }catch(e){ continue; }
-  }
-  toast('No se encontraron cargadores en esta zona');
-}
-
-function detectEVBrand(network){
-  const n = (network || '').toUpperCase();
-  if(n.includes('TESLA')) return 'Tesla';
-  if(n.includes('BYD')) return 'BYD';
-  if(n.includes('ELECTRIFY')) return 'Electrify America';
-  if(n.includes('CHARGE')) return 'ChargePoint';
-  if(n.includes('VOLVO')) return 'Volvo';
-  if(n.includes('NISSAN')) return 'Nissan';
-  if(n.includes('BMW')) return 'BMW';
-  if(n.includes('VOLKSWAGEN')||n.includes('VW')) return 'VW';
-  if(n.includes('ENEL')) return 'Enel X';
-  if(n.includes('CFE')) return 'CFE';
-  if(n.includes('ZETA')) return 'Zeta Energy';
-  return network ? network.split(' ')[0] : 'Cargador EV';
-}
-
-function renderEV(){
-  evMarkers.forEach(m => map.removeLayer(m));
-  evMarkers = [];
-  if(!evActive || !evStations.length) return;
-
-  evStations.forEach(s => {
-    const icon = L.divIcon({
-      html: `<div style="width:40px;height:48px;filter:drop-shadow(0 3px 10px rgba(99,102,241,0.7))">
-        <div style="width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
-          background:linear-gradient(135deg,#6366f1,#818cf8);
-          display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.3)">
-          <div style="transform:rotate(45deg);font-size:18px;line-height:1">⚡</div>
-        </div>
-      </div>`,
-      className: '', iconSize: [40,48], iconAnchor: [20,48]
-    });
-
-    const waze = `https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
-    const gmaps = `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
-
-    const popup = `<div class="pop">
-      <div class="pop-brand" style="color:#818cf8">⚡ CARGADOR ELÉCTRICO</div>
-      <div class="pop-name">${s.name}</div>
-      ${s.addr ? `<div class="pop-addr">📍 ${s.addr}</div>` : ''}
-      <div class="pop-divider"></div>
-      <div class="pop-prices">
-        <div class="pop-row"><span class="pop-fuel">Red / Marca</span><span class="pop-val" style="color:#818cf8">${s.brand}</span></div>
-        <div class="pop-row"><span class="pop-fuel">Conector</span><span class="pop-val" style="color:#818cf8">${s.connector}</span></div>
-        ${s.sockets ? `<div class="pop-row"><span class="pop-fuel">Capacidad</span><span class="pop-val" style="color:#818cf8">${s.sockets}</span></div>` : ''}
-      </div>
-      <div class="pop-nav">
-        <a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a>
-        <a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a>
-      </div>
-      <div class="pop-src" style="color:#818cf8">Fuente: OpenStreetMap</div>
-    </div>`;
-
-    const mk = L.marker([s.lat, s.lng], {icon, zIndexOffset: 500})
-      .bindPopup(popup, {maxWidth: 280})
-      .addTo(map);
-    evMarkers.push(mk);
-  });
 }
 
 function centerUser(){

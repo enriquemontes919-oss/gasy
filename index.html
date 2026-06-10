@@ -639,9 +639,9 @@ function renderMarkers(f){
 
   const prices=limited.map(s=>s.prices[f]).sort((a,b)=>a-b);
   const mn=prices[0];
-  const unique=[...new Set(prices)].sort((a,b)=>a-b);
-  const p33=unique.length>2?unique[Math.floor(unique.length*0.33)]:prices[Math.floor(prices.length*0.33)];
-  const p66=unique.length>2?unique[Math.floor(unique.length*0.66)]:prices[Math.floor(prices.length*0.66)];
+  const avg=prices.reduce((a,b)=>a+b,0)/prices.length;
+  const p33=avg*0.998; // 0.2% debajo del promedio
+  const p66=avg*1.002; // 0.2% encima del promedio
   const colors={star:'#FFD700',g:'#00e676',a:'#ffc400',r:'#ff3d57'};
   const glows={star:'rgba(255,215,0,0.8)',g:'rgba(0,230,118,0.55)',a:'rgba(255,196,0,0.55)',r:'rgba(255,61,87,0.55)'};
 

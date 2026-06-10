@@ -336,6 +336,7 @@ function startApp(){
 function requestGPS(){
   setBar(15);setTxt('LOCALIZANDO GPS...');
   if(!navigator.geolocation){useFallback();return;}
+  // Primera lectura rápida para cargar el mapa
   navigator.geolocation.getCurrentPosition(
     pos=>{
       uLat=pos.coords.latitude;uLng=pos.coords.longitude;
@@ -347,7 +348,19 @@ function requestGPS(){
       if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}
       else useFallback();
     },
-    {enableHighAccuracy:true,timeout:12000,maximumAge:300000}
+    {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
+  );
+  // Seguimiento continuo — actualiza el marcador del usuario en tiempo real
+  navigator.geolocation.watchPosition(
+    pos=>{
+      const lat=pos.coords.latitude;
+      const lng=pos.coords.longitude;
+      uLat=lat;uLng=lng;
+      // Solo mover el marcador del usuario, no recargar gasolineras
+      if(uMarker) uMarker.setLatLng([lat,lng]);
+    },
+    err=>console.warn('watchPosition error:', err.message),
+    {enableHighAccuracy:true,maximumAge:5000,timeout:10000}
   );
 }
 

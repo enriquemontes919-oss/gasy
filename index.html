@@ -618,10 +618,11 @@ function renderMarkers(f){
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
   if(!valid.length) return;
 
-  // Limitar a 200 markers — priorizar los más cercanos
+  // Límite de markers según radio — más radio, más markers permitidos
+  const maxMarkers = currentRadio >= 40000 ? 500 : currentRadio >= 15000 ? 300 : 200;
   const limited = uLat
-    ? [...valid].map(s=>({...s,_d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a._d-b._d).slice(0,200)
-    : valid.slice(0,200);
+    ? [...valid].map(s=>({...s,_d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a._d-b._d).slice(0,maxMarkers)
+    : valid.slice(0,maxMarkers);
 
   const prices=limited.map(s=>s.prices[f]).sort((a,b)=>a-b);
   const mn=prices[0];

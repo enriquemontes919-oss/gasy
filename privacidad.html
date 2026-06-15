@@ -11,13 +11,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0f14;--bg2:#0f1720;--bg3:#141e28;--border:rgba(255,255,255,0.08);--accent:#00d4ff;--text:#edf2f7;--text2:#7d95aa;--text3:#3e5468;--sans:'Outfit',sans-serif;}
+:root{--bg:#0a0414;--bg2:#0f0520;--bg3:#160828;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--accent:#4b02f3;--green:#57d97b;--text:#edf2f7;--text2:#9b8fb0;--text3:#5a4870;--sans:'Outfit',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;}
-nav{background:rgba(10,15,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.nav-logo{font-weight:800;font-size:22px;color:var(--text);text-decoration:none;letter-spacing:-0.5px;}
-.nav-logo em{color:var(--accent);font-style:normal;}
-.nav-back{font-size:13px;color:var(--text2);text-decoration:none;padding:8px 16px;border:1px solid var(--border);border-radius:20px;}
+nav{background:rgba(10,4,20,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(75,2,243,0.4);padding:0 14px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{font-weight:800;font-size:21px;color:var(--text);text-decoration:none;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;}
+.nav-logo-icon{width:28px;height:28px;border-radius:7px;background:#57d97b;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#4b02f3;line-height:1;}
+.nav-actions{display:flex;align-items:center;gap:8px;}
+.nav-blog{font-size:12px;font-weight:700;color:#0a0414;background:#57d97b;text-decoration:none;padding:6px 14px;border-radius:20px;}
+.nav-back{font-size:12px;color:var(--text2);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:20px;}
 .nav-back:hover{color:var(--text);border-color:var(--accent);}
 .hero{padding:48px 20px 32px;max-width:760px;margin:0 auto;border-bottom:1px solid var(--border);}
 .hero-label{font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
@@ -55,8 +57,14 @@ footer a:hover{color:var(--text2);}
 <body>
 
 <nav>
-  <a href="/" class="nav-logo"><em>Gas</em>y</a>
-  <a href="/" class="nav-back">← Volver al mapa</a>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">G</div>
+    Gasy
+  </a>
+  <div class="nav-actions">
+    <a href="/blog.html" class="nav-blog">Blog</a>
+    <a href="/" class="nav-back">← Ver mapa</a>
+  </div>
 </nav>
 
 <div class="hero">

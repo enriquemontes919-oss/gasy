@@ -6,7 +6,7 @@
   <title>Blog – Gasy | Todo sobre la gasolina en México</title>
   <meta name="description" content="Noticias semanales, precios, comparativas y análisis sobre la gasolina en México. Powered by Gasy.mx" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       /* Gasy brand exact */
@@ -39,45 +39,59 @@
 
     /* ── HEADER ── */
     header {
-      background: var(--brand-violet);
-      padding: 18px 28px;
+      background: rgba(10,4,20,0.98);
+      border-bottom: 1px solid rgba(75,2,243,0.4);
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
     .logo-wrap {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       text-decoration: none;
     }
-    /* Gasy gota icon recreada en SVG inline */
     .logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       flex-shrink: 0;
     }
     .logo-wordmark {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-family: 'Outfit', 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
       color: var(--white);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.3px;
     }
-    .logo-wordmark span { color: var(--brand-green); }
     .header-tag {
-      font-family: 'Inter', sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--brand-violet);
+      color: #0a0414;
       background: var(--brand-green);
       padding: 3px 10px;
       border-radius: 20px;
     }
+    .header-back {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .header-back:hover { color: var(--brand-green); }
 
     /* ── HERO ── */
     .hero {
@@ -264,15 +278,14 @@
 
 <!-- ── HEADER ── -->
 <header>
-  <a class="logo-wrap" href="https://gasy.mx">
-    <!-- Recreación del ícono gota de Gasy -->
-    <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 4C20 4 6 16 6 25C6 32.7 12.3 39 20 39C27.7 39 34 32.7 34 25C34 16 20 4 20 4Z" fill="#3DDB6B"/>
-      <rect x="20" y="4" width="14" height="35" fill="#4400FF"/>
-    </svg>
-    <span class="logo-wordmark">Gasy<span>.mx</span></span>
+  <a class="logo-wrap" href="/">
+    <img class="logo-icon" src="icon.png" alt="Gasy">
+    <span class="logo-wordmark">Gasy</span>
   </a>
-  <span class="header-tag">Blog</span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span class="header-tag">Blog</span>
+    <a class="header-back" href="/">← Ver mapa</a>
+  </div>
 </header>
 
 <!-- ── HERO ── -->

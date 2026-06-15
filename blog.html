@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog – Gasy | Todo sobre la gasolina en México</title>
+  <meta name="description" content="Noticias semanales, precios, comparativas y análisis sobre la gasolina en México. Powered by Gasy.mx" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Gasy brand exact */
+      --brand-violet: #4400FF;
+      --brand-green:  #3DDB6B;
+      --white:        #ffffff;
+
+      /* Reading surface — dark neutral, NOT violet, for eye comfort */
+      --bg:        #0d0d12;
+      --surface:   #16161f;
+      --border:    #26263a;
+      --text:      #eeeef6;
+      --muted:     #7777a0;
+
+      /* Derived tones from brand */
+      --violet-lt: #7766ff;
+      --green-lt:  #7eeea0;
+      --tag-bg:    #1a1a2e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--brand-violet);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+    /* Gasy gota icon recreada en SVG inline */
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+    .logo-wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+    .logo-wordmark span { color: var(--brand-green); }
+    .header-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand-violet);
+      background: var(--brand-green);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #1a0066 0%, var(--bg) 55%);
+      padding: 56px 28px 48px;
+    }
+    .hero-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brand-green);
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--white);
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--brand-green);
+    }
+    .hero p {
+      margin-top: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 1rem;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 28px 80px;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--brand-violet);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 60px;
+    }
+    .toc h2 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--violet-lt);
+      margin-bottom: 14px;
+    }
+    .toc ol {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toc li a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.94rem;
+      transition: color 0.15s;
+    }
+    .toc li a:hover { color: var(--brand-green); }
+
+    /* ── ARTICLE ── */
+    article { margin-bottom: 72px; scroll-margin-top: 24px; }
+    .art-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .art-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .tag-semanal  { background: #0d2e1a; color: var(--green-lt); border: 1px solid #1a5230; }
+    .tag-especial { background: #1a0f3e; color: var(--violet-lt); border: 1px solid #3322aa; }
+    .tag-editorial{ background: #0f1a2e; color: #93c5fd;          border: 1px solid #1e3a6e; }
+    .art-date { font-size: 0.78rem; color: var(--muted); }
+
+    article h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 22px;
+      color: var(--white);
+    }
+    article p { color: #c8c8de; margin-bottom: 18px; }
+    article p:last-child { margin-bottom: 0; }
+
+    /* ── TABLE ── */
+    .price-table-wrap {
+      overflow-x: auto;
+      margin: 28px 0;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    thead tr { background: var(--surface); }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    td { padding: 12px 16px; border-top: 1px solid var(--border); color: var(--text); }
+    tr:hover td { background: #ffffff05; }
+    .up   { color: #f87171; font-weight: 600; }
+    .down { color: var(--green-lt); font-weight: 600; }
+    .eq   { color: var(--muted); }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--brand-green);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin: 28px 0;
+      font-size: 0.92rem;
+      color: #c8c8de;
+    }
+    .callout strong { color: var(--green-lt); }
+    .callout a { color: var(--green-lt); }
+
+    .callout-violet { border-left-color: var(--brand-violet); }
+    .callout-violet strong { color: var(--violet-lt); }
+    .callout-violet a { color: var(--violet-lt); }
+
+    /* ── DIVIDER ── */
+    .art-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 72px; }
+
+    /* ── INLINE LIST ── */
+    .body-list {
+      padding-left: 22px;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: #c8c8de;
+    }
+    .body-list strong { color: var(--green-lt); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--brand-violet);
+      padding: 32px 28px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.65);
+    }
+    footer a { color: var(--brand-green); text-decoration: none; }
+    footer strong { color: var(--white); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 40px 20px 36px; }
+      main  { padding: 40px 20px 60px; }
+      header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <a class="logo-wrap" href="https://gasy.mx">
+    <!-- Recreación del ícono gota de Gasy -->
+    <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 4C20 4 6 16 6 25C6 32.7 12.3 39 20 39C27.7 39 34 32.7 34 25C34 16 20 4 20 4Z" fill="#3DDB6B"/>
+      <rect x="20" y="4" width="14" height="35" fill="#4400FF"/>
+    </svg>
+    <span class="logo-wordmark">Gasy<span>.mx</span></span>
+  </a>
+  <span class="header-tag">Blog</span>
+</header>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">⛽ Gasolina inteligente, decisiones que ahorran</p>
+    <h1>Todo lo que necesitas saber sobre <em>la gasolina en México</em></h1>
+    <p>Precios actualizados, comparativas, noticias del sector y guías prácticas para que nunca pagues de más en la bomba.</p>
+  </div>
+</div>
+
+<main>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <h2>Artículos de esta edición · Junio 2026</h2>
+    <ol>
+      <li><a href="#art1">Precios de gasolina esta semana: comparativa en 5 ciudades</a></li>
+      <li><a href="#art2">Gasolina en México vs. Estados Unidos: ¿por qué pagamos más?</a></li>
+      <li><a href="#art3">Noticias relevantes del sector gasolinero en México</a></li>
+      <li><a href="#art4">Qué es la CRE y cómo determina el precio de la gasolina</a></li>
+      <li><a href="#art5">Por qué creamos Gasy: la app para encontrar gasolina barata</a></li>
+    </ol>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       ARTÍCULO 1 – PRECIOS SEMANALES
+  ══════════════════════════════════════ -->
+  <article id="art1">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">🔄 Actualización semanal</span>
+      <span class="art-date">15 de junio de 2026</span>
+    </div>
+    <h2>Precios de gasolina esta semana: así quedó el litro en CDMX, Guadalajara, Monterrey, Puebla y Tijuana</h2>
+
+    <p>Si llenaste el tanque esta semana, aquí están los números que importan. Cada lunes consultamos los reportes de la <strong>Comisión Reguladora de Energía (CRE)</strong> para traerte los precios promedio de las cinco ciudades que cubre Gasy. Úsalos como referencia antes de salir a cargar combustible.</p>
+
+    <div class="price-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ciudad</th>
+            <th>Regular (Magna)</th>
+            <th>Premium</th>
+            <th>Diésel</th>
+            <th>vs. semana anterior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ciudad de México</td>
+            <td>$23.94</td>
+            <td>$28.90</td>
+            <td>$27.20</td>
+            <td class="eq">≈ Sin cambio</td>
+          </tr>
+          <tr>
+            <td>Guadalajara</td>
+            <td>$24.00</td>
+            <td>$29.28</td>
+            <td>$27.31</td>
+            <td class="up">▲ +0.08</td>
+          </tr>
+          <tr>
+            <td>Monterrey</td>
+            <td>$24.02</td>
+            <td>$29.49</td>
+            <td>$27.09</td>
+            <td class="up">▲ +0.05</td>
+          </tr>
+          <tr>
+            <td>Puebla</td>
+            <td>$23.74</td>
+            <td>$28.07</td>
+            <td>$27.14</td>
+            <td class="down">▼ -0.03</td>
+          </tr>
+          <tr>
+            <td>Tijuana (Baja California)</td>
+            <td>$22.82</td>
+            <td>$27.98</td>
+            <td>$26.16</td>
+            <td class="down">▼ -0.12</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Precios en pesos por litro, promedio estatal según datos CRE al 12–15 de junio de 2026.</p>
+
+    <div class="callout">
+      <strong>¿Cuál es la ciudad más barata esta semana?</strong> Tijuana lidera con la gasolina Regular más accesible a $22.82/litro, gracias al estímulo fiscal que reduce el IEPS en zonas fronterizas. En el otro extremo, Monterrey registra los precios más elevados con $24.02 en Regular y $29.49 en Premium.
+    </div>
+
+    <p>La variación semanal a nivel nacional sigue siendo moderada. El promedio nacional de la Magna se mantiene alrededor de <strong>$23.76 por litro</strong>, mientras que la Premium ronda los $28.48. El diésel cierra la semana en aproximadamente $27.16 a nivel nacional.</p>
+
+    <p>¿Quieres ver cuál gasolinera tiene el mejor precio cerca de ti en este momento? Abre Gasy y activa tu ubicación para ver el mapa en tiempo real.</p>
+  </article>
+  <hr class="art-divider" />
+
+  <!-- ══════════════════════════════════════
+       ARTÍCULO 2 – MÉXICO VS USA
+  ══════════════════════════════════════ -->
+  <article id="art2">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">🔄 Actualización semanal</span>
+      <span class="art-date">15 de junio de 2026</span>
+    </div>
+    <h2>Gasolina en México vs. Estados Unidos: ¿por qué pagamos más si somos un país petrolero?</h2>
+
+    <p>Es una pregunta que muchos mexicanos se hacen al cruzar la frontera y ver los precios en los surtidores de Texas o California: <em>¿cómo es que en el país que produce petróleo la gasolina sale más cara?</em> La respuesta tiene varias capas.</p>
+
+    <div class="callout">
+      <strong>Los números de esta semana:</strong> En México la gasolina Regular promedia <strong>$23.76 por litro</strong>. En Estados Unidos, el galón de Regular cuesta alrededor de <strong>$4.15 dólares</strong> — equivalente a unos $11.30 pesos por litro al tipo de cambio actual (~17.4 pesos por dólar). El mismo combustible base cuesta más del doble en México que en el vecino del norte.
+    </div>
+
+    <p>La principal razón es fiscal. En México, cada litro de gasolina carga con el <strong>IEPS (Impuesto Especial sobre Producción y Servicios)</strong>, que en 2026 se ubica en torno a $6.70 pesos por litro para gasolina Regular, más el IVA que se aplica encima del precio final. Sumados, los componentes fiscales representan casi la mitad del precio en la bomba.</p>
+
+    <p>En contraste, Estados Unidos aplica un impuesto federal de apenas 18.4 centavos de dólar por galón más impuestos estatales que en promedio suman unos 32 centavos. En total, la carga impositiva en EE.UU. es entre seis y ocho veces menor que la de México por litro.</p>
+
+    <div class="price-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>México</th>
+            <th>Estados Unidos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Precio Regular por litro</td>
+            <td>~$23.76 MXN</td>
+            <td>~$11.30 MXN (equiv.)</td>
+          </tr>
+          <tr>
+            <td>Precio Regular por galón</td>
+            <td>~$89.90 MXN (equiv.)</td>
+            <td>~$4.15 USD ($72.29 MXN)</td>
+          </tr>
+          <tr>
+            <td>Impuesto principal</td>
+            <td>IEPS ~$6.70/litro + IVA</td>
+            <td>~$0.17 USD/galón federal</td>
+          </tr>
+          <tr>
+            <td>¿Precio regulado?</td>
+            <td>Liberado desde 2017, vigilancia CRE</td>
+            <td>Libre mercado por estado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Otros factores que explican la brecha: la infraestructura de refinación en México depende en buena medida de importaciones de combustible ya procesado, lo que genera costos logísticos adicionales. La competencia entre gasolineras también es menor en muchas regiones del país.</p>
+
+    <p>La excepción son las <strong>zonas fronterizas</strong>, donde el gobierno aplica estímulos fiscales al IEPS. Por eso en Tijuana y Ciudad Juárez los precios son sensiblemente menores que en el centro o sur del país.</p>
+
+    <div class="callout callout-violet">
+      <strong>Dato curioso:</strong> En Texas es posible encontrar el litro equivalente a menos de 10 pesos mexicanos. La diferencia con zonas como Monterrey o CDMX puede superar los $13 pesos por litro — casi el 60% más caro en México.
+    </div>
+  </article>
+  <hr class="art-divider" />
+
+  <!-- ══════════════════════════════════════
+       ARTÍCULO 3 – NOTICIAS DEL SECTOR
+  ══════════════════════════════════════ -->
+  <article id="art3">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">🔄 Actualización semanal</span>
+      <span class="art-date">15 de junio de 2026</span>
+    </div>
+    <h2>Noticias del sector gasolinero en México: lo más relevante de la semana</h2>
+
+    <p>El mercado de combustibles en México es más dinámico de lo que parece. Aquí el resumen de lo que movió al sector esta semana.</p>
+
+    <div class="callout">
+      <strong>Precios estables en junio 2026.</strong> La semana del 9 al 15 de junio cerró con variaciones mínimas a nivel nacional. El promedio de gasolina Regular se mantuvo por debajo de los $24 pesos en la mayoría de las ciudades, lo que representa estabilidad tras los ajustes de principios de año.
+    </div>
+
+    <p><strong>Tijuana y la frontera norte, las más baratas del país.</strong> Baja California mantiene el precio de Regular más bajo entre las grandes ciudades del país, con un promedio de $22.82 por litro, gracias al estímulo fiscal fronterizo vigente. Las ciudades del noreste como Monterrey registran precios más altos, en parte por costos logísticos de distribución.</p>
+
+    <p><strong>Cambio regulatorio: de CRE a CNE.</strong> La antigua Comisión Reguladora de Energía (CRE) fue sustituida por la <strong>Comisión Nacional de Energía (CNE)</strong> en el marco de la reforma energética de la actual administración. La CNE ha publicado nuevas metodologías para precios máximos de gas LP y sigue concentrando los reportes diarios de precios que reportan las gasolineras. Los datos históricos de la CRE siguen siendo referencia fundamental del sector.</p>
+
+    <p><strong>Precios internacionales del petróleo.</strong> El barril de crudo ha mostrado volatilidad a mediados de 2026 por tensiones geopolíticas en Medio Oriente, aunque su impacto directo en el precio al consumidor en México es amortiguado por la política del IEPS, que el gobierno ajusta semanalmente para compensar alzas o bajas del mercado internacional.</p>
+
+    <p><strong>¿Habrá gasolinazos en el segundo semestre?</strong> Analistas del sector señalan que el margen de ajuste dependerá del comportamiento del tipo de cambio y el precio del crudo en los próximos meses. Por ahora, no se anticipa un alza brusca en el corto plazo.</p>
+
+    <div class="callout callout-violet">
+      <strong>¿Sabes cuál es la gasolinera más barata cerca de ti hoy?</strong> En Gasy puedes verlo en el mapa en tiempo real, con datos actualizados de la CRE/CNE. Entra a <a href="https://gasy.mx">gasy.mx</a>.
+    </div>
+  </article>
+  <hr class="art-divider" />
+
+  <!-- ══════════════════════════════════════
+       ARTÍCULO 4 – QUÉ ES LA CRE
+  ══════════════════════════════════════ -->
+  <article id="art4">
+    <div class="art-meta">
+      <span class="art-tag tag-especial">📌 Guía esencial</span>
+      <span class="art-date">15 de junio de 2026</span>
+    </div>
+    <h2>Qué es la Comisión Reguladora de Energía y cómo determina el precio de la gasolina en México</h2>
+
+    <p>Cuando abres Gasy y ves el precio de cada gasolinera, esa información viene de un sistema oficial que obliga a cada estación de servicio del país a reportar diariamente lo que cobra por litro. El organismo detrás de ese sistema es la CRE — el pilar de la transparencia en el mercado de combustibles mexicano.</p>
+
+    <p><strong>¿Qué es la CRE?</strong> La Comisión Reguladora de Energía fue creada en 1993 como un órgano desconcentrado de la Secretaría de Energía, con el objetivo de regular y supervisar los sectores de gas natural, electricidad y petrolíferos (gasolinas, diésel, gas LP). En la reforma energética más reciente, sus funciones fueron absorbidas por la nueva <strong>Comisión Nacional de Energía (CNE)</strong>, aunque el marco legal y los datos históricos de la CRE siguen siendo referencia fundamental del sector.</p>
+
+    <p><strong>¿Qué papel juega en los precios de la gasolina?</strong> Desde la liberalización del mercado de combustibles en 2017, los precios en México no están fijados por el gobierno: cada gasolinera puede cobrar lo que decida. Sin embargo, la CRE/CNE mantiene tres funciones clave:</p>
+
+    <ol class="body-list">
+      <li><strong>Registro obligatorio de precios.</strong> Cada estación de servicio debe reportar en línea el precio de venta al público de Regular, Premium y Diésel, de acuerdo con el Acuerdo A/041/2018. Esta información es pública y es la misma que alimenta Gasy.</li>
+      <li><strong>Emisión y supervisión de permisos.</strong> Ninguna gasolinera puede operar sin un permiso vigente. La CRE/CNE otorga, modifica y cancela esos permisos, lo que le da poder de regulación indirecto sobre el sector.</li>
+      <li><strong>Vigilancia de precios máximos en zonas específicas.</strong> En combustibles como el gas LP la autoridad fija precios máximos regionales. Para gasolina, la herramienta de control más importante son los estímulos al IEPS que determina la Secretaría de Hacienda.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>El IEPS: la palanca fiscal más importante.</strong> La Secretaría de Hacienda ajusta semanalmente la cuota del IEPS. Cuando el crudo sube, Hacienda puede bajar el IEPS para amortiguar el impacto en el consumidor. Cuando el crudo baja, el IEPS sube para mantener la recaudación. Este mecanismo explica por qué el precio en la bomba no sube y baja tan drásticamente como el barril de petróleo.
+    </div>
+
+    <p><strong>¿Dónde puedo consultar los datos oficiales?</strong> La CRE publica su portal en <a href="https://www.cre.gob.mx" target="_blank" rel="noopener" style="color: var(--violet-lt);">cre.gob.mx</a> y la PROFECO publica cada semana el reporte "Quién es Quién en el Precio de la Gasolina" en <a href="https://combustibles.profeco.gob.mx" target="_blank" rel="noopener" style="color: var(--violet-lt);">combustibles.profeco.gob.mx</a>. Gasy toma esos mismos datos y los presenta de forma visual en el mapa.</p>
+
+    <p>La obligación de reporte es diaria, lo que hace que la base de datos de la CRE sea uno de los conjuntos de datos más actualizados del mercado energético nacional — y exactamente la fuente que Gasy consulta para mostrarte los precios en tiempo real.</p>
+  </article>
+  <hr class="art-divider" />
+
+  <!-- ══════════════════════════════════════
+       ARTÍCULO 5 – POR QUÉ CREAMOS GASY
+  ══════════════════════════════════════ -->
+  <article id="art5">
+    <div class="art-meta">
+      <span class="art-tag tag-editorial">✍️ Editorial</span>
+      <span class="art-date">15 de junio de 2026</span>
+    </div>
+    <h2>Por qué creamos Gasy: la app mexicana para encontrar la gasolina más barata cerca de ti</h2>
+
+    <p>La gasolina es uno de esos gastos que sentimos cada semana pero que pocas veces cuestionamos. Llegamos a la gasolinera más cercana porque estaba en el camino. ¿Pagamos $23.90 o $24.50? No lo sabemos. ¿Había otra estación a dos cuadras cobrando $1.20 menos por litro? Probablemente sí. Ese es exactamente el problema que Gasy viene a resolver.</p>
+
+    <p><strong>El origen de la idea.</strong> En México existe una base de datos pública y oficial: todos los precios de todas las gasolineras del país, actualizados diariamente por mandato de la Comisión Reguladora de Energía. Es un recurso extraordinario. El problema es que está enterrado en portales del gobierno que no están diseñados para el usuario común — sin mapas, sin búsqueda inteligente, sin alertas. Gasy nació para hacer esa información útil, accesible y visual.</p>
+
+    <div class="callout">
+      <strong>Un ejemplo concreto:</strong> En la Ciudad de México, la diferencia entre la gasolinera más cara y la más barata del mismo tipo de combustible puede superar los $3 pesos por litro. Si llenas un tanque de 40 litros, eso son $120 pesos de diferencia en una sola carga. Si cargas dos veces por semana, hablamos de más de <strong>$12,000 pesos al año</strong> que podrías ahorrarte simplemente eligiendo mejor.
+    </div>
+
+    <p><strong>¿Qué hace Gasy exactamente?</strong> La app consulta en tiempo real los precios reportados por las gasolineras a la CRE y los muestra sobre un mapa interactivo. Puedes ver las estaciones cerca de tu ubicación actual, filtrar por tipo de combustible (Regular, Premium o Diésel), elegir el radio de búsqueda y navegar directamente a la estación que elijas. Sin registro, sin complicaciones.</p>
+
+    <p><strong>¿Por qué una app mexicana?</strong> Existen aplicaciones internacionales de precios de gasolina, pero no están diseñadas para el mercado mexicano: no tienen integración con los datos de la CRE, no cubren la dispersión geográfica del país y no consideran factores como los estímulos fiscales fronterizos. Gasy fue construida desde México, para México, con datos oficiales mexicanos.</p>
+
+    <p><strong>Lo que viene.</strong> Estamos construyendo activamente nuevas funciones: más ciudades y estados, notificaciones cuando la gasolina baja de precio en tu zona, historial de precios por gasolinera, y un nivel Pro con funcionalidades avanzadas para conductores frecuentes y flotas. También desarrollamos la versión nativa para iOS y Android.</p>
+
+    <div class="callout callout-violet">
+      <strong>Nuestra misión es simple:</strong> que ningún conductor en México pague más de lo que debería por un litro de gasolina. La información existe. Nosotros la ponemos en tu mapa. <a href="https://gasy.mx">Prueba Gasy gratis →</a>
+    </div>
+
+    <p>Actualmente Gasy cubre <strong>Ciudad de México, Guadalajara, Monterrey, Puebla y Tijuana</strong>, con más ciudades en camino. Si quieres sugerir tu ciudad o dejarnos un comentario, escríbenos. Gasy es un proyecto independiente y tu retroalimentación es el combustible que nos mueve.</p>
+  </article>
+
+</main>
+
+<footer>
+  <p><strong>Gasy.mx</strong> — Gasolina inteligente, decisiones que ahorran.</p>
+  <p style="margin-top:6px;">Datos basados en reportes oficiales de la <a href="https://www.cre.gob.mx" target="_blank" rel="noopener">Comisión Reguladora de Energía (CRE)</a> · © 2026</p>
+</footer>
+
+</body>
+</html>

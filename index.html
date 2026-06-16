@@ -165,6 +165,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .umarker-dot{width:14px;height:14px;background:#57d97b;border-radius:50%;border:2px solid var(--bg);animation:upulse 2s ease-out infinite;}
 @keyframes upulse{0%{box-shadow:0 0 0 0 rgba(87,217,123,0.5);}70%{box-shadow:0 0 0 10px rgba(87,217,123,0);}100%{box-shadow:0 0 0 0 rgba(87,217,123,0);}}
 
+/* USER MARKER — FLECHA HEADING */
+.umarker-arrow{width:36px;height:36px;position:relative;display:flex;align-items:center;justify-content:center;}
+.umarker-arrow-pulse{position:absolute;width:36px;height:36px;border-radius:50%;background:rgba(87,217,123,0.2);animation:upulse 2s ease-out infinite;}
+.umarker-arrow-svg{position:relative;z-index:1;filter:drop-shadow(0 0 6px rgba(87,217,123,0.7));}
+
+/* HEADING TOGGLE BTN */
+#headingbtn{position:fixed;right:14px;bottom:264px;z-index:400;width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
+#headingbtn.with-ad{bottom:324px;}
+#headingbtn.active{background:rgba(87,217,123,0.15);border-color:#57d97b;box-shadow:0 0 12px rgba(87,217,123,0.3);}
+#headingbtn:active{transform:scale(0.9);}
+
 /* TOAST */
 #toast{position:fixed;bottom:206px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid rgba(75,2,243,0.4);color:var(--text);padding:8px 16px;border-radius:30px;font-size:12px;font-weight:500;z-index:600;opacity:0;transition:opacity 0.25s;pointer-events:none;white-space:nowrap;}
 #toast.with-ad{bottom:266px;}
@@ -238,6 +249,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 <div id="map"></div>
 <div id="cre-badge">✦ Precios CRE en tiempo real</div>
 
+<button id="headingbtn" onclick="toggleHeading()" aria-label="Orientación del mapa" title="Activar modo navegación">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="headingbtn-icon">
+    <polygon points="12,3 19,21 12,17 5,21" fill="var(--text2)" fill-opacity="0.3"/>
+  </svg>
+</button>
+
 <button id="gpsbtn" onclick="centerUser()" aria-label="Mi ubicación">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round">
     <circle cx="12" cy="12" r="3" fill="var(--accent)" fill-opacity="0.25"/>
@@ -266,6 +283,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
         document.getElementById('ad-bar').classList.add('show');
         document.getElementById('map').classList.add('with-ad');
         document.getElementById('gpsbtn').classList.add('with-ad');
+        document.getElementById('headingbtn').classList.add('with-ad');
         document.getElementById('legend').classList.add('with-ad');
         document.getElementById('toast').classList.add('with-ad');
       }
@@ -302,6 +320,11 @@ let currentRadio = 12000;
 let stations = [];
 let markers = [];
 let selId = null;
+
+// Heading-up navigation
+let userHeading = null;
+let headingMode = false; // false = north-up, true = heading-up
+let lastHeadingUpdate = 0;
 
 const $ = id => document.getElementById(id);
 const fmt = n => (n != null && !isNaN(n)) ? '$' + parseFloat(n).toFixed(2).replace('.', ',') : 'N/D';
@@ -361,9 +384,23 @@ function requestGPS(){
     pos=>{
       const lat=pos.coords.latitude;
       const lng=pos.coords.longitude;
+      const speed=pos.coords.speed; // m/s, puede ser null
+      const heading=pos.coords.heading; // grados, puede ser null
       uLat=lat;uLng=lng;
       // Solo mover el marcador del usuario, no recargar gasolineras
       if(uMarker) uMarker.setLatLng([lat,lng]);
+      // Actualizar heading si el usuario se está moviendo (>1.4 m/s = ~5 km/h)
+      const isMoving = speed != null ? speed > 1.4 : false;
+      if(heading != null && !isNaN(heading) && isMoving){
+        userHeading = heading;
+        updateUserMarkerArrow(heading);
+        if(headingMode) applyMapHeading(heading);
+      } else if(!isMoving && userHeading != null){
+        // Parado — volver a marcador normal y norte arriba
+        userHeading = null;
+        updateUserMarkerArrow(null);
+        if(headingMode) applyMapHeading(0);
+      }
     },
     err=>console.warn('watchPosition error:', err.message),
     {enableHighAccuracy:true,maximumAge:5000,timeout:10000}
@@ -731,10 +768,73 @@ function centerUser(){
   toast('Centrando en tu ubicación');
 }
 
+// ── HEADING-UP NAVIGATION ──────────────────────────────────────────────────
+
+function toggleHeading(){
+  headingMode = !headingMode;
+  const btn = document.getElementById('headingbtn');
+  const icon = document.getElementById('headingbtn-icon');
+  if(headingMode){
+    btn.classList.add('active');
+    icon.querySelector('polygon').setAttribute('fill','#57d97b');
+    icon.querySelector('polygon').setAttribute('stroke','#57d97b');
+    toast('🧭 Modo navegación activado');
+    if(userHeading != null) applyMapHeading(userHeading);
+  } else {
+    btn.classList.remove('active');
+    icon.querySelector('polygon').setAttribute('fill','var(--text2)');
+    icon.querySelector('polygon').setAttribute('stroke','var(--text2)');
+    toast('↑ Orientación norte');
+    applyMapHeading(0);
+  }
+}
+
+function applyMapHeading(deg){
+  // Rotar el contenedor de tiles del mapa con CSS transform
+  // Leaflet no tiene setBearing nativo, lo hacemos via transform
+  const now = Date.now();
+  if(now - lastHeadingUpdate < 200) return; // throttle 200ms
+  lastHeadingUpdate = now;
+  const pane = map.getPane('tilePane');
+  const overlayPane = map.getPane('overlayPane');
+  const markerPane = map.getPane('markerPane');
+  const shadowPane = map.getPane('shadowPane');
+  const popupPane = map.getPane('popupPane');
+  const rotate = `rotate(${-deg}deg)`;
+  const origin = 'center center';
+  [pane, overlayPane, markerPane, shadowPane].forEach(p=>{
+    if(p){ p.style.transform = deg === 0 ? '' : rotate; p.style.transformOrigin = origin; }
+  });
+  // El popup no rota para que sea siempre legible
+  if(popupPane) popupPane.style.transform = '';
+}
+
+function updateUserMarkerArrow(heading){
+  if(!uMarker) return;
+  if(heading != null){
+    // Mostrar flecha apuntando en la dirección del movimiento
+    const arrowHtml = `<div class="umarker-arrow">
+      <div class="umarker-arrow-pulse"></div>
+      <svg class="umarker-arrow-svg" width="28" height="28" viewBox="0 0 28 28" style="transform:rotate(${heading}deg);transition:transform 0.3s ease;">
+        <polygon points="14,3 22,24 14,19 6,24" fill="#57d97b" stroke="#0a0f14" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </div>`;
+    const arrowIcon = L.divIcon({html:arrowHtml,className:'',iconSize:[36,36],iconAnchor:[18,18]});
+    uMarker.setIcon(arrowIcon);
+  } else {
+    // Volver al marcador circular original cuando está parado
+    const dotIcon = L.divIcon({html:'<div class="umarker-dot"></div>',className:'',iconSize:[14,14],iconAnchor:[7,7]});
+    uMarker.setIcon(dotIcon);
+  }
+}
+
+// ── FIN HEADING-UP ─────────────────────────────────────────────────────────
+
 function closeAd(){
   document.getElementById('ad-bar').classList.remove('show');
   document.getElementById('map').classList.remove('with-ad');
   document.getElementById('gpsbtn').classList.remove('with-ad');
+  document.getElementById('headingbtn').classList.remove('with-ad');
   document.getElementById('legend').classList.remove('with-ad');
   document.getElementById('toast').classList.remove('with-ad');
   if(map) map.invalidateSize();

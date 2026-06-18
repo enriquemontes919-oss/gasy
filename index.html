@@ -196,16 +196,28 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .savings-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;line-height:1.4;}
 
 /* ESTRELLAS EN POPUP */
-.pop-stars{margin:8px 0 4px;}
-.pop-stars-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
-.stars-row{display:flex;gap:4px;align-items:center;}
-.star-btn{background:none;border:none;cursor:pointer;padding:0;font-size:22px;line-height:1;transition:transform 0.1s;-webkit-tap-highlight-color:transparent;}
-.star-btn:active{transform:scale(1.3);}
-.star-btn.active{filter:drop-shadow(0 0 4px rgba(255,215,0,0.6));}
-.stars-avg{font-size:11px;color:var(--text2);margin-left:6px;}
-.stars-count{font-size:10px;color:var(--text3);margin-left:2px;}
-.pop-stars-thanks{font-size:11px;color:var(--green);margin-top:4px;display:none;}
+.pop-stars{margin:10px 0 4px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:10px;padding:10px 12px;}
+.pop-stars-avg-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.pop-stars-avg-icon{font-size:18px;line-height:1;}
+.pop-stars-avg-num{font-size:20px;font-weight:700;color:#FFD700;letter-spacing:-0.5px;}
+.pop-stars-avg-count{font-size:11px;color:var(--text3);}
+.pop-stars-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+.stars-row{display:flex;gap:6px;align-items:center;}
+.star-btn{background:none;border:none;cursor:pointer;padding:0;font-size:26px;line-height:1;color:#FFD700;opacity:0.35;transition:opacity 0.15s,transform 0.1s;-webkit-tap-highlight-color:transparent;}
+.star-btn:hover,.star-btn:active{opacity:1;transform:scale(1.2);}
+.star-btn.filled{opacity:1;}
+.pop-stars-thanks{font-size:11px;color:var(--green);margin-top:6px;display:none;font-weight:600;}
 .pop-stars-thanks.show{display:block;}
+/* Modal Plus */
+.plus-modal-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:24px;}
+.plus-modal{background:var(--bg3);border:1px solid rgba(75,2,243,0.5);border-radius:20px;padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.plus-modal-icon{font-size:36px;margin-bottom:10px;}
+.plus-modal-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.plus-modal-sub{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px;}
+.plus-modal-price{font-size:28px;font-weight:800;color:#57d97b;margin-bottom:4px;}
+.plus-modal-price-sub{font-size:11px;color:var(--text3);margin-bottom:16px;}
+.plus-modal-btn{width:100%;padding:13px;background:#57d97b;color:#0a0414;border:none;border-radius:30px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;margin-bottom:8px;}
+.plus-modal-close{font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans);}
 </style>
 </head>
 <body>
@@ -374,15 +386,44 @@ async function submitRating(stationId, stationName, stars){
 function starsHtml(stationId, stationName, ratingData){
   const avg = ratingData?.avg || 0;
   const count = ratingData?.count || 0;
-  const avgTxt = count > 0 ? `<span class="stars-avg">${avg}★</span><span class="stars-count">(${count})</span>` : '<span class="stars-avg">Sin valoraciones aún</span>';
+  // Fila de promedio — siempre visible
+  const avgRow = count > 0
+    ? `<div class="pop-stars-avg-row">
+        <span class="pop-stars-avg-icon">⭐</span>
+        <span class="pop-stars-avg-num" id="stars-avg-num-${stationId}">${avg}</span>
+        <span class="pop-stars-avg-count" id="stars-avg-count-${stationId}">(${count} valoracion${count!==1?'es':''})</span>
+      </div>`
+    : `<div class="pop-stars-avg-row">
+        <span class="pop-stars-avg-icon">⭐</span>
+        <span class="pop-stars-avg-num" id="stars-avg-num-${stationId}" style="font-size:13px;color:var(--text3)">Sin valoraciones</span>
+        <span class="pop-stars-avg-count" id="stars-avg-count-${stationId}"></span>
+      </div>`;
+  const safeName = stationName.replace(/'/g,"\'").replace(/"/g,'&quot;');
   return `<div class="pop-stars">
-    <div class="pop-stars-label">Valoración de usuarios</div>
+    ${avgRow}
+    <div class="pop-stars-label">Tu valoración</div>
     <div class="stars-row" id="stars-row-${stationId}">
-      ${[1,2,3,4,5].map(n=>`<button class="star-btn" onclick="rateStar('${stationId}','${stationName.replace(/'/g,"\'")}',${n})" title="${n} estrella${n>1?'s':''}">☆</button>`).join('')}
-      ${avgTxt}
+      ${[1,2,3,4,5].map(n=>`<button class="star-btn" onclick="rateStar('${stationId}','${safeName}',${n})" title="${n} estrella${n>1?'s':''}">★</button>`).join('')}
     </div>
     <div class="pop-stars-thanks" id="stars-thanks-${stationId}">✓ ¡Gracias por tu valoración!</div>
+    <button onclick="showPlusModal()" style="margin-top:8px;width:100%;padding:7px;background:rgba(75,2,243,0.15);border:1px solid rgba(75,2,243,0.4);border-radius:8px;color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;">💬 Ver comentarios · <span style="color:#57d97b;">Gasy Plus</span></button>
   </div>`;
+}
+
+function showPlusModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'plus-modal-overlay';
+  overlay.innerHTML = `<div class="plus-modal">
+    <div class="plus-modal-icon">⚡</div>
+    <div class="plus-modal-title">Gasy Plus</div>
+    <div class="plus-modal-sub">Lee los comentarios de otros usuarios sobre esta gasolinera — si dan litro completo, qué tan segura es, y más.</div>
+    <div class="plus-modal-price">$29,99 MXN</div>
+    <div class="plus-modal-price-sub">al mes · cancela cuando quieras</div>
+    <button class="plus-modal-btn">Descargar Gasy en App Store</button>
+    <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Ahora no</button>
+  </div>`;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
 }
 
 async function rateStar(stationId, stationName, stars){
@@ -390,22 +431,31 @@ async function rateStar(stationId, stationName, stars){
   const row = document.getElementById('stars-row-'+stationId);
   if(row){
     const btns = row.querySelectorAll('.star-btn');
-    btns.forEach((b,i)=>{ b.textContent = i<stars?'★':'☆'; b.classList.toggle('active',i<stars); b.disabled=true; });
+    btns.forEach((b,i)=>{ b.classList.toggle('filled',i<stars); b.disabled=true; b.style.opacity=i<stars?'1':'0.2'; });
   }
   const thanks = document.getElementById('stars-thanks-'+stationId);
   if(thanks) thanks.classList.add('show');
   // Guardar en Supabase
   const ok = await submitRating(stationId, stationName, stars);
   if(ok){
-    // Actualizar cache
     delete ratingsCache[stationId];
     toast('⭐ Valoración guardada');
+    // Recargar y actualizar promedio visible
+    setTimeout(async()=>{
+      const r = await getRatings(stationId);
+      if(r){
+        const avgEl = document.getElementById('stars-avg-num-'+stationId);
+        const countEl = document.getElementById('stars-avg-count-'+stationId);
+        if(avgEl){ avgEl.textContent = r.avg; avgEl.style.fontSize=''; avgEl.style.color=''; }
+        if(countEl) countEl.textContent = `(${r.count} valoracion${r.count!==1?'es':''})`;
+      }
+    }, 800);
   } else {
     toast('Sin conexión — valoración no guardada');
   }
 }
 
-// ── DATO DE AHORRO ──
+// ── DATO DE AHORRO (solo Magna) ──
 async function loadSavingsBanner(){
   try{
     const res = await Promise.race([
@@ -414,7 +464,7 @@ async function loadSavingsBanner(){
     ]);
     if(!res.ok) return;
     const xml = await res.text();
-    // Extraer todos los precios magna
+    // Extraer solo precios de Magna (regular)
     const prices = [];
     let idx = 0;
     while(true){
@@ -433,7 +483,7 @@ async function loadSavingsBanner(){
     const saving = (diff * 40).toFixed(2); // tanque de 40L
     if(diff < 0.5) return; // No mostrar si la diferencia es mínima
     document.getElementById('savings-amount').textContent = '$' + saving.replace('.',',') + ' MXN';
-    document.getElementById('savings-sub').textContent = `eligiendo $${min.toFixed(2).replace('.',',')} vs $${max.toFixed(2).replace('.',',')} por litro · tanque 40L`;
+    document.getElementById('savings-sub').textContent = `Magna más barata $${min.toFixed(2).replace('.',',')} vs más cara $${max.toFixed(2).replace('.',',')} · tanque 40L`;
     document.getElementById('savings-banner').classList.add('show');
   }catch(e){}
 }
@@ -843,15 +893,11 @@ function renderMarkers(f){
     // Cargar ratings reales cuando se abra el popup
     mk.on('popupopen', async ()=>{
       const rating = await getRatings(stationId);
-      const row = document.getElementById('stars-row-'+stationId);
-      if(row && rating && rating.count > 0){
-        const btns = row.querySelectorAll('.star-btn');
-        const avgRound = Math.round(rating.avg);
-        btns.forEach((b,i)=>{ b.textContent = i<avgRound?'★':'☆'; });
-        const avgSpan = row.querySelector('.stars-avg');
-        const countSpan = row.querySelector('.stars-count');
-        if(avgSpan) avgSpan.textContent = rating.avg+'★';
-        if(countSpan) countSpan.textContent = '('+rating.count+')';
+      if(rating && rating.count > 0){
+        const avgEl = document.getElementById('stars-avg-num-'+stationId);
+        const countEl = document.getElementById('stars-avg-count-'+stationId);
+        if(avgEl){ avgEl.textContent = rating.avg; avgEl.style.fontSize=''; avgEl.style.color=''; }
+        if(countEl) countEl.textContent = `(${rating.count} valoracion${rating.count!==1?'es':''})`;
       }
     });
     mk.on('click',()=>selectStation(s.id));

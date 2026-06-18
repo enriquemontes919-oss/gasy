@@ -98,21 +98,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .leaflet-popup-close-button{color:var(--text2)!important;top:11px!important;right:13px!important;font-size:17px!important;}
 
 /* POPUP */
-.pop{padding:16px;min-width:210px;max-width:265px;font-family:var(--sans);}
-.pop-brand{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:3px;}
-.pop-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3;padding-right:20px;}
-.pop-addr{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4;}
-.pop-divider{height:1px;background:var(--border);margin:10px 0;}
-.pop-prices{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.pop{padding:12px 14px;min-width:220px;max-width:270px;font-family:var(--sans);}
+.pop-brand{font-size:9px;font-weight:700;color:var(--accent);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:2px;}
+.pop-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:1px;line-height:1.3;padding-right:18px;}
+.pop-addr{font-size:11px;color:var(--text2);margin-bottom:6px;line-height:1.3;}
+.pop-divider{height:1px;background:var(--border);margin:6px 0;}
+.pop-prices{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
 .pop-row{display:flex;justify-content:space-between;align-items:center;}
-.pop-fuel{font-size:12px;color:var(--text2);}
-.pop-val{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent);}
-.pop-val.na{color:var(--text3);font-size:12px;font-family:var(--sans);}
-.pop-nav{display:flex;gap:8px;}
-.nav-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 10px;border-radius:10px;border:none;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;}
+.pop-fuel{font-size:11px;color:var(--text2);}
+.pop-val{font-family:var(--mono);font-size:13px;font-weight:600;color:#ffffff;}
+.pop-val.na{color:var(--text3);font-size:11px;font-family:var(--sans);}
+.pop-nav{display:flex;gap:6px;}
+.nav-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 8px;border-radius:8px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;}
 .nav-waze{background:rgba(0,212,255,0.12);color:var(--accent);border:1px solid rgba(0,212,255,0.2);}
 .nav-gmaps{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);}
-.pop-src{font-size:10px;color:var(--text3);margin-top:8px;text-align:center;}
+.pop-src{font-size:10px;color:var(--text3);margin-top:6px;text-align:center;}
 .pop-src em{color:var(--green);font-style:normal;font-weight:600;}
 
 /* GPS BTN */
@@ -196,14 +196,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .savings-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;line-height:1.4;}
 
 /* ESTRELLAS EN POPUP */
-.pop-stars{margin:6px 0 4px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:7px 9px;}
-.pop-stars-avg-row{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
-.pop-stars-avg-icon{font-size:18px;line-height:1;}
-.pop-stars-avg-num{font-size:16px;font-weight:700;color:#FFD700;letter-spacing:-0.5px;}
-.pop-stars-avg-count{font-size:11px;color:var(--text3);}
-.pop-stars-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
-.stars-row{display:flex;gap:3px;align-items:center;}
-.star-btn{background:none;border:none;cursor:pointer;padding:0;font-size:20px;line-height:1;color:#FFD700;opacity:0.35;transition:opacity 0.15s,transform 0.1s;-webkit-tap-highlight-color:transparent;}
+.pop-stars{margin:5px 0 3px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:6px 8px;}
+.pop-stars-avg-row{display:flex;align-items:center;gap:4px;margin-bottom:4px;}
+.pop-stars-avg-icon{font-size:14px;line-height:1;}
+.pop-stars-avg-num{font-size:14px;font-weight:700;color:#FFD700;letter-spacing:-0.5px;}
+.pop-stars-avg-count{font-size:10px;color:var(--text3);}
+.pop-stars-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
+.stars-row{display:flex;gap:2px;align-items:center;}
+.star-btn{background:none;border:none;cursor:pointer;padding:0;font-size:18px;line-height:1;color:#FFD700;opacity:0.35;transition:opacity 0.15s,transform 0.1s;-webkit-tap-highlight-color:transparent;}
 .star-btn:hover,.star-btn:active{opacity:1;transform:scale(1.2);}
 .star-btn.filled{opacity:1;}
 .pop-stars-thanks{font-size:11px;color:var(--green);margin-top:6px;display:none;font-weight:600;}
@@ -406,7 +406,7 @@ function starsHtml(stationId, stationName, ratingData){
       ${[1,2,3,4,5].map(n=>`<button class="star-btn" onclick="rateStar('${stationId}','${safeName}',${n})" title="${n} estrella${n>1?'s':''}">★</button>`).join('')}
     </div>
     <div class="pop-stars-thanks" id="stars-thanks-${stationId}">✓ ¡Gracias por tu valoración!</div>
-    <button onclick="showPlusModal()" style="margin-top:8px;width:100%;padding:7px;background:rgba(75,2,243,0.15);border:1px solid rgba(75,2,243,0.4);border-radius:8px;color:var(--text2);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;">💬 Ver comentarios · <span style="color:#57d97b;">Gasy Plus</span></button>
+    <button onclick="showPlusModal()" style="margin-top:5px;width:100%;padding:5px;background:rgba(75,2,243,0.15);border:1px solid rgba(75,2,243,0.4);border-radius:6px;color:var(--text2);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;">💬 Ver comentarios · <span style="color:#57d97b;">Gasy Plus</span></button>
   </div>`;
 }
 
@@ -506,7 +506,7 @@ async function loadSavingsBanner(userLat, userLng){
       const lat=parseFloat(block.slice(yt+3,ye));
       if(isNaN(lat)||isNaN(lng)) continue;
       const d=hav(userLat,userLng,lat,lng);
-      if(d<=50) prices.push(priceMap[id]);
+      if(d<=30) prices.push(priceMap[id]);
     }
 
     if(prices.length < 5) return;
@@ -521,8 +521,9 @@ async function loadSavingsBanner(userLat, userLng){
   }catch(e){}
 }
 
-// El dato de ahorro se carga después de obtener la ubicación del usuario
-// Se llama desde requestGPS() cuando ya tenemos uLat/uLng
+// El dato de ahorro se precarga con CDMX por default al abrir la página
+// y se recalcula con la ubicación real cuando el GPS responde
+window.addEventListener('load', ()=>loadSavingsBanner(19.4326, -99.1332));
 
 let map, uMarker, uLat, uLng;
 let fuel = 'magna';

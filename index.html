@@ -114,6 +114,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .nav-gmaps{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2);}
 .pop-src{font-size:10px;color:var(--text3);margin-top:6px;text-align:center;}
 .pop-src em{color:var(--green);font-style:normal;font-weight:600;}
+.pop-status{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px;}
+.pop-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.pop-status-dot.open{background:#57d97b;box-shadow:0 0 6px rgba(87,217,123,0.6);}
+.pop-status-dot.closed{background:#ff3d57;box-shadow:0 0 6px rgba(255,61,87,0.6);}
+.pop-status-dot.unknown{background:#5a4870;}
+.pop-status-text{color:var(--text2);}
+.pop-status-text .open-label{color:#57d97b;font-weight:700;}
+.pop-status-text .closed-label{color:#ff3d57;font-weight:700;}
 
 /* GPS BTN */
 #gpsbtn{position:fixed;right:14px;bottom:212px;z-index:400;width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
@@ -356,6 +364,44 @@ const SUPA_KEY = 'sb_publishable_1U5sFN5qs_7VBvjQJcppyA_pf1DJsDn';
 
 // Cache de ratings por station_id
 const ratingsCache = {};
+
+// ── GOOGLE PLACES CACHE ──
+const placesCache = {};
+
+async function getPlaceDetails(lat, lng, name, stationId){
+  if(placesCache[stationId] !== undefined) return placesCache[stationId];
+  try{
+    const params = new URLSearchParams({tipo:"place_details",lat,lng,name:name||""});
+    const res = await Promise.race([
+      fetch(`${WORKER}?${params}`),
+      new Promise((_,r)=>setTimeout(()=>r(new Error("timeout")),8000))
+    ]);
+    if(!res.ok){ placesCache[stationId]=null; return null; }
+    const data = await res.json();
+    placesCache[stationId] = data.found ? data : null;
+    return placesCache[stationId];
+  }catch(e){ placesCache[stationId]=null; return null; }
+}
+
+function renderPlacesInfo(place, stationId){
+  if(!place) return;
+  const statusEl = document.getElementById("pop-status-"+stationId);
+  const brandEl = document.getElementById("pop-brand-"+stationId);
+  if(!statusEl) return;
+  const isOpen = place.isOpen;
+  const hours = place.todayHours || "";
+  const dotClass = isOpen===true?"open":isOpen===false?"closed":"unknown";
+  const label = isOpen===true?`<span class="open-label">Abierta</span>`:isOpen===false?`<span class="closed-label">Cerrada</span>`:"";
+  const hoursText = hours ? ` &middot; ${hours}` : "";
+  statusEl.innerHTML = `<div class="pop-status-dot ${dotClass}"></div><span class="pop-status-text">${label}${hoursText}</span>`;
+  statusEl.style.display = "flex";
+  if(brandEl && place.name){
+    const gName = place.name;
+    const brands = ["PEMEX","Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","OXXO Gas","Repsol","Total","Chevron","Gulf","Petro-7"];
+    const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
+    if(matched){ brandEl.textContent = matched; brandEl.style.display="block"; }
+  }
+}
 
 async function getRatings(stationId){
   if(ratingsCache[stationId] !== undefined) return ratingsCache[stationId];
@@ -922,17 +968,13 @@ function renderMarkers(f){
     const stationName = s.name || s.brand;
     const cachedRating = ratingsCache[stationId] || null;
     const starsSection = starsHtml(stationId, stationName, cachedRating);
-    const isKnownBrand = s.brand && s.brand !== 'Independiente' && s.brand !== 'Gasolinera';
-    const popBrand = isKnownBrand ? s.brand : '';
     const rawName = s.name || s.brand || 'Gasolinera';
-    const cleanPopName = isKnownBrand
-      ? (s.name && s.name !== s.brand ? s.name : s.brand)
-      : rawName.replace(/\b(S\.?A\.?|DE|C\.?V\.?|S\.?A\.? DE C\.?V\.?|SA DE CV|S DE RL|S\.?R\.?L\.?)\b\.?/g,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
-    const popup=`<div class="pop">${starBadge}${popBrand?`<div class="pop-brand">${popBrand}</div>`:''}<div class="pop-name">${cleanPopName}</div><div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
+    const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
+    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand" style="display:none"></div><div class="pop-name">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:300,minWidth:260}).addTo(map);
-    // Cargar ratings reales cuando se abra el popup
     mk.on('popupopen', async ()=>{
+      // Cargar ratings
       const rating = await getRatings(stationId);
       if(rating && rating.count > 0){
         const avgEl = document.getElementById('stars-avg-num-'+stationId);
@@ -940,6 +982,9 @@ function renderMarkers(f){
         if(avgEl){ avgEl.textContent = rating.avg; avgEl.style.fontSize=''; avgEl.style.color=''; }
         if(countEl) countEl.textContent = `(${rating.count} valoracion${rating.count!==1?'es':''})`;
       }
+      // Cargar datos de Google Places (marca + horarios)
+      const place = await getPlaceDetails(s.lat, s.lng, rawName, stationId);
+      renderPlacesInfo(place, stationId);
     });
     mk.on('click',()=>selectStation(s.id));
     markers[s.id]=mk;

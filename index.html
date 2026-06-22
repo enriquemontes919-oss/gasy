@@ -506,7 +506,7 @@ async function loadSavingsBanner(userLat, userLng){
       const lat=parseFloat(block.slice(yt+3,ye));
       if(isNaN(lat)||isNaN(lng)) continue;
       const d=hav(userLat,userLng,lat,lng);
-      if(d<=30) prices.push(priceMap[id]);
+      if(d<=12) prices.push(priceMap[id]);
     }
 
     if(prices.length < 5) return;
@@ -922,7 +922,13 @@ function renderMarkers(f){
     const stationName = s.name || s.brand;
     const cachedRating = ratingsCache[stationId] || null;
     const starsSection = starsHtml(stationId, stationName, cachedRating);
-    const popup=`<div class="pop">${starBadge}<div class="pop-brand">${s.brand}</div><div class="pop-name">${s.name}</div><div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
+    const isKnownBrand = s.brand && s.brand !== 'Independiente' && s.brand !== 'Gasolinera';
+    const popBrand = isKnownBrand ? s.brand : '';
+    const rawName = s.name || s.brand || 'Gasolinera';
+    const cleanPopName = isKnownBrand
+      ? (s.name && s.name !== s.brand ? s.name : s.brand)
+      : rawName.replace(/\b(S\.?A\.?|DE|C\.?V\.?|S\.?A\.? DE C\.?V\.?|SA DE CV|S DE RL|S\.?R\.?L\.?)\b\.?/g,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
+    const popup=`<div class="pop">${starBadge}${popBrand?`<div class="pop-brand">${popBrand}</div>`:''}<div class="pop-name">${cleanPopName}</div><div class="pop-addr">📍 ${s.addr||s.municipio||'Dirección no disponible'}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">🚗 Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">🗺 Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:300,minWidth:260}).addTo(map);
     // Cargar ratings reales cuando se abra el popup

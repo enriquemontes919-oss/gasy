@@ -99,8 +99,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 /* POPUP */
 .pop{padding:12px 14px;min-width:220px;max-width:270px;font-family:var(--sans);}
-.pop-brand{font-size:13px;font-weight:700;color:#ffffff;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:2px;}
-.pop-name{font-size:9px;font-weight:700;color:var(--accent);margin-bottom:1px;line-height:1.3;padding-right:18px;}
+.pop-brand{font-size:11px;font-weight:700;color:#ffffff;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:2px;}
+.pop-name{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:1px;line-height:1.3;padding-right:18px;}
 .pop-addr{font-size:11px;color:var(--text2);margin-bottom:6px;line-height:1.3;}
 .pop-divider{height:1px;background:var(--border);margin:6px 0;}
 .pop-prices{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .pop-nav{display:flex;gap:6px;}
 .nav-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 8px;border-radius:8px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;}
 .nav-waze{background:#33CCFF;color:#ffffff;border:none;font-weight:700;}
-.nav-gmaps{background:#ffffff;color:#EA4335;border:none;font-weight:700;}
+.nav-gmaps{background:#ffffff;color:#EA4335;border:none;font-weight:800;}
 .pop-src{font-size:10px;color:var(--text3);margin-top:6px;text-align:center;}
 .pop-src em{color:var(--green);font-style:normal;font-weight:600;}
 .pop-status{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px;}
@@ -452,8 +452,75 @@ function starsHtml(stationId, stationName, ratingData){
       ${[1,2,3,4,5].map(n=>`<button class="star-btn" onclick="rateStar('${stationId}','${safeName}',${n})" title="${n} estrella${n>1?'s':''}">★</button>`).join('')}
     </div>
     <div class="pop-stars-thanks" id="stars-thanks-${stationId}">✓ ¡Gracias por tu valoración!</div>
-    <button onclick="showPlusModal()" style="margin-top:5px;width:100%;padding:5px;background:rgba(75,2,243,0.15);border:1px solid rgba(75,2,243,0.4);border-radius:6px;color:var(--text2);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;">💬 Ver comentarios · <span style="color:#57d97b;">Gasy Plus</span></button>
+    <button onclick="showComments('"+stationId+"','"+safeName+"')" style="margin-top:5px;width:100%;padding:5px;background:rgba(87,217,123,0.12);border:1px solid rgba(87,217,123,0.3);border-radius:6px;color:var(--text2);font-family:var(--sans);font-size:10px;font-weight:600;cursor:pointer;">💬 Ver y agregar comentarios</button>
   </div>`;
+}
+
+
+async function showComments(stationId, stationName){
+  const overlay = document.createElement('div');
+  overlay.className = 'plus-modal-overlay';
+  overlay.innerHTML = `<div class="plus-modal" style="max-height:80vh;overflow-y:auto;">
+    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px;">💬 Comentarios</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">${stationName}</div>
+    <div id="comments-list-${stationId}" style="margin-bottom:12px;font-size:12px;color:var(--text2);">Cargando...</div>
+    <textarea id="comment-input-${stationId}" placeholder="Escribe un comentario..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;padding:8px;resize:none;height:70px;margin-bottom:8px;"></textarea>
+    <button onclick="submitComment('${stationId}','${stationName}')" style="width:100%;padding:8px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;margin-bottom:8px;">Publicar comentario</button>
+    <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Cerrar</button>
+  </div>`;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  // Cargar comentarios existentes
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/comments?station_id=eq.${stationId}&order=created_at.desc&limit=20`, {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer '+SUPA_KEY }
+    });
+    const list = document.getElementById('comments-list-'+stationId);
+    if(res.ok){
+      const data = await res.json();
+      if(data.length===0){
+        list.innerHTML = '<div style="color:var(--text3);font-style:italic;">Sé el primero en comentar.</div>';
+      } else {
+        list.innerHTML = data.map(r=>`<div style="border-bottom:1px solid rgba(255,255,255,0.07);padding:8px 0;">
+          <div style="color:#fff;margin-bottom:2px;">${r.comment}</div>
+          <div style="font-size:10px;color:var(--text3);">${new Date(r.created_at).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>`).join('');
+      }
+    } else {
+      list.innerHTML = '<div style="color:var(--text3);">No se pudieron cargar los comentarios.</div>';
+    }
+  } catch(e) {
+    const list = document.getElementById('comments-list-'+stationId);
+    if(list) list.innerHTML = '<div style="color:var(--text3);">Sin conexión.</div>';
+  }
+}
+
+async function submitComment(stationId, stationName){
+  const input = document.getElementById('comment-input-'+stationId);
+  const text = input?.value?.trim();
+  if(!text) return;
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/comments`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer '+SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ station_id: stationId, station_name: stationName, comment: text })
+    });
+    if(res.ok || res.status===201){
+      input.value = '';
+      toast('💬 Comentario publicado');
+      // Recargar lista
+      await showComments(stationId, stationName);
+    } else {
+      toast('Error al publicar comentario');
+    }
+  } catch(e){
+    toast('Sin conexión');
+  }
 }
 
 function showPlusModal(){
@@ -970,7 +1037,7 @@ function renderMarkers(f){
     const starsSection = starsHtml(stationId, stationName, cachedRating);
     const rawName = s.name || s.brand || 'Gasolinera';
     const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
-    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand" style="display:none"></div><div class="pop-name">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr||s.municipio||'')?((s.addr||s.municipio)+''):''}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
+    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand" style="display:none"></div><div class="pop-name">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${s.addr||s.municipio||''}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:300,minWidth:260}).addTo(map);
     mk.on('popupopen', async ()=>{
@@ -1020,7 +1087,7 @@ function renderCards(f){
     const p=s.prices[f];
     const pc=pclass(p,mn,p33,p66);
     const dstr=s.d<1?Math.round(s.d*1000)+'m':s.d.toFixed(1)+'km';
-    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})"><div class="card-brand">${s.brand}</div><div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div><div class="card-dist"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${dstr}</div><div class="card-badge ${bcls[pc]}">${btxt[pc]}</div></div>`;
+    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})"><div class="card-brand">${(s.brand&&s.brand!=="Independiente"&&s.brand!=="Gasolinera")?s.brand:(s.name||s.brand||"Gasolinera").replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE\s+C\.?V\.?|Y\/O)\b\.?/gi,"").trim().split(" ").slice(0,3).join(" ")}</div><div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div><div class="card-dist"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${dstr}</div><div class="card-badge ${bcls[pc]}">${btxt[pc]}</div></div>`;
   }).join('');
 }
 

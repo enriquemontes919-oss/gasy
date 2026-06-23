@@ -111,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .pop-nav{display:flex;gap:6px;}
 .nav-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 8px;border-radius:8px;border:none;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;}
 .nav-waze{background:#33CCFF;color:#ffffff;border:none;font-weight:700;}
-.nav-gmaps{background:#ffffff;color:#EA4335;border:none;font-weight:800;}
+.nav-gmaps{background:#ffffff !important;color:#EA4335 !important;border:none !important;font-weight:800;}
 .pop-src{font-size:10px;color:var(--text3);margin-top:6px;text-align:center;}
 .pop-src em{color:var(--green);font-style:normal;font-weight:600;}
 .pop-status{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px;}
@@ -397,9 +397,9 @@ function renderPlacesInfo(place, stationId){
   statusEl.style.display = "flex";
   if(brandEl && place.name){
     const gName = place.name;
-    const brands = ["PEMEX","Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","OXXO Gas","Repsol","Total","Chevron","Gulf","Petro-7"];
+    const brands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
     const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
-    if(matched){ brandEl.textContent = matched; brandEl.style.display="block"; }
+    if(matched){ brandEl.textContent = matched; }
   }
 }
 
@@ -513,8 +513,18 @@ async function submitComment(stationId, stationName){
     if(res.ok || res.status===201){
       input.value = '';
       toast('💬 Comentario publicado');
-      // Recargar lista
-      await showComments(stationId, stationName);
+      // Recargar lista sin crear nuevo overlay
+      const list = document.getElementById('comments-list-'+stationId);
+      if(list){
+        list.innerHTML = 'Cargando...';
+        const r2 = await fetch(`${SUPA_URL}/rest/v1/comments?station_id=eq.${stationId}&order=created_at.desc&limit=20`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+        if(r2.ok){
+          const data = await r2.json();
+          list.innerHTML = data.length===0
+            ? '<div style="color:var(--text3);font-style:italic;">Sé el primero en comentar.</div>'
+            : data.map(r=>`<div style="border-bottom:1px solid rgba(255,255,255,0.07);padding:8px 0;"><div style="color:#fff;margin-bottom:2px;">${r.comment}</div><div style="font-size:10px;color:var(--text3);">${new Date(r.created_at).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})}</div></div>`).join('');
+        }
+      }
     } else {
       toast('Error al publicar comentario');
     }
@@ -1037,7 +1047,7 @@ function renderMarkers(f){
     const starsSection = starsHtml(stationId, stationName, cachedRating);
     const rawName = s.name || s.brand || 'Gasolinera';
     const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
-    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand" style="display:none"></div><div class="pop-name">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${s.addr||s.municipio||''}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
+    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr&&s.addr!=='undefined'?s.addr:s.municipio)||''}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:300,minWidth:260}).addTo(map);
     mk.on('popupopen', async ()=>{
@@ -1087,7 +1097,7 @@ function renderCards(f){
     const p=s.prices[f];
     const pc=pclass(p,mn,p33,p66);
     const dstr=s.d<1?Math.round(s.d*1000)+'m':s.d.toFixed(1)+'km';
-    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})"><div class="card-brand">${(s.brand&&s.brand!=="Independiente"&&s.brand!=="Gasolinera")?s.brand:(s.name||s.brand||"Gasolinera").replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE\s+C\.?V\.?|Y\/O)\b\.?/gi,"").trim().split(" ").slice(0,3).join(" ")}</div><div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div><div class="card-dist"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${dstr}</div><div class="card-badge ${bcls[pc]}">${btxt[pc]}</div></div>`;
+    return`<div class="card${selId===s.id?' sel':''}${pc==='star'?' card-star':''}" id="c${s.id}" onclick="selectStation(${s.id})"><div class="card-brand">${(()=>{const b=s.brand&&s.brand!=="Independiente"&&s.brand!=="Gasolinera"?s.brand:null;if(b)return b;const n=(s.name||"Gasolinera").replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE\s+C\.?V\.?|Y\/O)\b\.?/gi,"").trim();return n.split(" ").slice(0,3).map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ")||"Gasolinera";})()} </div><div class="card-price">${p.toFixed(2).replace('.',',')} <span class="card-unit">MXN/L</span></div><div class="card-dist"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${dstr}</div><div class="card-badge ${bcls[pc]}">${btxt[pc]}</div></div>`;
   }).join('');
 }
 

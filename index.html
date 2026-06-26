@@ -122,6 +122,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .pop-status-text{color:var(--text2);}
 .pop-status-text .open-label{color:#57d97b;font-weight:700;}
 .pop-status-text .closed-label{color:#ff3d57;font-weight:700;}
+.pop-amenities{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.pop-amenity{font-size:10px;background:rgba(87,217,123,0.12);border:1px solid rgba(87,217,123,0.25);border-radius:12px;padding:2px 8px;color:#57d97b;font-weight:600;}
 
 /* GPS BTN */
 #gpsbtn{position:fixed;right:14px;bottom:212px;z-index:400;width:44px;height:44px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
@@ -457,15 +459,48 @@ function starsHtml(stationId, stationName, ratingData){
 }
 
 
+async function loadAmenities(stationId){
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/amenities?station_id=eq.${stationId}&select=has_store,has_restroom,has_atm`, {
+      headers: {'apikey': SUPA_KEY, 'Authorization': 'Bearer '+SUPA_KEY}
+    });
+    if(!res.ok) return;
+    const data = await res.json();
+    if(!data.length) return;
+    const storeCount = data.filter(r=>r.has_store).length;
+    const restroomCount = data.filter(r=>r.has_restroom).length;
+    const atmCount = data.filter(r=>r.has_atm).length;
+    const el = document.getElementById('pop-amenities-'+stationId);
+    if(!el) return;
+    const badges = [];
+    if(storeCount>=2) badges.push('<svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M841-518v318q0 33-23.5 56.5T761-120H201q-33 0-56.5-23.5T121-200v-318q-23-21-35.5-54t-.5-72l42-136q8-26 28.5-43t47.5-17h556q27 0 47 16.5t29 43.5l42 136q12 39-.5 71T841-518Zm-272-42q27 0 41-18.5t11-41.5l-22-140h-78v148q0 21 14 36.5t34 15.5Zm-180 0q23 0 37.5-15.5T441-612v-148h-78l-22 140q-4 24 10.5 42t37.5 18Zm-178 0q18 0 31.5-13t16.5-33l22-154h-78l-40 134q-6 20 6.5 43t41.5 23Zm540 0q29 0 42-23t6-43l-42-134h-76l22 154q3 20 16.5 33t31.5 13ZM201-200h560v-282q-5 2-6.5 2H751q-27 0-47.5-9T663-518q-18 18-41 28t-49 10q-27 0-50.5-10T481-518q-17 18-39.5 28T393-480q-29 0-52.5-10T299-518q-21 21-41.5 29.5T211-480h-4.5q-2.5 0-5.5-2v282Zm560 0H201h560Z"/></svg> Tienda');
+    if(restroomCount>=2) badges.push('<svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M220-80v-300h-60v-220q0-33 23.5-56.5T240-680h120q33 0 56.5 23.5T440-600v220h-60v300H220Zm23.5-663.5Q220-767 220-800t23.5-56.5Q267-880 300-880t56.5 23.5Q380-833 380-800t-23.5 56.5Q333-720 300-720t-56.5-23.5ZM600-80v-240H480l102-306q8-26 29.5-40t48.5-14q27 0 48.5 14t29.5 40l102 306H720v240H600Zm3.5-663.5Q580-767 580-800t23.5-56.5Q627-880 660-880t56.5 23.5Q740-833 740-800t-23.5 56.5Q693-720 660-720t-56.5-23.5Z"/></svg> Baño');
+    if(atmCount>=2) badges.push('<svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M415-360v-180h-90v-60h240v60h-90v180h-60Zm-335 0v-200q0-17 11.5-28.5T120-600h120q17 0 28.5 11.5T280-560v200h-60v-60h-80v60H80Zm60-120h80v-60h-80v60Zm480 120v-200q0-17 11.5-28.5T660-600h180q17 0 28.5 11.5T880-560v200h-60v-180h-40v140h-60v-140h-40v180h-60Z"/></svg> Cajero');
+    if(badges.length) el.innerHTML = badges.map(b=>`<span class="pop-amenity">${b}</span>`).join('');
+  } catch(e){}
+}
+
 async function showComments(stationId, stationName){
   const overlay = document.createElement('div');
   overlay.className = 'plus-modal-overlay';
   overlay.innerHTML = `<div class="plus-modal" style="max-height:80vh;overflow-y:auto;">
-    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px;">💬 Comentarios</div>
+    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">💬 Comentarios</div>
     <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">${stationName}</div>
     <div id="comments-list-${stationId}" style="margin-bottom:12px;font-size:12px;color:var(--text2);">Cargando...</div>
-    <textarea id="comment-input-${stationId}" placeholder="Escribe un comentario..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;padding:8px;resize:none;height:70px;margin-bottom:8px;"></textarea>
-    <button onclick="submitComment(this.dataset.id,this.dataset.name)" data-id="${stationId}" data-name="${stationName}" style="width:100%;padding:8px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;margin-bottom:8px;">Publicar comentario</button>
+    <div style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:6px;">¿Qué tiene esta gasolinera?</div>
+    <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);cursor:pointer;">
+        <input type="checkbox" id="chk-store-${stationId}" style="accent-color:#57d97b;"> <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M841-518v318q0 33-23.5 56.5T761-120H201q-33 0-56.5-23.5T121-200v-318q-23-21-35.5-54t-.5-72l42-136q8-26 28.5-43t47.5-17h556q27 0 47 16.5t29 43.5l42 136q12 39-.5 71T841-518Zm-272-42q27 0 41-18.5t11-41.5l-22-140h-78v148q0 21 14 36.5t34 15.5Zm-180 0q23 0 37.5-15.5T441-612v-148h-78l-22 140q-4 24 10.5 42t37.5 18Zm-178 0q18 0 31.5-13t16.5-33l22-154h-78l-40 134q-6 20 6.5 43t41.5 23Zm540 0q29 0 42-23t6-43l-42-134h-76l22 154q3 20 16.5 33t31.5 13ZM201-200h560v-282q-5 2-6.5 2H751q-27 0-47.5-9T663-518q-18 18-41 28t-49 10q-27 0-50.5-10T481-518q-17 18-39.5 28T393-480q-29 0-52.5-10T299-518q-21 21-41.5 29.5T211-480h-4.5q-2.5 0-5.5-2v282Zm560 0H201h560Z"/></svg> Tienda
+      </label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);cursor:pointer;">
+        <input type="checkbox" id="chk-restroom-${stationId}" style="accent-color:#57d97b;"> <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M220-80v-300h-60v-220q0-33 23.5-56.5T240-680h120q33 0 56.5 23.5T440-600v220h-60v300H220Zm23.5-663.5Q220-767 220-800t23.5-56.5Q267-880 300-880t56.5 23.5Q380-833 380-800t-23.5 56.5Q333-720 300-720t-56.5-23.5ZM600-80v-240H480l102-306q8-26 29.5-40t48.5-14q27 0 48.5 14t29.5 40l102 306H720v240H600Zm3.5-663.5Q580-767 580-800t23.5-56.5Q627-880 660-880t56.5 23.5Q740-833 740-800t-23.5 56.5Q693-720 660-720t-56.5-23.5Z"/></svg> Baño
+      </label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);cursor:pointer;">
+        <input type="checkbox" id="chk-atm-${stationId}" style="accent-color:#57d97b;"> <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M415-360v-180h-90v-60h240v60h-90v180h-60Zm-335 0v-200q0-17 11.5-28.5T120-600h120q17 0 28.5 11.5T280-560v200h-60v-60h-80v60H80Zm60-120h80v-60h-80v60Zm480 120v-200q0-17 11.5-28.5T660-600h180q17 0 28.5 11.5T880-560v200h-60v-180h-40v140h-60v-140h-40v180h-60Z"/></svg> Cajero
+      </label>
+    </div>
+    <textarea id="comment-input-${stationId}" placeholder="Escribe un comentario (opcional)..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;padding:8px;resize:none;height:60px;margin-bottom:8px;"></textarea>
+    <button onclick="submitComment(this.dataset.id,this.dataset.name)" data-id="${stationId}" data-name="${stationName}" style="width:100%;padding:8px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;margin-bottom:8px;">Publicar</button>
     <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Cerrar</button>
   </div>`;
   overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
@@ -498,7 +533,8 @@ async function showComments(stationId, stationName){
 async function submitComment(stationId, stationName){
   const input = document.getElementById('comment-input-'+stationId);
   const text = input?.value?.trim();
-  if(!text) return;
+  const hasAnyInput = text || document.getElementById('chk-store-'+stationId)?.checked || document.getElementById('chk-restroom-'+stationId)?.checked || document.getElementById('chk-atm-'+stationId)?.checked;
+  if(!hasAnyInput) return;
   try {
     const res = await fetch(`${SUPA_URL}/rest/v1/comments`, {
       method: 'POST',
@@ -508,11 +544,22 @@ async function submitComment(stationId, stationName){
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({ station_id: stationId, station_name: stationName, comment: text })
+      body: JSON.stringify({ station_id: stationId, station_name: stationName, comment: text || '' })
     });
     if(res.ok || res.status===201){
+      // Guardar amenidades si hay alguna marcada
+      const hasStore = document.getElementById('chk-store-'+stationId)?.checked||false;
+      const hasRestroom = document.getElementById('chk-restroom-'+stationId)?.checked||false;
+      const hasAtm = document.getElementById('chk-atm-'+stationId)?.checked||false;
+      if(hasStore||hasRestroom||hasAtm){
+        await fetch(`${SUPA_URL}/rest/v1/amenities`, {
+          method:'POST',
+          headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+          body:JSON.stringify({station_id:stationId,station_name:stationName,has_store:hasStore,has_restroom:hasRestroom,has_atm:hasAtm})
+        }).catch(()=>{});
+      }
       input.value = '';
-      toast('💬 Comentario publicado');
+      toast('💬 ¡Gracias por tu aporte!');
       // Recargar lista sin crear nuevo overlay
       const list = document.getElementById('comments-list-'+stationId);
       if(list){
@@ -1047,10 +1094,12 @@ function renderMarkers(f){
     const starsSection = starsHtml(stationId, stationName, cachedRating);
     const rawName = s.name || s.brand || 'Gasolinera';
     const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
-    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr&&s.addr!=='undefined'&&s.addr.length>2?s.addr:(s.municipio&&s.municipio.length>2?s.municipio:''))}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
+    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div id="pop-amenities-${stationId}" class="pop-amenities"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr&&s.addr!=='undefined'&&s.addr.length>2?s.addr:(s.municipio&&s.municipio.length>2?s.municipio:''))}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:300,minWidth:260}).addTo(map);
     mk.on('popupopen', async ()=>{
+      // Cargar amenidades validadas
+      loadAmenities(stationId);
       // Cargar ratings
       const rating = await getRatings(stationId);
       if(rating && rating.count > 0){

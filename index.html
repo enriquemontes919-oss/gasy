@@ -794,7 +794,7 @@ function useFallback(){uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);
 
 function initMap(lat,lng){
   map=L.map('map',{zoomControl:true,attributionControl:false}).setView([lat,lng],14);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',{maxZoom:20,attribution:'&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'}).addTo(map);
   const uIcon=L.divIcon({html:'<div class="umarker-dot"></div>',className:'',iconSize:[14,14],iconAnchor:[7,7]});
   uMarker=L.marker([lat,lng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
 }

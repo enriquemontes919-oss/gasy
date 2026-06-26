@@ -94,6 +94,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .leaflet-control-zoom a{background:rgba(10,15,20,0.88)!important;color:var(--accent)!important;border:1px solid var(--border2)!important;border-radius:8px!important;width:32px!important;height:32px!important;line-height:32px!important;font-size:16px!important;}
 .leaflet-popup-content-wrapper{background:var(--bg3)!important;color:var(--text)!important;border:1px solid var(--border2)!important;border-radius:16px!important;box-shadow:0 12px 40px rgba(0,0,0,0.55)!important;padding:0!important;}
 .leaflet-popup-content{margin:0!important;width:auto!important;}
+@media(max-width:600px){.leaflet-popup-content-wrapper{max-height:70vh;overflow-y:auto;}.pop{padding:10px 12px!important;}.pop-prices{margin-bottom:6px;}.pop-stars{margin:4px 0 2px;}}
 .leaflet-popup-tip-container{display:none!important;}
 .leaflet-popup-close-button{color:var(--text2)!important;top:11px!important;right:13px!important;font-size:17px!important;}
 
@@ -1111,7 +1112,7 @@ function renderMarkers(f){
     const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
     const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div id="pop-amenities-${stationId}" class="pop-amenities"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr&&s.addr!=='undefined'&&s.addr.length>2?s.addr:(s.municipio&&s.municipio.length>2?s.municipio:''))}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
-    const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:300,minWidth:260}).addTo(map);
+    const _isMobile=window.innerWidth<600;const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:_isMobile?window.innerWidth-32:300,minWidth:_isMobile?window.innerWidth-32:260,autoPanPaddingTopLeft:L.point(10,60),autoPanPaddingBottomRight:L.point(10,20)}).addTo(map);
     mk.on('popupopen', async ()=>{
       // Cargar amenidades validadas
       loadAmenities(stationId);

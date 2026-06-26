@@ -1470,14 +1470,23 @@ async function runCalc(){
     const sv=(maxPrice-price)*litros;
     return sv>0?`<div class="calc-card-saving">Ahorras ${sv.toFixed(0)} MXN</div>`:`<div class="calc-card-nosave">Precio referencia</div>`;
   };
-  const cardHtml=s=>`<div class="calc-card" onclick="focusStation('${s.cre_id||s.id||''}');this.closest('.plus-modal-overlay').remove();">
-    <div class="calc-card-left">
-      <div class="calc-card-name">${nameStr(s)}</div>
-      <div class="calc-card-dist">${distStr(s._dist)} · ${(litros*s.prices[tipo]).toFixed(0)} MXN total</div>
+  const wazeUrl=s=>`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
+  const gmapsUrl=s=>`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
+  const cardHtml=s=>`<div class="calc-card" style="flex-direction:column;align-items:stretch;gap:8px;" onclick="focusStation('${s.cre_id||s.id||''}')">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="calc-card-left">
+        <div class="calc-card-name">${nameStr(s)}</div>
+        <div class="calc-card-dist">${distStr(s._dist)} · ${(litros*s.prices[tipo]).toFixed(0)} MXN total</div>
+      </div>
+      <div class="calc-card-right">
+        <div class="calc-card-price">${fmt(s.prices[tipo])}/L</div>
+        ${saving(s.prices[tipo])}
+      </div>
     </div>
-    <div class="calc-card-right">
-      <div class="calc-card-price">${fmt(s.prices[tipo])}/L</div>
-      ${saving(s.prices[tipo])}
+    <div style="display:flex;gap:6px;">
+      <a href="${wazeUrl(s)}" target="_blank" onclick="event.stopPropagation()" style="flex:1;text-align:center;padding:5px;background:#33CCFF;border-radius:6px;color:#fff;font-size:11px;font-weight:700;text-decoration:none;">Waze</a>
+      <a href="${gmapsUrl(s)}" target="_blank" onclick="event.stopPropagation()" style="flex:1;text-align:center;padding:5px;background:#ffffff;border-radius:6px;color:#EA4335;font-size:11px;font-weight:700;text-decoration:none;">Maps</a>
+      <button onclick="event.stopPropagation();this.closest('.plus-modal-overlay').remove();focusStation('${s.cre_id||s.id||''}')" style="flex:1;padding:5px;background:rgba(87,217,123,0.15);border:1px solid rgba(87,217,123,0.3);border-radius:6px;color:#57d97b;font-size:11px;font-weight:700;cursor:pointer;">Ver en mapa</button>
     </div>
   </div>`;
   resultsEl.innerHTML=`
@@ -1496,7 +1505,17 @@ async function runCalc(){
 
 function focusStation(stationId){
   const s=stations.find(st=>(st.cre_id||st.id||'').toString()===stationId.toString());
-  if(s&&map) map.setView([s.lat,s.lng],16);
+  if(!s||!map) return;
+  map.setView([s.lat,s.lng],16);
+  // Buscar el marcador y abrir su popup
+  map.eachLayer(layer=>{
+    if(layer.getPopup && layer.getLatLng){
+      const ll=layer.getLatLng();
+      if(Math.abs(ll.lat-s.lat)<0.0001&&Math.abs(ll.lng-s.lng)<0.0001){
+        setTimeout(()=>layer.openPopup(),400);
+      }
+    }
+  });
 }
 </script>
 </body>

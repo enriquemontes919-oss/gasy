@@ -944,7 +944,14 @@ function requestGPS(){
       initMap(uLat,uLng);
       fetchAll(uLat,uLng);
       loadSavingsBanner(uLat,uLng);
-      if(typeof onReady==='function') setTimeout(onReady,2500);
+      if(typeof onReady==='function'){
+        let _tries=0;
+        const _wait=setInterval(()=>{
+          _tries++;
+          if(stations.length>0){ clearInterval(_wait); onReady(); }
+          else if(_tries>20){ clearInterval(_wait); onReady(); } // max 10s
+        },500);
+      }
     },
     err=>{
       if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}

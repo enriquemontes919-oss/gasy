@@ -208,24 +208,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .savings-label{font-size:10px;font-weight:700;color:#ffffff;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px;}
 .savings-amount{font-size:24px;font-weight:800;color:#57d97b;letter-spacing:-0.5px;}
 .savings-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;line-height:1.4;}
-.calc-btn{margin-top:8px;width:100%;padding:7px;background:rgba(87,217,123,0.15);border:1px solid rgba(87,217,123,0.4);border-radius:10px;color:#57d97b;font-family:var(--sans);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.05em;}
-.calc-btn:hover{background:rgba(87,217,123,0.25);}
-.calc-section{margin-bottom:14px;}
-.calc-section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
-.calc-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
-.calc-card:hover{background:rgba(87,217,123,0.06);border-color:rgba(87,217,123,0.2);}
-.calc-card-left{display:flex;flex-direction:column;gap:2px;}
-.calc-card-name{font-size:12px;font-weight:700;color:#fff;}
-.calc-card-dist{font-size:10px;color:var(--text3);}
-.calc-card-badges{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;}
-.calc-card-right{text-align:right;}
-.calc-card-price{font-size:15px;font-weight:800;color:#57d97b;}
-.calc-card-saving{font-size:10px;color:rgba(87,217,123,0.7);margin-top:1px;}
-.calc-card-nosave{font-size:10px;color:var(--text3);margin-top:1px;}
-.calc-input-row{display:flex;gap:8px;margin-bottom:12px;}
-.calc-input{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
-.calc-select{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
-.calc-go{padding:8px 16px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;}
 
 /* ESTRELLAS EN POPUP */
 .pop-stars{margin:5px 0 3px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:6px 8px;}
@@ -250,6 +232,22 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .plus-modal-price-sub{font-size:11px;color:var(--text3);margin-bottom:16px;}
 .plus-modal-btn{width:100%;padding:13px;background:#57d97b;color:#0a0414;border:none;border-radius:30px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;margin-bottom:8px;}
 .plus-modal-close{font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans);}
+
+.calc-section{margin-bottom:14px;}
+.calc-section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.calc-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.calc-card:hover{background:rgba(87,217,123,0.06);border-color:rgba(87,217,123,0.2);}
+.calc-card-left{display:flex;flex-direction:column;gap:2px;}
+.calc-card-name{font-size:12px;font-weight:700;color:#fff;}
+.calc-card-dist{font-size:10px;color:var(--text3);}
+.calc-card-right{text-align:right;flex-shrink:0;}
+.calc-card-price{font-size:15px;font-weight:800;color:#57d97b;}
+.calc-card-saving{font-size:10px;color:rgba(87,217,123,0.8);}
+.calc-card-nosave{font-size:10px;color:var(--text3);}
+.calc-input-row{display:flex;gap:8px;margin-bottom:14px;}
+.calc-input{flex:1;min-width:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
+.calc-select{flex:1;min-width:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
+.calc-go{padding:8px 14px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -265,7 +263,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     <div class="savings-label">Ahorro potencial hoy</div>
     <div class="savings-amount" id="savings-amount">Cargando...</div>
     <div class="savings-sub" id="savings-sub">por tanque lleno de 40L vs la más cara</div>
-    <button class="calc-btn" onclick="showCalcOrStart()"><svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</button>
   </div>
   <button class="wlc-btn" onclick="startApp()"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> Encontrar gasolineras</button>
   <p class="wlc-note">Se solicitará permiso de ubicación</p>
@@ -297,6 +294,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
       <span class="logo-text">Gasy</span>
     </a>
     <a href="/blog.html" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;white-space:nowrap;">Blog</a>
+    <button onclick="showCalcModal()" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#57d97b;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.3);border-radius:20px;padding:4px 10px;cursor:pointer;white-space:nowrap;"><svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</button>
     <div id="fuel-wrap">
       <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
       <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
@@ -705,117 +703,6 @@ async function rateStar(stationId, stationName, stars){
 }
 
 // ── DATO DE AHORRO (solo Magna, por zona GPS) ──
-function showCalcOrStart(){
-  if(stations.length > 0){
-    showCalcModal();
-  } else {
-    // Primero iniciar la app para obtener ubicación y cargar estaciones
-    startApp(function(){ showCalcModal(); });
-  }
-}
-
-function showCalcModal(){
-  const overlay = document.createElement('div');
-  overlay.className = 'plus-modal-overlay';
-  overlay.innerHTML = `<div class="plus-modal" style="max-height:85vh;overflow-y:auto;text-align:left;">
-    <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;">⚡ Calcula tu ahorro</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Ingresa cuántos litros necesitas cargar y el tipo de combustible</div>
-    <div class="calc-input-row">
-      <input class="calc-input" id="calc-litros" type="number" min="1" max="120" placeholder="Litros" value="40">
-      <select class="calc-select" id="calc-tipo">
-        <option value="magna">Magna</option>
-        <option value="premium">Premium</option>
-        <option value="diesel">Diésel</option>
-      </select>
-      <button class="calc-go" onclick="runCalc()">Calcular</button>
-    </div>
-    <div id="calc-results"></div>
-    <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Cerrar</button>
-  </div>`;
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
-  document.body.appendChild(overlay);
-}
-
-async function runCalc(){
-  const litros = parseFloat(document.getElementById('calc-litros')?.value) || 40;
-  const tipo = document.getElementById('calc-tipo')?.value || 'magna';
-  const resultsEl = document.getElementById('calc-results');
-  if(!resultsEl) return;
-
-  // Obtener estaciones con precio del tipo seleccionado y ubicación del usuario
-  const valid = stations.filter(s => s.prices[tipo] != null && !isNaN(s.prices[tipo]) && s._dist != null);
-  if(!valid.length){ resultsEl.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:12px 0;">Cargando gasolineras...<br><span style="font-size:10px;opacity:0.6;">Espera un momento y vuelve a calcular</span></div>'; return; }
-
-  // Ordenar por precio
-  const byPrice = [...valid].sort((a,b) => a.prices[tipo] - b.prices[tipo]);
-  const maxPrice = byPrice[byPrice.length-1].prices[tipo];
-  const minPrice = byPrice[0].prices[tipo];
-
-  // Top 3 más baratas cercanas (≤15km)
-  const cheapest = byPrice.filter(s=>s._dist<=15).slice(0,3);
-
-  // Top 3 mejor valoradas (con reportes positivos) — usamos las que tienen brand conocido como proxy por ahora
-  const trusted = [...valid]
-    .filter(s=>s._dist<=15)
-    .sort((a,b)=>{
-      const scoreA = (a.brand&&a.brand!=='Independiente'&&a.brand!=='Gasolinera')?1:0;
-      const scoreB = (b.brand&&b.brand!=='Independiente'&&b.brand!=='Gasolinera')?1:0;
-      return scoreB - scoreA || a.prices[tipo] - b.prices[tipo];
-    }).slice(0,3);
-
-  // Mejor balance: precio en top 40% más barato + marca conocida
-  const priceThreshold = minPrice + (maxPrice - minPrice) * 0.4;
-  const balanced = [...valid]
-    .filter(s=>s._dist<=15 && s.prices[tipo] <= priceThreshold)
-    .sort((a,b)=>a.prices[tipo]-b.prices[tipo])
-    .slice(0,3);
-
-  const fmt = p => p!=null?'$'+p.toFixed(2).replace('.',','):'-';
-  const saving = (price) => {
-    const s = (maxPrice - price) * litros;
-    return s > 0 ? '<span class="calc-card-saving">Ahorras $'+s.toFixed(0)+' MXN</span>' : '<span class="calc-card-nosave">Precio más alto</span>';
-  };
-  const distStr = d => d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
-  const nameStr = s => (s.brand&&s.brand!=='Independiente'&&s.brand!=='Gasolinera')?s.brand:(s.cre_name||s.name||'Gasolinera').replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?)\b\.?/gi,'').trim().split(' ').slice(0,3).join(' ');
-  const cardHtml = (s) => `<div class="calc-card" onclick="focusStation(this,'${s.cre_id||s.id||''}')">
-    <div class="calc-card-left">
-      <div class="calc-card-name">${nameStr(s)}</div>
-      <div class="calc-card-dist">${distStr(s._dist)} de distancia</div>
-    </div>
-    <div class="calc-card-right">
-      <div class="calc-card-price">${fmt(s.prices[tipo])}/L</div>
-      <div style="font-size:11px;color:var(--text3);">${(litros*s.prices[tipo]).toFixed(0)} MXN total</div>
-      ${saving(s.prices[tipo])}
-    </div>
-  </div>`;
-
-  resultsEl.innerHTML = `
-    <div class="calc-section">
-      <div class="calc-section-title"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#57d97b"><path d="M260-361v-40H160v-80h200v-80H200q-17 0-28.5-11.5T160-601v-160q0-17 11.5-28.5T200-801h60v-40h80v40h100v80H240v80h160q17 0 28.5 11.5T440-601v160q0 17-11.5 28.5T400-401h-60v40h-80Zm298 240L388-291l56-56 114 114 226-226 56 56-282 282Z"/></svg> Mejor precio cercano</div>
-      ${cheapest.map(cardHtml).join('')}
-    </div>
-    <div class="calc-section">
-      <div class="calc-section-title"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#57d97b"><path d="m363-310 117-71 117 71-31-133 104-90-137-11-53-126-53 126-137 11 104 90-31 133ZM480-28 346-160H160v-186L28-480l132-134v-186h186l134-132 134 132h186v186l132 134-132 134v186H614L480-28Zm0-112 100-100h140v-140l100-100-100-100v-140H580L480-820 380-720H240v140L140-480l100 100v140h140l100 100Zm0-340Z"/></svg> Mejores valoradas cercanas</div>
-      ${trusted.map(cardHtml).join('')}
-    </div>
-    <div class="calc-section">
-      <div class="calc-section-title"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#57d97b"><path d="m713-280 127-297v-23H588l19-134-55 55q-8-8-28-28.5T496-736l144-144 32 32q14 14 19.5 31.5T694-780l-14 100h160q33 0 56.5 23.5T920-600v23q0 8-1.5 16t-4.5 16l-93 216q-10 22-30 35.5T747-280h-34ZM240-120H40v-400h200v80H120v240h120v80Zm267 0H160v-360l240-240 32 32q14 14 19.5 31.5T454-620l-14 100h160q33 0 56.5 23.5T680-440v24q0 8-1.5 15.5T674-385l-93 217q-10 22-30 35t-44 13Zm0-80 93-216v-24H348l19-134-127 127v247h267Zm-267 0v-247 247Z"/></svg> Mejor balance precio + confianza</div>
-      ${balanced.map(cardHtml).join('')}
-    </div>
-    <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px;">Toca una gasolinera para verla en el mapa</div>
-  `;
-}
-
-function focusStation(el, stationId){
-  // Cerrar el modal y centrar el mapa en la estación
-  el.closest('.plus-modal-overlay')?.remove();
-  const s = stations.find(st=>(st.cre_id||st.id||'').toString()===stationId.toString());
-  if(s && map){
-    map.setView([s.lat,s.lng],16);
-    startApp();
-  }
-}
-
 async function loadSavingsBanner(userLat, userLng){
   try{
     const [pricesRes, placesRes] = await Promise.all([
@@ -926,7 +813,7 @@ function toast(msg){
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2500);
 }
 
-function startApp(onReady){
+function startApp(){
   $('welcome').classList.add('out');
   setTimeout(()=>$('welcome').style.display='none',400);
   $('loading').classList.add('show');
@@ -944,14 +831,6 @@ function requestGPS(){
       initMap(uLat,uLng);
       fetchAll(uLat,uLng);
       loadSavingsBanner(uLat,uLng);
-      if(typeof onReady==='function'){
-        let _tries=0;
-        const _wait=setInterval(()=>{
-          _tries++;
-          if(stations.length>0){ clearInterval(_wait); onReady(); }
-          else if(_tries>20){ clearInterval(_wait); onReady(); } // max 10s
-        },500);
-      }
     },
     err=>{
       if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}
@@ -1481,6 +1360,98 @@ function acceptCookies(){
   document.getElementById('cookie-banner').style.display='none';
 }
 window.addEventListener('load', initCookieBanner);
+
+function showCalcModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'plus-modal-overlay';
+  overlay.innerHTML = `<div class="plus-modal" style="max-height:85vh;overflow-y:auto;text-align:left;">
+    <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;"><svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">¿Cuántos litros necesitas y qué combustible?</div>
+    <div class="calc-input-row">
+      <input class="calc-input" id="calc-litros" type="number" min="1" max="120" placeholder="Litros" value="40">
+      <select class="calc-select" id="calc-tipo">
+        <option value="magna">Magna</option>
+        <option value="premium">Premium</option>
+        <option value="diesel">Diésel</option>
+      </select>
+      <button class="calc-go" onclick="runCalc()">Calcular</button>
+    </div>
+    <div id="calc-results"></div>
+    <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Cerrar</button>
+  </div>`;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+function runCalc(){
+  const litros = parseFloat(document.getElementById('calc-litros')?.value)||40;
+  const tipo = document.getElementById('calc-tipo')?.value||'magna';
+  const resultsEl = document.getElementById('calc-results');
+  if(!resultsEl) return;
+
+  const valid = stations.filter(s=>s.prices[tipo]!=null&&!isNaN(s.prices[tipo])&&s._dist!=null&&s._dist<=15);
+  if(!valid.length){
+    resultsEl.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:12px;">No hay datos en el radio actual.<br>Prueba con un radio mayor.</div>';
+    return;
+  }
+
+  const maxPrice = Math.max(...valid.map(s=>s.prices[tipo]));
+  const minPrice = Math.min(...valid.map(s=>s.prices[tipo]));
+  const byPrice = [...valid].sort((a,b)=>a.prices[tipo]-b.prices[tipo]);
+  const cheapest = byPrice.slice(0,3);
+
+  const trusted = [...valid].sort((a,b)=>{
+    const sA=(a.brand&&a.brand!=='Independiente'&&a.brand!=='Gasolinera')?1:0;
+    const sB=(b.brand&&b.brand!=='Independiente'&&b.brand!=='Gasolinera')?1:0;
+    return sB-sA||a.prices[tipo]-b.prices[tipo];
+  }).slice(0,3);
+
+  const threshold = minPrice+(maxPrice-minPrice)*0.4;
+  const balanced = [...valid].filter(s=>s.prices[tipo]<=threshold).sort((a,b)=>a.prices[tipo]-b.prices[tipo]).slice(0,3);
+
+  const fmt = p=>'$'+p.toFixed(2).replace('.',',');
+  const nameStr = s=>{
+    if(s.brand&&s.brand!=='Independiente'&&s.brand!=='Gasolinera') return s.brand;
+    return (s.cre_name||s.name||'Gasolinera').replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?)\b\.?/gi,'').trim().split(' ').slice(0,3).join(' ');
+  };
+  const distStr = d=>d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
+  const saving = price=>{
+    const s=(maxPrice-price)*litros;
+    return s>0?`<div class="calc-card-saving">Ahorras ${s.toFixed(0)} MXN</div>`:`<div class="calc-card-nosave">Precio más alto</div>`;
+  };
+  const cardHtml = s=>`<div class="calc-card" onclick="focusStation('${s.cre_id||s.id||''}');this.closest('.plus-modal-overlay').remove();">
+    <div class="calc-card-left">
+      <div class="calc-card-name">${nameStr(s)}</div>
+      <div class="calc-card-dist">${distStr(s._dist)} de distancia</div>
+    </div>
+    <div class="calc-card-right">
+      <div class="calc-card-price">${fmt(s.prices[tipo])}/L</div>
+      <div style="font-size:10px;color:var(--text3);">${(litros*s.prices[tipo]).toFixed(0)} MXN</div>
+      ${saving(s.prices[tipo])}
+    </div>
+  </div>`;
+
+  resultsEl.innerHTML=`
+    <div class="calc-section">
+      <div class="calc-section-title"><svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M260-361v-40H160v-80h200v-80H200q-17 0-28.5-11.5T160-601v-160q0-17 11.5-28.5T200-801h60v-40h80v40h100v80H240v80h160q17 0 28.5 11.5T440-601v160q0 17-11.5 28.5T400-401h-60v40h-80Zm298 240L388-291l56-56 114 114 226-226 56 56-282 282Z"/></svg> Mejor precio cercano</div>
+      ${cheapest.map(cardHtml).join('')}
+    </div>
+    <div class="calc-section">
+      <div class="calc-section-title"><svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="m363-310 117-71 117 71-31-133 104-90-137-11-53-126-53 126-137 11 104 90-31 133ZM480-28 346-160H160v-186L28-480l132-134v-186h186l134-132 134 132h186v186l132 134-132 134v186H614L480-28Zm0-112 100-100h140v-140l100-100-100-100v-140H580L480-820 380-720H240v140L140-480l100 100v140h140l100 100Zm0-340Z"/></svg> Mejores valoradas cercanas</div>
+      ${trusted.map(cardHtml).join('')}
+    </div>
+    <div class="calc-section">
+      <div class="calc-section-title"><svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="m713-280 127-297v-23H588l19-134-55 55q-8-8-28-28.5T496-736l144-144 32 32q14 14 19.5 31.5T694-780l-14 100h160q33 0 56.5 23.5T920-600v23q0 8-1.5 16t-4.5 16l-93 216q-10 22-30 35.5T747-280h-34ZM240-120H40v-400h200v80H120v240h120v80Zm267 0H160v-360l240-240 32 32q14 14 19.5 31.5T454-620l-14 100h160q33 0 56.5 23.5T680-440v24q0 8-1.5 15.5T674-385l-93 217q-10 22-30 35t-44 13Zm0-80 93-216v-24H348l19-134-127 127v247h267Zm-267 0v-247 247Z"/></svg> Mejor balance precio + confianza</div>
+      ${balanced.length?balanced.map(cardHtml).join(''):'<div style="color:var(--text3);font-size:11px;">No hay suficientes datos aún.</div>'}
+    </div>
+    <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:4px;">Toca una gasolinera para verla en el mapa</div>
+  `;
+}
+
+function focusStation(stationId){
+  const s=stations.find(st=>(st.cre_id||st.id||'').toString()===stationId.toString());
+  if(s&&map) map.setView([s.lat,s.lng],16);
+}
 </script>
 </body>
 </html>

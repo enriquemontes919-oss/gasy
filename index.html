@@ -265,7 +265,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     <div class="savings-label">Ahorro potencial hoy</div>
     <div class="savings-amount" id="savings-amount">Cargando...</div>
     <div class="savings-sub" id="savings-sub">por tanque lleno de 40L vs la más cara</div>
-    <button class="calc-btn" onclick="showCalcModal()">⚡ Calcula tu ahorro</button>
+    <button class="calc-btn" onclick="showCalcOrStart()"><svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</button>
   </div>
   <button class="wlc-btn" onclick="startApp()"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> Encontrar gasolineras</button>
   <p class="wlc-note">Se solicitará permiso de ubicación</p>
@@ -705,6 +705,15 @@ async function rateStar(stationId, stationName, stars){
 }
 
 // ── DATO DE AHORRO (solo Magna, por zona GPS) ──
+function showCalcOrStart(){
+  if(stations.length > 0){
+    showCalcModal();
+  } else {
+    // Primero iniciar la app para obtener ubicación y cargar estaciones
+    startApp(function(){ showCalcModal(); });
+  }
+}
+
 function showCalcModal(){
   const overlay = document.createElement('div');
   overlay.className = 'plus-modal-overlay';
@@ -735,7 +744,7 @@ async function runCalc(){
 
   // Obtener estaciones con precio del tipo seleccionado y ubicación del usuario
   const valid = stations.filter(s => s.prices[tipo] != null && !isNaN(s.prices[tipo]) && s._dist != null);
-  if(!valid.length){ resultsEl.innerHTML='<div style="color:var(--text3);font-size:12px;">No hay datos disponibles. Activa tu ubicación primero.</div>'; return; }
+  if(!valid.length){ resultsEl.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:12px 0;">Cargando gasolineras...<br><span style="font-size:10px;opacity:0.6;">Espera un momento y vuelve a calcular</span></div>'; return; }
 
   // Ordenar por precio
   const byPrice = [...valid].sort((a,b) => a.prices[tipo] - b.prices[tipo]);
@@ -917,7 +926,7 @@ function toast(msg){
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2500);
 }
 
-function startApp(){
+function startApp(onReady){
   $('welcome').classList.add('out');
   setTimeout(()=>$('welcome').style.display='none',400);
   $('loading').classList.add('show');
@@ -935,6 +944,7 @@ function requestGPS(){
       initMap(uLat,uLng);
       fetchAll(uLat,uLng);
       loadSavingsBanner(uLat,uLng);
+      if(typeof onReady==='function') setTimeout(onReady,2500);
     },
     err=>{
       if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}

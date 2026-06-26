@@ -1470,9 +1470,7 @@ async function runCalc(){
     const sv=(maxPrice-price)*litros;
     return sv>0?`<div class="calc-card-saving">Ahorras ${sv.toFixed(0)} MXN</div>`:`<div class="calc-card-nosave">Precio referencia</div>`;
   };
-  const wazeUrl=s=>`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
-  const gmapsUrl=s=>`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
-  const cardHtml=s=>`<div class="calc-card" style="flex-direction:column;align-items:stretch;gap:8px;" onclick="focusStation('${s.cre_id||s.id||''}')">
+  const cardHtml=s=>`<div class="calc-card" onclick="showCalcStationDetail(event,'${s.cre_id||s.id||''}','${nameStr(s).replace(/'/g,"\\'")}',${s.lat},${s.lng},${s.prices[tipo]||0},${s.prices.magna||0},${s.prices.premium||0},${s.prices.diesel||0},${s._dist})">
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div class="calc-card-left">
         <div class="calc-card-name">${nameStr(s)}</div>
@@ -1482,11 +1480,6 @@ async function runCalc(){
         <div class="calc-card-price">${fmt(s.prices[tipo])}/L</div>
         ${saving(s.prices[tipo])}
       </div>
-    </div>
-    <div style="display:flex;gap:6px;">
-      <a href="${wazeUrl(s)}" target="_blank" onclick="event.stopPropagation()" style="flex:1;text-align:center;padding:5px;background:#33CCFF;border-radius:6px;color:#fff;font-size:11px;font-weight:700;text-decoration:none;">Waze</a>
-      <a href="${gmapsUrl(s)}" target="_blank" onclick="event.stopPropagation()" style="flex:1;text-align:center;padding:5px;background:#ffffff;border-radius:6px;color:#EA4335;font-size:11px;font-weight:700;text-decoration:none;">Maps</a>
-      <button onclick="event.stopPropagation();this.closest('.plus-modal-overlay').remove();focusStation('${s.cre_id||s.id||''}')" style="flex:1;padding:5px;background:rgba(87,217,123,0.15);border:1px solid rgba(87,217,123,0.3);border-radius:6px;color:#57d97b;font-size:11px;font-weight:700;cursor:pointer;">Ver en mapa</button>
     </div>
   </div>`;
   resultsEl.innerHTML=`
@@ -1507,15 +1500,65 @@ function focusStation(stationId){
   const s=stations.find(st=>(st.cre_id||st.id||'').toString()===stationId.toString());
   if(!s||!map) return;
   map.setView([s.lat,s.lng],16);
-  // Buscar el marcador y abrir su popup
   map.eachLayer(layer=>{
-    if(layer.getPopup && layer.getLatLng){
+    if(layer.getPopup&&layer.getLatLng){
       const ll=layer.getLatLng();
-      if(Math.abs(ll.lat-s.lat)<0.0001&&Math.abs(ll.lng-s.lng)<0.0001){
-        setTimeout(()=>layer.openPopup(),400);
-      }
+      if(Math.abs(ll.lat-s.lat)<0.0001&&Math.abs(ll.lng-s.lng)<0.0001) setTimeout(()=>layer.openPopup(),400);
     }
   });
+}
+
+function showCalcStationDetail(e, id, name, lat, lng, tipoprice, magna, premium, diesel, dist){
+  e.stopPropagation();
+  // Primero intentar abrir el popup real del mapa
+  let found = false;
+  if(map){
+    map.eachLayer(layer=>{
+      if(found||!layer.getPopup||!layer.getLatLng) return;
+      const ll=layer.getLatLng();
+      if(Math.abs(ll.lat-lat)<0.0002&&Math.abs(ll.lng-lng)<0.0002){
+        found=true;
+        document.querySelector('.plus-modal-overlay')?.remove();
+        map.setView([lat,lng],16);
+        setTimeout(()=>layer.openPopup(),350);
+      }
+    });
+  }
+  if(found) return;
+
+  // Si no está en el mapa todavía, mostrar mini-popup dentro del modal
+  const distStr = dist<1?Math.round(dist*1000)+'m':dist.toFixed(1)+'km';
+  const fmtP = p=>p&&p>0?'$'+p.toFixed(2).replace('.',','):'-';
+  const waze = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+  const gmaps = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+
+  // Reemplazar el contenido del modal con el detalle
+  const modal = e.target.closest('.plus-modal');
+  if(!modal) return;
+  modal.innerHTML = `
+    <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:2px;">${name}</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">${distStr} de distancia</div>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="font-size:12px;color:var(--text2);">Magna</span>
+        <span style="font-size:12px;font-weight:700;color:${magna>0?'#fff':'var(--text3)'};">${fmtP(magna)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="font-size:12px;color:var(--text2);">Premium</span>
+        <span style="font-size:12px;font-weight:700;color:${premium>0?'#fff':'var(--text3)'};">${fmtP(premium)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;">
+        <span style="font-size:12px;color:var(--text2);">Diésel</span>
+        <span style="font-size:12px;font-weight:700;color:${diesel>0?'#fff':'var(--text3)'};">${fmtP(diesel)}</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <a href="${waze}" target="_blank" style="flex:1;text-align:center;padding:8px;background:#33CCFF;border-radius:8px;color:#fff;font-size:12px;font-weight:700;text-decoration:none;">Waze</a>
+      <a href="${gmaps}" target="_blank" style="flex:1;text-align:center;padding:8px;background:#fff;border-radius:8px;color:#EA4335;font-size:12px;font-weight:700;text-decoration:none;">Maps</a>
+    </div>
+    <button onclick="document.querySelector('.plus-modal-overlay')?.remove();if(map)map.setView([${lat},${lng}],16);" style="width:100%;padding:7px;background:rgba(87,217,123,0.12);border:1px solid rgba(87,217,123,0.3);border-radius:8px;color:#57d97b;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:6px;">Ver en el mapa</button>
+    <button onclick="this.closest('.plus-modal-overlay').remove()" style="width:100%;padding:7px;background:transparent;border:none;color:var(--text3);font-size:11px;cursor:pointer;">← Volver</button>
+  `;
 }
 </script>
 </body>

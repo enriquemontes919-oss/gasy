@@ -88,7 +88,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 /* MAP */
 #map{position:fixed;top:88px;left:0;right:0;bottom:196px;z-index:1;}
 #map.with-ad{bottom:256px;}
-.leaflet-tile-pane{filter:brightness(0.88) saturate(0.75) contrast(1.02);}
+.leaflet-tile-pane{filter:brightness(1) saturate(1) contrast(1);}
 .leaflet-control-attribution{display:none!important;}
 .leaflet-control-zoom{border:none!important;margin-right:12px!important;}
 .leaflet-control-zoom a{background:rgba(10,15,20,0.88)!important;color:var(--accent)!important;border:1px solid var(--border2)!important;border-radius:8px!important;width:32px!important;height:32px!important;line-height:32px!important;font-size:16px!important;}
@@ -794,7 +794,22 @@ function useFallback(){uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);
 
 function initMap(lat,lng){
   map=L.map('map',{zoomControl:true,attributionControl:false}).setView([lat,lng],15);
-  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',{maxZoom:20,attribution:'&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'}).addTo(map);
+  const _hora = new Date().getHours();
+  const _esDia = _hora >= 6 && _hora < 18;
+  const _tileUrl = _esDia
+    ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    : 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+  const _tileOpts = _esDia
+    ? { maxZoom: 19 }
+    : { maxZoom: 20, attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>' };
+  L.tileLayer(_tileUrl, _tileOpts).addTo(map);
+  // Ajustar brillo del mapa según hora
+  const _pane = document.querySelector('.leaflet-tile-pane');
+  if(_pane){
+    _pane.style.filter = _esDia
+      ? 'brightness(1) saturate(1) contrast(1)'
+      : 'brightness(0.88) saturate(0.75) contrast(1.02)';
+  }
   const uIcon=L.divIcon({html:'<div class="umarker-dot"></div>',className:'',iconSize:[14,14],iconAnchor:[7,7]});
   uMarker=L.marker([lat,lng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
 }

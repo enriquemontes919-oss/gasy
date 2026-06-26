@@ -1397,7 +1397,7 @@ async function runCalc(){
   }
 
   // Usar stations si ya están cargadas, sino hacer fetch propio
-  let valid = stations.filter(s=>s.prices[tipo]!=null&&!isNaN(s.prices[tipo])&&s._dist!=null&&s._dist<=15);
+  let valid = stations.filter(s=>s.prices[tipo]!=null&&!isNaN(s.prices[tipo])&&s._dist!=null&&s._dist<=3);
 
   if(!valid.length){
     try{
@@ -1436,7 +1436,7 @@ async function runCalc(){
         const slat=parseFloat(block.slice(yt+3,ye));
         if(isNaN(slat)||isNaN(slng)) continue;
         const d=hav(uLat,uLng,slat,slng);
-        if(d>15) continue;
+        if(d>3) continue;
         const nt=block.indexOf('<name>'),ne=block.indexOf('</name>');
         const name=nt!==-1?block.slice(nt+6,ne):'';
         localSt.push({cre_id:id,cre_name:name,brand:normalizeBrand(name),lat:slat,lng:slng,_dist:d,prices:{[tipo]:priceMap[id]}});
@@ -1449,7 +1449,7 @@ async function runCalc(){
   }
 
   if(!valid.length){
-    resultsEl.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:12px;">No se encontraron gasolineras en 15km.</div>';
+    resultsEl.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:12px;">No se encontraron gasolineras en 3km.</div>';
     return;
   }
 

@@ -191,17 +191,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 #headingbtn:active{transform:scale(0.9);}
 
 /* MOBILE HEADER PILLS */
-@media(max-width:520px){
+#mobile-hdr-pills{display:none;}
+@media(max-width:768px){
   #hdr-row1{gap:6px;}
-  #fuel-wrap{display:none;}
-  #mobile-hdr-pills{display:flex;align-items:center;gap:6px;}
+  #fuel-wrap{display:none!important;}
+  #mobile-hdr-pills{display:flex!important;align-items:center;gap:6px;}
   #map{top:124px;}
   #cre-badge{top:132px;}
 }
-@media(min-width:521px){
-  #mobile-hdr-pills{display:none;}
-}
-#mobile-hdr-pills{display:none;}
 .mobile-pill{display:flex;align-items:center;gap:4px;padding:5px 11px;background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:20px;font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;}
 .mobile-pill .pill-val{color:#57d97b;}
 .mobile-pill svg{opacity:0.6;flex-shrink:0;}

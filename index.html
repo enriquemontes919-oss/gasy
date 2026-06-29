@@ -196,8 +196,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   #hdr-row1{gap:6px;}
   #fuel-wrap{display:none!important;}
   #mobile-hdr-pills{display:flex!important;align-items:center;gap:6px;}
-  #map{top:124px;}
-  #cre-badge{top:132px;}
+  #hdr-row2{display:none!important;}
+  .blog-link-hdr{display:none!important;}
+  #map{top:88px;}
+  #cre-badge{top:96px;}
+  /* Fix popup cortado en Chrome iOS */
+  .leaflet-popup-content-wrapper{max-height:60vh!important;overflow-y:auto!important;}
+  .leaflet-popup{bottom:auto!important;}
 }
 .mobile-pill{display:flex;align-items:center;gap:4px;padding:5px 11px;background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:20px;font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;}
 .mobile-pill .pill-val{color:#57d97b;}
@@ -323,7 +328,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
       <img class="logo-icon" src="icon.png" alt="Gasy" style="width:32px;height:32px;border-radius:8px;">
       <span class="logo-text">Gasy</span>
     </a>
-    <a href="/blog.html" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;white-space:nowrap;">Blog</a>
+    <a href="/blog.html" class="blog-link-hdr" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;white-space:nowrap;">Blog</a>
     <button onclick="showCalcModal()" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#57d97b;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.3);border-radius:20px;padding:4px 10px;cursor:pointer;white-space:nowrap;"><svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</button>
     <div id="fuel-wrap">
       <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>

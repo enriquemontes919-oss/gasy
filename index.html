@@ -190,6 +190,37 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 #headingbtn.active{background:rgba(87,217,123,0.15);border-color:#57d97b;box-shadow:0 0 12px rgba(87,217,123,0.3);}
 #headingbtn:active{transform:scale(0.9);}
 
+/* MOBILE HEADER PILLS */
+@media(max-width:520px){
+  #hdr-row1{gap:6px;}
+  #fuel-wrap{display:none;}
+  #mobile-hdr-pills{display:flex;align-items:center;gap:6px;}
+  #map{top:124px;}
+  #cre-badge{top:132px;}
+}
+@media(min-width:521px){
+  #mobile-hdr-pills{display:none;}
+}
+#mobile-hdr-pills{display:none;}
+.mobile-pill{display:flex;align-items:center;gap:4px;padding:5px 11px;background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:20px;font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;}
+.mobile-pill .pill-val{color:#57d97b;}
+.mobile-pill svg{opacity:0.6;flex-shrink:0;}
+
+/* BOTTOM SHEETS */
+.bsheet-overlay{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.22s;}
+.bsheet-overlay.open{opacity:1;pointer-events:all;}
+.bsheet{background:#160828;border-top-left-radius:22px;border-top-right-radius:22px;width:100%;padding:0 0 40px;transform:translateY(100%);transition:transform 0.28s cubic-bezier(0.32,0.72,0,1);}
+.bsheet-overlay.open .bsheet{transform:translateY(0);}
+.bsheet-handle{width:36px;height:4px;background:rgba(75,2,243,0.5);border-radius:2px;margin:12px auto 16px;}
+.bsheet-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;padding:0 20px 12px;}
+.bsheet-opts{display:flex;flex-direction:column;gap:4px;padding:0 12px;}
+.bsheet-opt{display:flex;align-items:center;justify-content:space-between;padding:13px 12px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-family:var(--sans);font-size:15px;font-weight:600;color:var(--text);background:transparent;width:100%;text-align:left;transition:all 0.15s;}
+.bsheet-opt.active{background:rgba(87,217,123,0.1);border-color:rgba(87,217,123,0.3);color:#57d97b;}
+.bsheet-opt:not(.active):hover{background:rgba(255,255,255,0.05);}
+.bsheet-check{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);flex-shrink:0;}
+.bsheet-opt.active .bsheet-check{background:#57d97b;border-color:#57d97b;display:flex;align-items:center;justify-content:center;}
+.bsheet-opt.active .bsheet-check::after{content:'✓';font-size:11px;color:#0a0414;font-weight:800;}
+
 /* TOAST */
 #toast{position:fixed;bottom:206px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid rgba(75,2,243,0.4);color:var(--text);padding:8px 16px;border-radius:30px;font-size:12px;font-weight:500;z-index:600;opacity:0;transition:opacity 0.25s;pointer-events:none;white-space:nowrap;}
 #toast.with-ad{bottom:266px;}
@@ -302,6 +333,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
       <button class="fbtn" onclick="setFuel('premium',this)">Premium</button>
       <button class="fbtn" onclick="setFuel('diesel',this)">Diésel</button>
     </div>
+    <!-- Pills solo mobile -->
+    <div id="mobile-hdr-pills">
+      <button class="mobile-pill" onclick="openFuelSheet()">
+        <span class="pill-val" id="mobile-fuel-label">Magna</span>
+        <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#fff"><path d="M480-360 280-560h400L480-360Z"/></svg>
+      </button>
+      <button class="mobile-pill" onclick="openRadioSheet()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Z"/></svg>
+        <span class="pill-val" id="mobile-radio-label">12km</span>
+        <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#fff"><path d="M480-360 280-560h400L480-360Z"/></svg>
+      </button>
+    </div>
   </div>
   <div id="hdr-row2">
     <div id="radio-label"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> Radio de búsqueda: <span id="radio-txt">12km</span></div>
@@ -368,6 +411,50 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     <div class="stat"><div class="stat-label">Más cara</div><div class="stat-val" id="st-max">—</div><div class="stat-sub" id="st-max-n">buscando...</div></div>
   </div>
   <div id="cards"></div>
+</div>
+
+<!-- Bottom Sheet: Combustible -->
+<div class="bsheet-overlay" id="fuel-sheet" onclick="closeFuelSheet(event)">
+  <div class="bsheet">
+    <div class="bsheet-handle"></div>
+    <div class="bsheet-title">Tipo de combustible</div>
+    <div class="bsheet-opts">
+      <button class="bsheet-opt active" id="bsopt-magna" onclick="selectFuelSheet('magna')">
+        <span>⛽ Magna</span><div class="bsheet-check"></div>
+      </button>
+      <button class="bsheet-opt" id="bsopt-premium" onclick="selectFuelSheet('premium')">
+        <span>💎 Premium</span><div class="bsheet-check"></div>
+      </button>
+      <button class="bsheet-opt" id="bsopt-diesel" onclick="selectFuelSheet('diesel')">
+        <span>🚛 Diésel</span><div class="bsheet-check"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Sheet: Radio -->
+<div class="bsheet-overlay" id="radio-sheet" onclick="closeRadioSheet(event)">
+  <div class="bsheet">
+    <div class="bsheet-handle"></div>
+    <div class="bsheet-title">Radio de búsqueda</div>
+    <div class="bsheet-opts">
+      <button class="bsheet-opt" id="bsopt-5" onclick="selectRadioSheet(5)">
+        <span>5 km — Muy cerca</span><div class="bsheet-check"></div>
+      </button>
+      <button class="bsheet-opt" id="bsopt-8" onclick="selectRadioSheet(8)">
+        <span>8 km</span><div class="bsheet-check"></div>
+      </button>
+      <button class="bsheet-opt active" id="bsopt-12" onclick="selectRadioSheet(12)">
+        <span>12 km — Recomendado</span><div class="bsheet-check"></div>
+      </button>
+      <button class="bsheet-opt" id="bsopt-20" onclick="selectRadioSheet(20)">
+        <span>20 km</span><div class="bsheet-check"></div>
+      </button>
+      <button class="bsheet-opt" id="bsopt-50" onclick="selectRadioSheet(50)">
+        <span>50 km — Zona amplia</span><div class="bsheet-check"></div>
+      </button>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -796,9 +883,61 @@ function setRadio(km, btn){
   document.querySelectorAll('.rbtn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   $('radio-txt').textContent = km + 'km';
+  const mlbl = $('mobile-radio-label');
+  if(mlbl) mlbl.textContent = km + 'km';
   if(uLat && stations.length > 0){
     toast('Buscando gasolineras en ' + km + 'km...');
     fetchAll(uLat, uLng);
+  }
+}
+
+// ── BOTTOM SHEETS MOBILE ──
+function openFuelSheet(){
+  $('fuel-sheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeFuelSheet(e){
+  if(e.target===$('fuel-sheet')) { $('fuel-sheet').classList.remove('open'); document.body.style.overflow=''; }
+}
+function selectFuelSheet(f){
+  const labels={magna:'Magna',premium:'Premium',diesel:'Diésel'};
+  fuel=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  const desktopBtn=document.querySelector(`.fbtn[onclick="setFuel('${f}',this)"]`);
+  if(desktopBtn) desktopBtn.classList.add('on');
+  const mlbl=$('mobile-fuel-label');
+  if(mlbl) mlbl.textContent=labels[f];
+  ['magna','premium','diesel'].forEach(k=>{
+    const opt=$('bsopt-'+k);
+    if(opt) opt.classList.toggle('active',k===f);
+  });
+  if(stations.length){renderMarkers(f);renderCards(f);updateStats(f);}
+  setTimeout(()=>{ $('fuel-sheet').classList.remove('open'); document.body.style.overflow=''; },180);
+}
+
+function openRadioSheet(){
+  $('radio-sheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeRadioSheet(e){
+  if(e.target===$('radio-sheet')) { $('radio-sheet').classList.remove('open'); document.body.style.overflow=''; }
+}
+function selectRadioSheet(km){
+  currentRadio=km*1000;
+  $('radio-txt').textContent=km+'km';
+  const mlbl=$('mobile-radio-label');
+  if(mlbl) mlbl.textContent=km+'km';
+  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('on'));
+  [5,8,12,20,50].forEach(k=>{
+    const opt=$('bsopt-'+k);
+    if(opt) opt.classList.toggle('active',k===km);
+  });
+  const desktopBtn=document.querySelector(`.rbtn[onclick="setRadio(${km},this)"]`);
+  if(desktopBtn) desktopBtn.classList.add('on');
+  setTimeout(()=>{ $('radio-sheet').classList.remove('open'); document.body.style.overflow=''; },180);
+  if(uLat && stations.length>0){
+    toast('Buscando gasolineras en '+km+'km...');
+    fetchAll(uLat,uLng);
   }
 }
 
@@ -1255,9 +1394,16 @@ function selectStation(id){
 }
 
 function setFuel(f,btn){
+  const labels={magna:'Magna',premium:'Premium',diesel:'Diésel'};
   fuel=f;
   document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
+  const mlbl=$('mobile-fuel-label');
+  if(mlbl) mlbl.textContent=labels[f];
+  ['magna','premium','diesel'].forEach(k=>{
+    const opt=$('bsopt-'+k);
+    if(opt) opt.classList.toggle('active',k===f);
+  });
   if(stations.length){renderMarkers(f);renderCards(f);updateStats(f);}
 }
 

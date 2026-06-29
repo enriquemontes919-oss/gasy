@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Quiénes Somos – Gasy.mx</title>
+  <meta name="description" content="Conoce el equipo detrás de Gasy.mx, la plataforma mexicana para encontrar la gasolina más barata cerca de ti."/>
+  <link rel="icon" type="image/png" href="icon.png?v=2">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:     #0a0414;
+      --bg2:    #0f0520;
+      --bg3:    #160828;
+      --border: rgba(255,255,255,0.08);
+      --accent: #4b02f3;
+      --green:  #57d97b;
+      --text:   #edf2f7;
+      --text2:  #9b8fb0;
+      --text3:  #5a4870;
+      --sans:   'Outfit', sans-serif;
+      --r:      12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.75; }
+    header { position:sticky;top:0;z-index:100;background:rgba(10,4,20,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(75,2,243,0.4);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px; }
+    .logo-wrap { display:flex;align-items:center;gap:8px;text-decoration:none; }
+    .logo-icon { width:32px;height:32px;border-radius:8px;flex-shrink:0; }
+    .logo-text { font-family:var(--sans);font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:-0.3px; }
+    .hdr-right { display:flex;align-items:center;gap:8px; }
+    .hdr-tag { font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0a0414;background:var(--green);padding:3px 10px;border-radius:20px; }
+    .hdr-back { font-size:0.75rem;font-weight:600;color:var(--text2);text-decoration:none;border:1px solid rgba(255,255,255,0.1);padding:4px 12px;border-radius:20px;white-space:nowrap; }
+    main { max-width:720px;margin:0 auto;padding:48px 20px 80px; }
+    h1 { font-size:clamp(1.8rem,5vw,2.6rem);font-weight:800;line-height:1.15;color:#fff;margin-bottom:20px; }
+    h2 { font-size:clamp(1.2rem,3vw,1.55rem);font-weight:800;line-height:1.2;color:#fff;margin:32px 0 14px; }
+    h3 { font-size:1.05rem;font-weight:700;color:#fff;margin:24px 0 10px; }
+    p { color:var(--text2);margin-bottom:16px;font-size:0.97rem; }
+    p:last-child { margin-bottom:0; }
+    strong { color:var(--text);font-weight:600; }
+    a { color:var(--green); }
+    ul,ol { padding-left:22px;color:var(--text2);font-size:0.95rem;display:flex;flex-direction:column;gap:8px;margin:16px 0; }
+    .callout { background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--r);padding:18px 20px;margin:24px 0;font-size:0.92rem;color:var(--text2); }
+    .callout strong { color:#7eeea0; }
+    footer { background:var(--bg2);border-top:1px solid rgba(75,2,243,0.3);padding:28px 20px;font-size:0.78rem;color:var(--text3); }
+    footer a { color:var(--green);text-decoration:none; }
+    footer strong { color:var(--text2); }
+    @media(max-width:600px){main{padding:36px 16px 60px;}}
+  </style>
+  <style>
+    .stat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0; }
+    @media(max-width:540px){ .stat-grid { grid-template-columns:1fr 1fr; } }
+    .stat-card { background:#0f0520;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px 16px;text-align:center; }
+    .stat-num { font-size:1.8rem;font-weight:800;color:#57d97b;line-height:1; }
+    .stat-label { font-size:0.75rem;color:#5a4870;margin-top:4px; }
+    .timeline { position:relative;padding-left:24px;border-left:2px solid rgba(75,2,243,0.4);margin:24px 0; }
+    .timeline-item { position:relative;margin-bottom:28px; }
+    .timeline-item::before { content:'';position:absolute;left:-31px;top:4px;width:10px;height:10px;background:#4b02f3;border-radius:50%;border:2px solid #0a0414; }
+    .timeline-date { font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#4b02f3;margin-bottom:4px; }
+    .timeline-item h3 { margin:0 0 6px;font-size:1rem; }
+    .timeline-item p { margin:0;font-size:0.9rem; }
+    .value-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0; }
+    @media(max-width:480px){ .value-grid { grid-template-columns:1fr; } }
+    .value-card { background:#0f0520;border:1px solid rgba(255,255,255,0.08);border-left:3px solid #57d97b;border-radius:12px;padding:18px 16px; }
+    .value-card h3 { margin:0 0 6px;font-size:0.95rem; }
+    .value-card p { margin:0;font-size:0.85rem; }
+  </style>
+</head>
+<body>
+<header>
+  <a class="logo-wrap" href="/">
+    <img class="logo-icon" src="icon.png" alt="Gasy">
+    <span class="logo-text">Gasy</span>
+  </a>
+  <div class="hdr-right">
+    <span class="hdr-tag">Nosotros</span>
+    <a class="hdr-back" href="/">← Ver mapa</a>
+  </div>
+</header>
+<main>
+  <h1>Quiénes Somos</h1>
+  <p>Gasy.mx es una plataforma tecnológica mexicana creada con un propósito concreto: que ningún conductor en México pague más de lo que debería por un litro de gasolina. Somos un equipo independiente apasionado por hacer que la información pública sea realmente útil para las personas.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Ciudades cubiertas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">+8,000</div>
+      <div class="stat-label">Gasolineras en el mapa</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">Diario</div>
+      <div class="stat-label">Actualización de precios</div>
+    </div>
+  </div>
+
+  <h2>Nuestra historia</h2>
+  <p>Gasy nació de una frustración cotidiana. Llenar el tanque en México es una de esas decisiones que tomamos en piloto automático — paras en la gasolinera más cercana, pagas lo que marcan y sigues. Nadie sabe si hay una más barata a dos cuadras.</p>
+  <p>Lo irónico es que la información existe y es pública. La Comisión Nacional de Energía (CNE, antes CRE) obliga a todas las gasolineras del país a reportar sus precios diariamente. Hay miles de estaciones reportando cada día. El problema es que esos datos viven en portales del gobierno que no tienen mapa, no tienen búsqueda por ubicación y no están diseñados para el usuario en la calle.</p>
+  <p>Gasy surgió para resolver exactamente eso: tomar esa base de datos oficial, procesarla y presentarla en un mapa intuitivo que cualquier persona pueda usar en segundos desde su teléfono.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">2025 · Origen</div>
+      <h3>La idea</h3>
+      <p>Identificamos la brecha entre los datos públicos de la CNE y la experiencia real del conductor. Comenzamos a construir el primer prototipo.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Finales de 2025 · Construcción</div>
+      <h3>Lanzamiento del sitio web</h3>
+      <p>Gasy.mx va en línea con cobertura inicial en Ciudad de México. El mapa en tiempo real con datos CRE funciona por primera vez para usuarios reales.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Enero 2026 · Expansión</div>
+      <h3>5 ciudades</h3>
+      <p>Expandimos la cobertura a Guadalajara, Monterrey, Puebla y Tijuana. Sumamos el proxy de Google Places para nombres y horarios de estaciones.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Junio 2026 · App móvil</div>
+      <h3>iOS y Android</h3>
+      <p>Lanzamos la aplicación nativa de Gasy en la App Store. La versión para Android está en desarrollo y llegará próximamente.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Próximamente</div>
+      <h3>Más ciudades y Gasy Plus</h3>
+      <p>Estamos trabajando para expandir la cobertura a más estados de México y lanzar funcionalidades avanzadas para conductores frecuentes y flotas.</p>
+    </div>
+  </div>
+
+  <h2>Nuestros valores</h2>
+  <div class="value-grid">
+    <div class="value-card">
+      <h3>🔍 Transparencia</h3>
+      <p>Usamos datos públicos oficiales de la CNE, sin editorializar ni favorecer a ninguna cadena gasolinera. Lo que ves es lo que reportan.</p>
+    </div>
+    <div class="value-card">
+      <h3>⚡ Simplicidad</h3>
+      <p>Ningún registro requerido. Abres Gasy, ves el mapa, encuentras la gasolinera. Sin pasos extra.</p>
+    </div>
+    <div class="value-card">
+      <h3>🇲🇽 Hecho en México</h3>
+      <p>Diseñado para las particularidades del mercado mexicano: zonas fronterizas, estímulos al IEPS, marcas locales y comportamiento del conductor nacional.</p>
+    </div>
+    <div class="value-card">
+      <h3>💡 Información útil</h3>
+      <p>Además del mapa, publicamos semanalmente análisis y noticias del sector para que entiendas por qué suben o bajan los precios.</p>
+    </div>
+  </div>
+
+  <h2>El equipo</h2>
+  <p>Somos un equipo pequeño con experiencia en desarrollo de software, diseño de producto y mercados de consumo en México. Preferimos que el producto hable por nosotros — pero si quieres conocernos mejor o colaborar, escríbenos.</p>
+
+  <div class="callout">
+    <strong>¿Quieres colaborar con Gasy?</strong> Estamos abiertos a conversaciones con medios, investigadores del sector energético, y empresas que quieran integrar nuestros datos. Escríbenos a <a href="mailto:hola@gasy.mx">hola@gasy.mx</a>.
+  </div>
+
+  <h2>¿Por qué confiar en los datos de Gasy?</h2>
+  <p>Todos los precios que muestra Gasy provienen directamente de los reportes que las gasolineras envían a la CNE/CRE, el organismo regulador del sector energético en México. No inventamos precios ni hacemos estimaciones — mostramos exactamente lo que cada estación reportó en su última actualización.</p>
+  <p>La frecuencia de actualización es diaria para la mayoría de las estaciones, aunque algunas pueden reportar con menos frecuencia. Siempre mostramos la fecha y hora de la última actualización disponible para cada gasolinera.</p>
+
+  <p style="margin-top:32px;"><a href="/contacto.html" style="background:#4b02f3;color:#fff;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;font-size:0.95rem;">Escríbenos →</a></p>
+</main>
+<footer>
+  <div style="max-width:720px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <img src="icon.png" alt="Gasy" style="width:28px;height:28px;border-radius:7px;">
+      <span style="font-weight:800;font-size:1rem;color:#fff;">Gasy.mx</span>
+    </div>
+    <p style="margin-bottom:12px;">Gasolina inteligente, decisiones que ahorran.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px;font-size:0.8rem;">
+      <a href="/blog.html">Blog</a>
+      <a href="/privacidad.html">Política de Privacidad</a>
+      <a href="/terminos.html">Términos y Condiciones</a>
+      <a href="/contacto.html">Contacto</a>
+      <a href="/nosotros.html">Quiénes Somos</a>
+    </div>
+    <p>Datos basados en reportes oficiales de la <a href="https://www.cne.gob.mx" target="_blank" rel="noopener">Comisión Nacional de Energía (CNE)</a> · © 2026 Gasy.mx</p>
+  </div>
+</footer>
+</body>
+</html>

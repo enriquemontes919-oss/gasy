@@ -644,6 +644,19 @@ function renderPlacesInfo(place, stationId){
     const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
     if(matched){ brandEl.textContent = matched; }
   }
+  // Actualizar también el bottom sheet mobile si está abierto para esta misma estación
+  const mobBrand = document.getElementById('ms-brand');
+  const mobName = document.getElementById('ms-name');
+  if(mobBrand && mobName && place.name){
+    const gName = place.name;
+    const brands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
+    const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
+    if(matched){
+      mobBrand.textContent = matched.toUpperCase();
+      mobBrand.style.display = 'block';
+      mobName.textContent = matched;
+    }
+  }
 }
 
 async function getRatings(stationId){
@@ -1032,21 +1045,21 @@ function openMobStation(s, isStar){
   _mobUserRating = 0;
   _mobCommentsLoaded = false;
   const stationId = s.cre_id || s.osm_id || `osm_${s.id}`;
-  // Lógica idéntica a las cards del panel inferior
-  const _b = s.brand && s.brand !== 'Independiente' && s.brand !== 'Gasolinera' ? s.brand : null;
-  const isKnownBrand = !!_b;
-  const displayTitle = _b
-    ? _b
-    : (()=>{
-        const raw = s.cre_name || s.name || 'Gasolinera';
-        const n = raw.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE\s+C\.?V\.?|Y\/O|S\.?C\.?|SPR|DE\s+R\.?L\.?)\b\.?/gi,'').replace(/\s+/g,' ').trim();
-        return n.split(' ').slice(0,4).map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
-      })();
+  // Mismo approach que el popup desktop:
+  // 1. Nombre = razón social limpia (sin S.A. de C.V.)
+  // 2. Marca = la detecta Google Places async via renderPlacesInfo → ms-brand se actualiza solo
+  const rawForClean = s.cre_name || s.name || 'Gasolinera';
+  const displayTitle = rawForClean
+    .replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE\s+C\.?V\.?|Y\/O|S\.?C\.?|SPR|DE\s+R\.?L\.?)\b\.?/gi,'')
+    .replace(/\s+/g,' ').trim()
+    .split(' ').slice(0,4)
+    .map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase())
+    .join(' ') || 'Gasolinera';
   const rawName = s.cre_name || s.name || s.brand || 'Gasolinera';
   const fmt2 = n => (n!=null&&!isNaN(n)&&n>0) ? '$'+parseFloat(n).toFixed(2).replace('.',',') : null;
 
-  $('ms-brand').textContent = isKnownBrand ? _b.toUpperCase() : '';
-  $('ms-brand').style.display = isKnownBrand ? 'block' : 'none';
+  $('ms-brand').textContent = '';
+  $('ms-brand').style.display = 'none';
   $('ms-name').textContent = displayTitle;
   const addr = (s.addr&&s.addr!=='undefined'&&s.addr.length>2) ? s.addr : (s.municipio&&s.municipio.length>2 ? s.municipio : '');
   if(addr){

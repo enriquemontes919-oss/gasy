@@ -219,6 +219,48 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .mobile-pill .pill-val{color:#57d97b;}
 .mobile-pill svg{opacity:0.6;flex-shrink:0;}
 
+/* BOTTOM SHEET ESTACIÓN MOBILE */
+#mob-station-overlay{position:fixed;inset:0;z-index:7000;background:rgba(0,0,0,0.65);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.22s;}
+#mob-station-overlay.open{opacity:1;pointer-events:all;}
+#mob-station-sheet{background:#160828;border-top-left-radius:22px;border-top-right-radius:22px;width:100%;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.28s cubic-bezier(0.32,0.72,0,1);}
+#mob-station-overlay.open #mob-station-sheet{transform:translateY(0);}
+#mob-station-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 40px;}
+.ms-handle{width:36px;height:4px;background:rgba(75,2,243,0.5);border-radius:2px;margin:12px auto 4px;flex-shrink:0;}
+.ms-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px 8px;flex-shrink:0;}
+.ms-brand{font-size:10px;font-weight:700;color:#57d97b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+.ms-name{font-size:17px;font-weight:800;color:#edf2f7;line-height:1.2;}
+.ms-addr{font-size:11px;color:#5a4870;margin-top:3px;}
+.ms-close{padding:6px;color:#9b8fb0;font-size:20px;background:none;border:none;cursor:pointer;line-height:1;}
+.ms-status{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.ms-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ms-dot.open{background:#57d97b;} .ms-dot.closed{background:#ff3d57;} .ms-dot.unk{background:#5a4870;}
+.ms-status-txt{font-size:12px;font-weight:700;}
+.ms-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.ms-badge{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;border-radius:12px;padding:3px 9px;border:1px solid;}
+.ms-badge.good{background:rgba(87,217,123,0.1);border-color:rgba(87,217,123,0.3);color:#57d97b;}
+.ms-badge.bad{background:rgba(255,61,87,0.1);border-color:rgba(255,61,87,0.3);color:#ff3d57;}
+.ms-prices{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;margin-bottom:12px;}
+.ms-price-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.ms-price-row:last-child{border-bottom:none;}
+.ms-fuel-lbl{font-size:13px;color:#9b8fb0;}
+.ms-fuel-val{font-size:16px;font-weight:700;color:#fff;}
+.ms-fuel-val.na{color:#5a4870;font-size:13px;}
+.ms-divider{height:1px;background:rgba(255,255,255,0.08);margin:4px 0 12px;}
+.ms-rating-box{background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin-bottom:12px;}
+.ms-nav{display:flex;gap:8px;margin-bottom:10px;}
+.ms-nav-btn{flex:1;padding:12px;border-radius:12px;border:none;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+.ms-comments-btn{width:100%;padding:11px;background:rgba(87,217,123,0.08);border:1px solid rgba(87,217,123,0.25);border-radius:10px;color:#9b8fb0;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:6px;}
+.ms-star-btn{background:none;border:none;cursor:pointer;font-size:26px;padding:0;line-height:1;-webkit-tap-highlight-color:transparent;}
+.ms-chk-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.ms-chk-item{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);font-size:11px;color:#9b8fb0;cursor:pointer;}
+.ms-chk-item input{accent-color:#57d97b;}
+.ms-chk-3{display:flex;gap:6px;margin-bottom:10px;}
+.ms-chk-3 .ms-chk-item{flex:1;}
+.ms-textarea{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:12px;padding:10px;margin-bottom:8px;min-height:70px;resize:none;box-sizing:border-box;}
+.ms-submit-btn{width:100%;padding:12px;background:#4b02f3;border:none;border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.ms-src{font-size:10px;color:#5a4870;text-align:center;margin-top:12px;}
+.ms-star-badge{background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.4);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#FFD700;margin-bottom:10px;text-align:center;}
+
 /* BOTTOM SHEETS */
 .bsheet-overlay{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.22s;}
 .bsheet-overlay.open{opacity:1;pointer-events:all;}
@@ -424,6 +466,82 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     <div class="stat"><div class="stat-label">Más cara</div><div class="stat-val" id="st-max">—</div><div class="stat-sub" id="st-max-n">buscando...</div></div>
   </div>
   <div id="cards"></div>
+</div>
+
+<!-- Bottom Sheet: Estación Mobile -->
+<div id="mob-station-overlay" onclick="if(event.target===this)closeMobStation()">
+  <div id="mob-station-sheet">
+    <div class="ms-handle"></div>
+    <div class="ms-hdr">
+      <div style="flex:1;margin-right:12px;">
+        <div class="ms-brand" id="ms-brand"></div>
+        <div class="ms-name" id="ms-name"></div>
+        <div class="ms-addr" id="ms-addr"></div>
+      </div>
+      <button class="ms-close" onclick="closeMobStation()">✕</button>
+    </div>
+    <div id="mob-station-scroll">
+      <div class="ms-star-badge" id="ms-star-badge" style="display:none">⭐ MÁS BARATA DE LA ZONA</div>
+      <div class="ms-status" id="ms-status" style="display:none">
+        <div class="ms-dot unk" id="ms-dot"></div>
+        <span class="ms-status-txt" id="ms-status-txt"></span>
+      </div>
+      <div class="ms-badges" id="ms-amenity-badges"></div>
+      <div class="ms-badges" id="ms-report-badges"></div>
+      <div class="ms-prices">
+        <div class="ms-price-row"><span class="ms-fuel-lbl">Magna</span><span class="ms-fuel-val" id="ms-p-magna">N/D</span></div>
+        <div class="ms-price-row"><span class="ms-fuel-lbl">Premium</span><span class="ms-fuel-val" id="ms-p-premium">N/D</span></div>
+        <div class="ms-price-row"><span class="ms-fuel-lbl">Diésel</span><span class="ms-fuel-val" id="ms-p-diesel">N/D</span></div>
+      </div>
+      <div class="ms-divider"></div>
+      <!-- Rating -->
+      <div class="ms-rating-box">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span style="font-size:14px;">⭐</span>
+          <span style="font-size:13px;font-weight:700;color:#FFD700;" id="ms-rating-avg">Sin valoraciones</span>
+          <span style="font-size:11px;color:#5a4870;" id="ms-rating-count"></span>
+        </div>
+        <div style="font-size:10px;color:#5a4870;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Tu valoración</div>
+        <div style="display:flex;gap:6px;" id="ms-stars-row">
+          <button class="ms-star-btn" onclick="mobileRateStar(1)">☆</button>
+          <button class="ms-star-btn" onclick="mobileRateStar(2)">☆</button>
+          <button class="ms-star-btn" onclick="mobileRateStar(3)">☆</button>
+          <button class="ms-star-btn" onclick="mobileRateStar(4)">☆</button>
+          <button class="ms-star-btn" onclick="mobileRateStar(5)">☆</button>
+        </div>
+        <div id="ms-rating-thanks" style="display:none;font-size:11px;color:#57d97b;margin-top:6px;">✓ ¡Gracias por tu valoración!</div>
+      </div>
+      <!-- Nav -->
+      <div class="ms-nav">
+        <a id="ms-waze" href="#" target="_blank" class="ms-nav-btn" style="background:#33CCFF;color:#fff;">Waze</a>
+        <a id="ms-maps" href="#" target="_blank" class="ms-nav-btn" style="background:#fff;color:#EA4335;">Maps</a>
+      </div>
+      <!-- Comentarios toggle -->
+      <button class="ms-comments-btn" id="ms-comments-toggle" onclick="toggleMobComments()">💬 Ver y agregar comentarios</button>
+      <div id="ms-comments-section" style="display:none;">
+        <div style="font-size:12px;font-weight:700;color:#edf2f7;margin-bottom:8px;">Comentarios</div>
+        <div id="ms-comments-list" style="font-size:12px;color:#9b8fb0;margin-bottom:10px;">Cargando...</div>
+        <div style="font-size:11px;font-weight:700;color:#9b8fb0;margin-bottom:6px;">¿Qué tiene esta gasolinera?</div>
+        <div class="ms-chk-3">
+          <label class="ms-chk-item"><input type="checkbox" id="ms-chk-store"> Tienda</label>
+          <label class="ms-chk-item"><input type="checkbox" id="ms-chk-restroom"> Baño</label>
+          <label class="ms-chk-item"><input type="checkbox" id="ms-chk-atm"> Cajero</label>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:#9b8fb0;margin-bottom:6px;">¿Cómo fue tu experiencia?</div>
+        <div class="ms-chk-grid">
+          <label class="ms-chk-item" style="color:#57d97b;background:rgba(87,217,123,0.06);border-color:rgba(87,217,123,0.2);"><input type="checkbox" id="ms-chk-litro"> ✓ Litro completo</label>
+          <label class="ms-chk-item" style="color:#ff3d57;background:rgba(255,61,87,0.06);border-color:rgba(255,61,87,0.2);"><input type="checkbox" id="ms-chk-nolitro"> ✗ Litro incompleto</label>
+          <label class="ms-chk-item" style="color:#57d97b;background:rgba(87,217,123,0.06);border-color:rgba(87,217,123,0.2);"><input type="checkbox" id="ms-chk-seg"> 🔒 Zona segura</label>
+          <label class="ms-chk-item" style="color:#ff3d57;background:rgba(255,61,87,0.06);border-color:rgba(255,61,87,0.2);"><input type="checkbox" id="ms-chk-inseg"> 🚨 Zona insegura</label>
+          <label class="ms-chk-item" style="color:#57d97b;background:rgba(87,217,123,0.06);border-color:rgba(87,217,123,0.2);"><input type="checkbox" id="ms-chk-tarjeta"> 💳 Tarjeta segura</label>
+          <label class="ms-chk-item" style="color:#ff3d57;background:rgba(255,61,87,0.06);border-color:rgba(255,61,87,0.2);"><input type="checkbox" id="ms-chk-clona"> ⛔ Clona tarjetas</label>
+        </div>
+        <textarea class="ms-textarea" id="ms-new-comment" placeholder="Escribe un comentario (opcional)..."></textarea>
+        <button class="ms-submit-btn" id="ms-submit-btn" onclick="submitMobStation()">Publicar</button>
+      </div>
+      <div class="ms-src" id="ms-src">Fuente: CRE</div>
+    </div>
+  </div>
 </div>
 
 <!-- Bottom Sheet: Combustible -->
@@ -904,6 +1022,190 @@ function setRadio(km, btn){
   }
 }
 
+// ── BOTTOM SHEET ESTACIÓN MOBILE ──
+let _mobStation = null;
+let _mobUserRating = 0;
+let _mobCommentsLoaded = false;
+
+function openMobStation(s, isStar){
+  _mobStation = s;
+  _mobUserRating = 0;
+  _mobCommentsLoaded = false;
+  const stationId = s.cre_id || s.osm_id || `osm_${s.id}`;
+  const rawName = s.name || s.brand || 'Gasolinera';
+  const cleanName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
+  const isKnownBrand = s.brand && s.brand !== 'Independiente' && s.brand !== 'Gasolinera';
+  const fmt2 = n => (n!=null&&!isNaN(n)&&n>0) ? '$'+parseFloat(n).toFixed(2).replace('.',',') : null;
+
+  $('ms-brand').textContent = isKnownBrand ? s.brand.toUpperCase() : '';
+  $('ms-brand').style.display = isKnownBrand ? 'block' : 'none';
+  $('ms-name').textContent = cleanName;
+  const addr = (s.addr&&s.addr!=='undefined'&&s.addr.length>2) ? s.addr : (s.municipio&&s.municipio.length>2 ? s.municipio : '');
+  $('ms-addr').textContent = addr;
+  $('ms-addr').style.display = addr ? 'block' : 'none';
+  $('ms-star-badge').style.display = isStar ? 'block' : 'none';
+
+  // Precios
+  const setP = (id, val) => {
+    const el=$(id); const v=fmt2(val);
+    el.textContent = v||'N/D'; el.className = 'ms-fuel-val'+(v?'':' na');
+  };
+  setP('ms-p-magna', s.prices.magna); setP('ms-p-premium', s.prices.premium); setP('ms-p-diesel', s.prices.diesel);
+
+  // Nav links
+  $('ms-waze').href = `https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
+  $('ms-maps').href = `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
+
+  // Fuente
+  const srcLabel = s.source==='merged'?'OSM + CRE':s.source==='cre_only'?'CRE':'Demo';
+  $('ms-src').textContent = 'Fuente: ' + srcLabel;
+
+  // Reset rating
+  $('ms-rating-avg').textContent = 'Sin valoraciones';
+  $('ms-rating-avg').style.color = '#5a4870';
+  $('ms-rating-count').textContent = '';
+  $('ms-rating-thanks').style.display = 'none';
+  updateMobStars(0);
+
+  // Reset comentarios
+  $('ms-comments-section').style.display = 'none';
+  $('ms-comments-toggle').textContent = '💬 Ver y agregar comentarios';
+  $('ms-new-comment').value = '';
+  ['ms-chk-store','ms-chk-restroom','ms-chk-atm','ms-chk-litro','ms-chk-nolitro','ms-chk-seg','ms-chk-inseg','ms-chk-tarjeta','ms-chk-clona'].forEach(id=>{ const el=$(id); if(el) el.checked=false; });
+
+  // Reset badges
+  $('ms-amenity-badges').innerHTML = '';
+  $('ms-report-badges').innerHTML = '';
+  $('ms-status').style.display = 'none';
+
+  // Abrir sheet
+  $('mob-station-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Cargar datos async
+  getRatings(stationId).then(rating => {
+    if(!rating) return;
+    if(rating.count > 0){
+      $('ms-rating-avg').textContent = rating.avg;
+      $('ms-rating-avg').style.color = '#FFD700';
+      $('ms-rating-count').textContent = `(${rating.count} valoracion${rating.count!==1?'es':''})`;
+    }
+  });
+  loadMobAmenities(stationId);
+  loadMobReports(stationId);
+  getPlaceDetails(s.lat, s.lng, rawName, stationId).then(place => {
+    if(!place) return;
+    const isOpen = place.isOpen;
+    const dotEl = $('ms-dot');
+    const txtEl = $('ms-status-txt');
+    dotEl.className = 'ms-dot ' + (isOpen===true?'open':isOpen===false?'closed':'unk');
+    const label = isOpen===true?'Abierta':isOpen===false?'Cerrada':'';
+    const hours = place.todayHours ? ` · ${place.todayHours}` : '';
+    txtEl.textContent = label + hours;
+    txtEl.style.color = isOpen===true?'#57d97b':isOpen===false?'#ff3d57':'#9b8fb0';
+    if(label) $('ms-status').style.display = 'flex';
+  });
+}
+
+async function loadMobAmenities(stationId){
+  try{
+    const res = await fetch(`${SUPA_URL}/rest/v1/amenities?station_id=eq.${stationId}&select=has_store,has_restroom,has_atm`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    if(!res.ok) return;
+    const data = await res.json(); if(!data.length) return;
+    const s=d=>d.filter(r=>r.has_store).length, r=d=>d.filter(x=>x.has_restroom).length, a=d=>d.filter(x=>x.has_atm).length;
+    const badges=[];
+    if(s(data)>=2) badges.push('<span class="ms-badge good">🏪 Tienda</span>');
+    if(r(data)>=2) badges.push('<span class="ms-badge good">🚻 Baño</span>');
+    if(a(data)>=2) badges.push('<span class="ms-badge good">🏧 Cajero</span>');
+    if(badges.length) $('ms-amenity-badges').innerHTML = badges.join('');
+  }catch(e){}
+}
+
+async function loadMobReports(stationId){
+  try{
+    const res = await fetch(`${SUPA_URL}/rest/v1/reports?station_id=eq.${stationId}&select=litro_completo,no_litro,zona_segura,zona_insegura,acepta_tarjeta,clona_tarjeta`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    if(!res.ok) return;
+    const data = await res.json(); if(!data.length) return;
+    const cnt=f=>data.filter(r=>r[f]).length;
+    const badges=[];
+    if(cnt('litro_completo')>=2) badges.push('<span class="ms-badge good">✅ Litro completo</span>');
+    if(cnt('no_litro')>=2) badges.push('<span class="ms-badge bad">⚠️ Litro incompleto</span>');
+    if(cnt('zona_segura')>=2) badges.push('<span class="ms-badge good">🔒 Zona segura</span>');
+    if(cnt('zona_insegura')>=2) badges.push('<span class="ms-badge bad">🚨 Zona insegura</span>');
+    if(cnt('acepta_tarjeta')>=2) badges.push('<span class="ms-badge good">💳 Tarjeta segura</span>');
+    if(cnt('clona_tarjeta')>=2) badges.push('<span class="ms-badge bad">⛔ Clona tarjetas</span>');
+    if(badges.length) $('ms-report-badges').innerHTML = badges.join('');
+  }catch(e){}
+}
+
+function updateMobStars(n){
+  _mobUserRating = n;
+  const btns = $('ms-stars-row').querySelectorAll('.ms-star-btn');
+  btns.forEach((b,i) => { b.textContent = i < n ? '★' : '☆'; b.style.color = i < n ? '#FFD700' : 'rgba(255,215,0,0.2)'; });
+}
+
+async function mobileRateStar(n){
+  if($('ms-rating-thanks').style.display !== 'none') return;
+  updateMobStars(n);
+  if(!_mobStation) return;
+  const stationId = _mobStation.cre_id || _mobStation.osm_id || `osm_${_mobStation.id}`;
+  const stationName = _mobStation.name || _mobStation.brand;
+  await submitRating(stationId, stationName, n);
+  $('ms-rating-thanks').style.display = 'block';
+  const rating = await getRatings(stationId);
+  if(rating && rating.count > 0){
+    $('ms-rating-avg').textContent = rating.avg; $('ms-rating-avg').style.color='#FFD700';
+    $('ms-rating-count').textContent = `(${rating.count} valoracion${rating.count!==1?'es':''})`;
+  }
+}
+
+async function toggleMobComments(){
+  const sec = $('ms-comments-section');
+  if(sec.style.display !== 'none'){ sec.style.display='none'; $('ms-comments-toggle').textContent='💬 Ver y agregar comentarios'; return; }
+  sec.style.display = 'block';
+  $('ms-comments-toggle').textContent = '▲ Ocultar comentarios';
+  if(_mobCommentsLoaded) return;
+  _mobCommentsLoaded = true;
+  if(!_mobStation) return;
+  const stationId = _mobStation.cre_id || _mobStation.osm_id || `osm_${_mobStation.id}`;
+  try{
+    const res = await fetch(`${SUPA_URL}/rest/v1/comments?station_id=eq.${stationId}&order=created_at.desc&limit=20`,{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    const data = res.ok ? await res.json() : [];
+    const el = $('ms-comments-list');
+    if(!data.length){ el.textContent='Sé el primero en comentar.'; el.style.fontStyle='italic'; }
+    else el.innerHTML = data.map(c=>`<div style="border-bottom:1px solid rgba(255,255,255,0.07);padding:8px 0;"><div style="font-size:12px;color:#edf2f7;">${c.comment}</div><div style="font-size:10px;color:#5a4870;margin-top:2px;">${new Date(c.created_at).toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'})}</div></div>`).join('');
+  }catch(e){ $('ms-comments-list').textContent='Error cargando comentarios.'; }
+}
+
+async function submitMobStation(){
+  if(!_mobStation) return;
+  const stationId = _mobStation.cre_id || _mobStation.osm_id || `osm_${_mobStation.id}`;
+  const stationName = _mobStation.name || _mobStation.brand;
+  const comment = $('ms-new-comment').value.trim();
+  const chkStore=$('ms-chk-store').checked, chkRestroom=$('ms-chk-restroom').checked, chkAtm=$('ms-chk-atm').checked;
+  const chkLitro=$('ms-chk-litro').checked, chkNoLitro=$('ms-chk-nolitro').checked;
+  const chkSeg=$('ms-chk-seg').checked, chkInseg=$('ms-chk-inseg').checked;
+  const chkTarjeta=$('ms-chk-tarjeta').checked, chkClona=$('ms-chk-clona').checked;
+  if(!comment&&!chkStore&&!chkRestroom&&!chkAtm&&!chkLitro&&!chkNoLitro&&!chkSeg&&!chkInseg&&!chkTarjeta&&!chkClona) return;
+  const btn=$('ms-submit-btn'); btn.textContent='Publicando...'; btn.disabled=true;
+  try{
+    if(comment) await fetch(`${SUPA_URL}/rest/v1/comments`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({station_id:stationId,station_name:stationName,comment})});
+    if(chkStore||chkRestroom||chkAtm) await fetch(`${SUPA_URL}/rest/v1/amenities`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({station_id:stationId,station_name:stationName,has_store:chkStore,has_restroom:chkRestroom,has_atm:chkAtm})});
+    if(chkLitro||chkNoLitro||chkSeg||chkInseg||chkTarjeta||chkClona) await fetch(`${SUPA_URL}/rest/v1/reports`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({station_id:stationId,station_name:stationName,litro_completo:chkLitro,no_litro:chkNoLitro,zona_segura:chkSeg,zona_insegura:chkInseg,acepta_tarjeta:chkTarjeta,clona_tarjeta:chkClona})});
+    btn.textContent='¡Publicado!'; toast('✓ Aportación guardada');
+    $('ms-new-comment').value='';
+    ['ms-chk-store','ms-chk-restroom','ms-chk-atm','ms-chk-litro','ms-chk-nolitro','ms-chk-seg','ms-chk-inseg','ms-chk-tarjeta','ms-chk-clona'].forEach(id=>{ const el=$(id); if(el) el.checked=false; });
+    _mobCommentsLoaded=false;
+  }catch(e){ btn.textContent='Error'; }
+  setTimeout(()=>{ btn.textContent='Publicar'; btn.disabled=false; },2000);
+}
+
+function closeMobStation(){
+  $('mob-station-overlay').classList.remove('open');
+  document.body.style.overflow='';
+  _mobStation=null;
+}
+
 // ── BOTTOM SHEETS MOBILE ──
 function openFuelSheet(){
   $('fuel-sheet').classList.add('open');
@@ -1359,7 +1661,10 @@ function renderMarkers(f){
       const place = await getPlaceDetails(s.lat, s.lng, rawName, stationId);
       renderPlacesInfo(place, stationId);
     });
-    mk.on('click',()=>selectStation(s.id));
+    mk.on('click',()=>{
+      selectStation(s.id);
+      if(window.innerWidth<=768){ mk.closePopup(); openMobStation(s, isStar); }
+    });
     markers[s.id]=mk;
   });
 }

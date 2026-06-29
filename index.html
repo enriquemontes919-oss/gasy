@@ -1032,14 +1032,25 @@ function openMobStation(s, isStar){
   _mobUserRating = 0;
   _mobCommentsLoaded = false;
   const stationId = s.cre_id || s.osm_id || `osm_${s.id}`;
-  const rawName = s.name || s.brand || 'Gasolinera';
-  const cleanName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
-  const isKnownBrand = s.brand && s.brand !== 'Independiente' && s.brand !== 'Gasolinera';
+  const rawCRE = s.cre_name || '';
+  const detectedBrand = normalizeBrand(rawCRE) || normalizeBrand(s.brand||'') || normalizeBrand(s.name||'');
+  const knownBrands = ['Pemex','Shell','BP','G500','Petro-7','Hidrosina','Orsan','Oxxo Gas','Exxon','Mobil','TotalEnergies','Costco Gas'];
+  const isKnownBrand = knownBrands.includes(detectedBrand);
+  const rawForDisplay = rawCRE || s.name || s.brand || 'Gasolinera';
+  const displayTitle = isKnownBrand
+    ? detectedBrand
+    : rawForDisplay
+        .replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE\s+C\.?V\.?|Y\/O|SPR|S\.?C\.?|DE\s+R\.?L\.?)\b\.?/gi,'')
+        .replace(/\s+/g,' ').trim()
+        .split(' ').slice(0,4)
+        .map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase())
+        .join(' ') || 'Gasolinera';
+  const rawName = rawCRE || s.name || s.brand || 'Gasolinera';
   const fmt2 = n => (n!=null&&!isNaN(n)&&n>0) ? '$'+parseFloat(n).toFixed(2).replace('.',',') : null;
 
-  $('ms-brand').textContent = isKnownBrand ? s.brand.toUpperCase() : '';
+  $('ms-brand').textContent = isKnownBrand ? detectedBrand.toUpperCase() : '';
   $('ms-brand').style.display = isKnownBrand ? 'block' : 'none';
-  $('ms-name').textContent = cleanName;
+  $('ms-name').textContent = displayTitle;
   const addr = (s.addr&&s.addr!=='undefined'&&s.addr.length>2) ? s.addr : (s.municipio&&s.municipio.length>2 ? s.municipio : '');
   $('ms-addr').textContent = addr;
   $('ms-addr').style.display = addr ? 'block' : 'none';

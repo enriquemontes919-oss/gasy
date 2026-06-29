@@ -196,16 +196,24 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   #hdr-row1{gap:6px;}
   #fuel-wrap{display:none!important;}
   #mobile-hdr-pills{display:flex!important;align-items:center;gap:6px;}
-  #hdr-row2{justify-content:flex-start!important;padding:4px 14px 8px!important;}
+  #hdr-row2{justify-content:center!important;padding:2px 14px 6px!important;border-bottom:none!important;}
   .blog-link-hdr{display:none!important;}
   #radio-label{display:none!important;}
   #radio-wrap{display:none!important;}
-  #map{top:112px;}
+  #hdr{border-bottom:none!important;}
+  #map{top:108px;}
   #cre-badge{top:120px;}
   #gpsbtn{bottom:212px;}
   #headingbtn{bottom:264px;}
   #legend{bottom:212px;}
   #toast{bottom:206px;}
+  /* Popup compacto en mobile */
+  .leaflet-popup-content-wrapper{max-height:52vh!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;}
+  .pop{padding:10px 12px!important;}
+  .pop-stars-label{display:none!important;}
+  .stars-row{display:none!important;}
+  .pop-stars-thanks{display:none!important;}
+  .pop-stars button[onclick*="showComments"]{display:none!important;}
 }
 .mobile-pill{display:flex;align-items:center;gap:4px;padding:5px 11px;background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:20px;font-family:var(--sans);font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;}
 .mobile-pill .pill-val{color:#57d97b;}

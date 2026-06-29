@@ -474,7 +474,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     <div class="ms-handle"></div>
     <div class="ms-hdr">
       <div style="flex:1;margin-right:12px;">
-        <div class="ms-brand" id="ms-brand"></div>
         <div class="ms-name" id="ms-name"></div>
         <div class="ms-addr" id="ms-addr" style="display:flex;align-items:center;gap:4px;"></div>
       </div>
@@ -644,17 +643,13 @@ function renderPlacesInfo(place, stationId){
     const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
     if(matched){ brandEl.textContent = matched; }
   }
-  // Igual que desktop: si Google Places detecta marca, actualizar también el bottom sheet mobile
+  // Igual que desktop: si Google Places detecta marca, sobreescribir ms-name
   if(place.name && document.getElementById('mob-station-overlay')?.classList.contains('open')){
     const gName = place.name;
     const brands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
     const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
-    if(matched){
-      const mobBrand = document.getElementById('ms-brand');
-      const mobName = document.getElementById('ms-name');
-      if(mobBrand){ mobBrand.textContent = matched.toUpperCase(); mobBrand.style.display = 'block'; }
-      if(mobName){ mobName.textContent = matched; }
-    }
+    const mobName = document.getElementById('ms-name');
+    if(matched && mobName) mobName.textContent = matched;
   }
 }
 
@@ -1044,15 +1039,12 @@ function openMobStation(s, isStar){
   _mobUserRating = 0;
   _mobCommentsLoaded = false;
   const stationId = s.cre_id || s.osm_id || `osm_${s.id}`;
-  // Exactamente igual que desktop: s.name ya viene procesado por cleanName()
-  // cleanName() devuelve marca si existe, o nombre OSM/CRE limpio
-  // renderPlacesInfo() lo sobreescribe con la marca de Google Places si la detecta
-  const rawName = s.cre_name || s.name || s.brand || 'Gasolinera';
+  // Exactamente igual que desktop — cleanPopName sobre s.name
+  const rawName = s.name || s.brand || 'Gasolinera';
+  const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
   const fmt2 = n => (n!=null&&!isNaN(n)&&n>0) ? '$'+parseFloat(n).toFixed(2).replace('.',',') : null;
 
-  $('ms-brand').textContent = '';
-  $('ms-brand').style.display = 'none';
-  $('ms-name').textContent = s.name || s.brand || 'Gasolinera';
+  $('ms-name').textContent = cleanPopName;
   const addr = (s.addr&&s.addr!=='undefined'&&s.addr.length>2) ? s.addr : (s.municipio&&s.municipio.length>2 ? s.municipio : '');
   if(addr){
     $('ms-addr').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="11px" viewBox="0 -960 960 960" width="11px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Z"/></svg> ' + addr;

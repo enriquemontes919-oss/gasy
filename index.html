@@ -627,29 +627,42 @@ async function getPlaceDetails(lat, lng, name, stationId){
 
 function renderPlacesInfo(place, stationId){
   if(!place) return;
+  const knownBrands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
+
+  // ── Desktop popup ──
   const statusEl = document.getElementById("pop-status-"+stationId);
   const brandEl = document.getElementById("pop-brand-"+stationId);
-  if(!statusEl) return;
-  const isOpen = place.isOpen;
-  const hours = place.todayHours || "";
-  const dotClass = isOpen===true?"open":isOpen===false?"closed":"unknown";
-  const label = isOpen===true?`<span class="open-label">Abierta</span>`:isOpen===false?`<span class="closed-label">Cerrada</span>`:"";
-  const hoursText = hours ? ` &middot; ${hours}` : "";
-  statusEl.innerHTML = `<div class="pop-status-dot ${dotClass}"></div><span class="pop-status-text">${label}${hoursText}</span>`;
-  statusEl.style.display = "flex";
-  if(brandEl && place.name){
-    const gName = place.name;
-    const brands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
-    const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
-    if(matched){ brandEl.textContent = matched; }
+  if(statusEl){
+    const isOpen = place.isOpen;
+    const hours = place.todayHours || "";
+    const dotClass = isOpen===true?"open":isOpen===false?"closed":"unknown";
+    const label = isOpen===true?`<span class="open-label">Abierta</span>`:isOpen===false?`<span class="closed-label">Cerrada</span>`:"";
+    const hoursText = hours ? ` &middot; ${hours}` : "";
+    statusEl.innerHTML = `<div class="pop-status-dot ${dotClass}"></div><span class="pop-status-text">${label}${hoursText}</span>`;
+    statusEl.style.display = "flex";
+    if(brandEl && place.name){
+      const matched = knownBrands.find(b=>place.name.toLowerCase().includes(b.toLowerCase()));
+      if(matched) brandEl.textContent = matched;
+    }
   }
-  // Igual que desktop: si Google Places detecta marca, sobreescribir ms-name
-  if(place.name && document.getElementById('mob-station-overlay')?.classList.contains('open')){
-    const gName = place.name;
-    const brands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
-    const matched = brands.find(b=>gName.toLowerCase().includes(b.toLowerCase()));
-    const mobName = document.getElementById('ms-name');
-    if(matched && mobName) mobName.textContent = matched;
+
+  // ── Mobile bottom sheet ── actualizar siempre, independiente del desktop
+  const mobNameEl = document.getElementById('ms-name');
+  const mobStatusEl = document.getElementById('ms-status');
+  const mobDotEl = document.getElementById('ms-dot');
+  const mobStatusTxtEl = document.getElementById('ms-status-txt');
+  if(mobNameEl && place.name){
+    const matched = knownBrands.find(b=>place.name.toLowerCase().includes(b.toLowerCase()));
+    if(matched) mobNameEl.textContent = matched;
+  }
+  if(mobStatusEl && mobDotEl && mobStatusTxtEl){
+    const isOpen = place.isOpen;
+    const hours = place.todayHours || "";
+    mobDotEl.className = 'ms-dot ' + (isOpen===true?'open':isOpen===false?'closed':'unk');
+    const label = isOpen===true?'Abierta':isOpen===false?'Cerrada':'';
+    mobStatusTxtEl.textContent = label + (hours ? ' · '+hours : '');
+    mobStatusTxtEl.style.color = isOpen===true?'#57d97b':isOpen===false?'#ff3d57':'#9b8fb0';
+    if(label) mobStatusEl.style.display = 'flex';
   }
 }
 

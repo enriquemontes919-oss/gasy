@@ -1763,6 +1763,7 @@ function toggleHeading(){
     icon.querySelector('polygon').setAttribute('fill','#57d97b');
     icon.querySelector('polygon').setAttribute('stroke','#57d97b');
     toast('🧭 Modo navegación activado');
+    map.invalidateSize();
     if(userHeading != null) applyMapHeading(userHeading);
   } else {
     btn.classList.remove('active');
@@ -1774,8 +1775,6 @@ function toggleHeading(){
 }
 
 function applyMapHeading(deg){
-  // Rotar el contenedor de tiles del mapa con CSS transform
-  // Leaflet no tiene setBearing nativo, lo hacemos via transform
   const now = Date.now();
   if(now - lastHeadingUpdate < 200) return; // throttle 200ms
   lastHeadingUpdate = now;
@@ -1789,7 +1788,6 @@ function applyMapHeading(deg){
   [pane, overlayPane, markerPane, shadowPane].forEach(p=>{
     if(p){ p.style.transform = deg === 0 ? '' : rotate; p.style.transformOrigin = origin; }
   });
-  // El popup no rota para que sea siempre legible
   if(popupPane) popupPane.style.transform = '';
 }
 

@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog Gasy – Precios de gasolina en México, noticias y guías semanales</title>
-  <meta name="description" content="El equipo Gasy publica cada semana los precios reales de gasolina en CDMX, Guadalajara, Monterrey, Puebla y Tijuana. Datos de la CRE, comparativas y noticias del sector." />
-  <meta name="keywords" content="precio gasolina hoy México, gasolina barata CDMX, precio magna semana, gasolinera más barata Guadalajara, CRE precios combustible, gasolina México vs USA" />
+  <meta name="description" content="El equipo Gasy publica cada semana los precios reales de gasolina en CDMX, Guadalajara, Monterrey, Puebla y Tijuana. Datos de la CRE, comparativas y noticias del sector energético." />
+  <meta name="keywords" content="precio gasolina hoy México, gasolina barata CDMX, precio magna semana, gasolinera más barata Guadalajara, precio gasolina Monterrey, precio gasolina Tijuana, precio gasolina Puebla, CRE precios combustible" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://gasy.mx/blog.html" />
   <meta property="og:title" content="Blog Gasy – Precios de gasolina en México" />
@@ -18,290 +18,90 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:         #0a0414;
-      --bg2:        #0f0520;
-      --bg3:        #160828;
-      --border:     rgba(255,255,255,0.08);
-      --border2:    rgba(255,255,255,0.15);
-      --accent:     #4b02f3;
-      --green:      #57d97b;
-      --green-bg:   rgba(87,217,123,0.12);
-      --amber:      #ffc400;
-      --text:       #edf2f7;
-      --text2:      #9b8fb0;
-      --text3:      #5a4870;
-      --sans:       'Outfit', sans-serif;
-      --mono:       'JetBrains Mono', monospace;
-      --r:          12px;
+      --bg:    #0a0414; --bg2: #0f0520; --bg3: #160828;
+      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+      --accent: #4b02f3; --green: #57d97b; --green-bg: rgba(87,217,123,0.12);
+      --amber: #ffc400; --text: #edf2f7; --text2: #9b8fb0; --text3: #5a4870;
+      --sans: 'Outfit', sans-serif; --mono: 'JetBrains Mono', monospace; --r: 12px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.75; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.75;
-    }
+    header { position:sticky;top:0;z-index:100;background:rgba(10,4,20,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(75,2,243,0.4);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px; }
+    .logo-wrap { display:flex;align-items:center;gap:8px;text-decoration:none; }
+    .logo-icon { width:32px;height:32px;border-radius:8px;flex-shrink:0; }
+    .logo-text { font-family:var(--sans);font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:-0.3px; }
+    .hdr-right { display:flex;align-items:center;gap:8px; }
+    .hdr-tag { font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0a0414;background:var(--green);padding:3px 10px;border-radius:20px; }
+    .hdr-back { font-size:0.75rem;font-weight:600;color:var(--text2);text-decoration:none;border:1px solid rgba(255,255,255,0.1);padding:4px 12px;border-radius:20px;white-space:nowrap; }
 
-    /* ── HEADER ── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10,4,20,0.97);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(75,2,243,0.4);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      flex-shrink: 0;
-    }
-    .logo-text {
-      font-family: var(--sans);
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.3px;
-    }
-    .hdr-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hdr-tag {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #0a0414;
-      background: var(--green);
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-    .hdr-back {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text2);
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 4px 12px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
+    .hero { background:linear-gradient(160deg,#1a0055 0%,var(--bg) 60%);padding:52px 20px 44px;border-bottom:1px solid rgba(75,2,243,0.25); }
+    .hero-inner { max-width:720px;margin:0 auto; }
+    .hero-eyebrow { font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:14px; }
+    .hero h1 { font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;line-height:1.15;color:#fff; }
+    .hero h1 em { font-style:normal;color:var(--green); }
+    .hero-sub { margin-top:14px;color:var(--text2);font-size:0.95rem;max-width:500px; }
+    .hero-meta { margin-top:20px;font-size:0.78rem;color:var(--text3);display:flex;align-items:center;gap:8px;flex-wrap:wrap; }
+    .hero-meta span { background:rgba(75,2,243,0.3);border:1px solid rgba(75,2,243,0.5);border-radius:20px;padding:2px 10px;color:var(--text2);font-size:0.72rem;font-weight:600; }
 
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(160deg, #1a0055 0%, var(--bg) 60%);
-      padding: 52px 20px 44px;
-      border-bottom: 1px solid rgba(75,2,243,0.25);
-    }
-    .hero-inner { max-width: 720px; margin: 0 auto; }
-    .hero-eyebrow {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 14px;
-    }
-    .hero h1 {
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      font-weight: 800;
-      line-height: 1.15;
-      color: #fff;
-    }
-    .hero h1 em { font-style: normal; color: var(--green); }
-    .hero-sub {
-      margin-top: 14px;
-      color: var(--text2);
-      font-size: 0.95rem;
-      max-width: 500px;
-    }
-    .hero-author {
-      margin-top: 20px;
-      font-size: 0.78rem;
-      color: var(--text3);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hero-author span {
-      background: rgba(75,2,243,0.3);
-      border: 1px solid rgba(75,2,243,0.5);
-      border-radius: 20px;
-      padding: 2px 10px;
-      color: var(--text2);
-      font-size: 0.72rem;
-      font-weight: 600;
-    }
+    main { max-width:720px;margin:0 auto;padding:48px 20px 80px; }
 
-    /* ── MAIN ── */
-    main {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 48px 20px 80px;
-    }
+    .toc { background:var(--bg2);border:1px solid rgba(75,2,243,0.35);border-left:3px solid var(--accent);border-radius:var(--r);padding:22px 24px;margin-bottom:56px; }
+    .toc-label { font-size:0.65rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:rgba(107,47,245,0.9);margin-bottom:6px; }
+    .toc-updated { font-size:0.78rem;color:var(--text3);margin-bottom:14px; }
+    .toc-section { font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin:14px 0 6px; }
+    .toc ol { padding-left:18px;display:flex;flex-direction:column;gap:6px; }
+    .toc li a { color:var(--text);text-decoration:none;font-size:0.9rem;font-weight:500; }
+    .toc li a:hover { color:var(--green); }
 
-    /* ── TOC ── */
-    .toc {
-      background: var(--bg2);
-      border: 1px solid rgba(75,2,243,0.35);
-      border-left: 3px solid var(--accent);
-      border-radius: var(--r);
-      padding: 22px 24px;
-      margin-bottom: 56px;
-    }
-    .toc-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: rgba(107,47,245,0.9);
-      margin-bottom: 12px;
-    }
-    .toc ol {
-      padding-left: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .toc li a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.92rem;
-      font-weight: 500;
-    }
-    .toc li a:hover { color: var(--green); }
+    article { margin-bottom:68px;scroll-margin-top:20px; }
+    .art-meta { display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap; }
+    .art-tag { font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px; }
+    .tag-semanal { background:rgba(87,217,123,0.1);color:var(--green);border:1px solid rgba(87,217,123,0.25); }
+    .tag-guia    { background:rgba(75,2,243,0.2);color:#a78bfa;border:1px solid rgba(75,2,243,0.4); }
+    .tag-editorial { background:rgba(255,196,0,0.1);color:var(--amber);border:1px solid rgba(255,196,0,0.25); }
+    .art-date { font-size:0.75rem;color:var(--text3); }
+    .art-author { font-size:0.75rem;color:var(--text3); }
+    .art-week { display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);background:rgba(75,2,243,0.15);border:1px solid rgba(75,2,243,0.3);border-radius:20px;padding:2px 10px;margin-bottom:14px; }
 
-    /* ── ARTICLE ── */
-    article { margin-bottom: 68px; scroll-margin-top: 20px; }
+    article h2 { font-size:clamp(1.25rem,3vw,1.65rem);font-weight:800;line-height:1.2;margin-bottom:20px;color:#fff; }
+    article p { color:var(--text2);margin-bottom:16px;font-size:0.97rem; }
+    article p:last-child { margin-bottom:0; }
+    article strong { color:var(--text);font-weight:600; }
+    article a { color:var(--green); }
 
-    .art-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-    .art-tag {
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
-    .tag-semanal  { background: rgba(87,217,123,0.1);  color: var(--green); border: 1px solid rgba(87,217,123,0.25); }
-    .tag-guia     { background: rgba(75,2,243,0.2);    color: #a78bfa;      border: 1px solid rgba(75,2,243,0.4); }
-    .tag-editorial{ background: rgba(255,196,0,0.1);   color: var(--amber); border: 1px solid rgba(255,196,0,0.25); }
-    .art-date { font-size: 0.75rem; color: var(--text3); }
-    .art-author { font-size: 0.75rem; color: var(--text3); }
+    .tbl-wrap { overflow-x:auto;margin:24px 0;border-radius:var(--r);border:1px solid var(--border2); }
+    table { width:100%;border-collapse:collapse;font-size:0.85rem; }
+    thead tr { background:var(--bg3); }
+    th { padding:11px 14px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);white-space:nowrap; }
+    td { padding:11px 14px;border-top:1px solid var(--border);color:var(--text); }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+    .up   { color:#ff6b6b;font-weight:700;font-family:var(--mono);font-size:0.82rem; }
+    .down { color:var(--green);font-weight:700;font-family:var(--mono);font-size:0.82rem; }
+    .eq   { color:var(--text3);font-family:var(--mono);font-size:0.82rem; }
+    .pv   { font-family:var(--mono);font-weight:600; }
 
-    article h2 {
-      font-size: clamp(1.25rem, 3vw, 1.65rem);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-    article p { color: var(--text2); margin-bottom: 16px; font-size: 0.97rem; }
-    article p:last-child { margin-bottom: 0; }
-    article strong { color: var(--text); font-weight: 600; }
+    .callout { background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--r);padding:18px 20px;margin:24px 0;font-size:0.92rem;color:var(--text2); }
+    .callout strong { color:#7eeea0; }
+    .callout a { color:#7eeea0; }
+    .callout-purple { border-left-color:var(--accent); }
+    .callout-purple strong { color:#a78bfa; }
+    .callout-purple a { color:#a78bfa; }
+    .callout-amber { border-left-color:var(--amber); }
+    .callout-amber strong { color:var(--amber); }
 
-    /* ── TABLE ── */
-    .tbl-wrap {
-      overflow-x: auto;
-      margin: 24px 0;
-      border-radius: var(--r);
-      border: 1px solid var(--border2);
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    thead tr { background: var(--bg3); }
-    th {
-      padding: 11px 14px;
-      text-align: left;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--text3);
-      white-space: nowrap;
-    }
-    td { padding: 11px 14px; border-top: 1px solid var(--border); color: var(--text); }
-    tr:hover td { background: rgba(255,255,255,0.02); }
-    .up   { color: #ff6b6b; font-weight: 700; font-family: var(--mono); font-size: 0.82rem; }
-    .down { color: var(--green); font-weight: 700; font-family: var(--mono); font-size: 0.82rem; }
-    .eq   { color: var(--text3); font-family: var(--mono); font-size: 0.82rem; }
-    .price-val { font-family: var(--mono); font-weight: 600; }
+    .body-list { padding-left:20px;margin:18px 0;display:flex;flex-direction:column;gap:10px;color:var(--text2);font-size:0.95rem; }
+    .body-list strong { color:#7eeea0; }
 
-    /* ── CALLOUT ── */
-    .callout {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--green);
-      border-radius: var(--r);
-      padding: 18px 20px;
-      margin: 24px 0;
-      font-size: 0.92rem;
-      color: var(--text2);
-    }
-    .callout strong { color: var(--green); }
-    .callout a { color: var(--green); text-decoration: none; }
+    .week-sep { border:none;border-top:2px solid rgba(75,2,243,0.3);margin:68px 0;position:relative; }
+    .divider { border:none;border-top:1px solid var(--border);margin-bottom:68px; }
 
-    .callout-purple { border-left-color: var(--accent); }
-    .callout-purple strong { color: #a78bfa; }
-    .callout-purple a { color: #a78bfa; }
+    footer { background:var(--bg2);border-top:1px solid rgba(75,2,243,0.3);padding:28px 20px;font-size:0.78rem;color:var(--text3); }
+    footer a { color:var(--green);text-decoration:none; }
+    footer strong { color:var(--text2); }
+    .footer-links { display:flex;flex-wrap:wrap;gap:16px;margin:12px 0; }
 
-    .callout-amber { border-left-color: var(--amber); }
-    .callout-amber strong { color: var(--amber); }
-
-    /* ── BODY LIST ── */
-    .body-list {
-      padding-left: 20px;
-      margin: 18px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      color: var(--text2);
-      font-size: 0.95rem;
-    }
-    .body-list strong { color: var(--green); }
-
-    /* ── DIVIDER ── */
-    .divider { border: none; border-top: 1px solid var(--border); margin-bottom: 68px; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--bg2);
-      border-top: 1px solid rgba(75,2,243,0.3);
-      padding: 28px 20px;
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--text3);
-    }
-    footer a { color: var(--green); text-decoration: none; }
-    footer strong { color: var(--text2); }
-
-    @media (max-width: 600px) {
-      .hero { padding: 38px 16px 34px; }
-      main  { padding: 36px 16px 60px; }
-    }
+    @media(max-width:600px){ .hero{padding:38px 16px 34px;} main{padding:36px 16px 60px;} }
   </style>
 </head>
 <body>
@@ -319,164 +119,73 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <p class="hero-eyebrow">⛽ Gasolina inteligente, decisiones que ahorran</p>
-    <h1>Noticias y precios de <em>gasolina en México</em></h1>
-    <p class="hero-sub">Cada semana el equipo Gasy analiza los precios reales de la CRE en las 5 ciudades de la app, te explica qué está pasando en el sector y te ayuda a tomar mejores decisiones en la bomba.</p>
-    <div class="hero-author">
+    <p class="hero-eyebrow">&#9981; Gasolina inteligente, decisiones que ahorran</p>
+    <h1>Noticias y precios de <em>gasolina en Mexico</em></h1>
+    <p class="hero-sub">Cada semana el equipo Gasy analiza los precios reales de la CNE en las 5 ciudades de la app, te explica que esta pasando en el sector y te ayuda a tomar mejores decisiones en la bomba.</p>
+    <div class="hero-meta">
       <span>Por el Equipo Gasy</span>
       · Actualizado cada lunes
+      · <a href="/" style="color:var(--green);">Ver mapa en tiempo real</a>
     </div>
   </div>
 </div>
 
 <main>
 
-  <!-- ═══════════════════════════════════════
-       SEMANA 29 JUNIO 2026 – INICIO
-  ═══════════════════════════════════════ -->
+  <!-- INDICE -->
+  <nav class="toc">
+    <p class="toc-label">Indice de articulos</p>
+    <p class="toc-updated">Ultima actualizacion: 15 de julio de 2026</p>
 
-  <article id="semana-29jun" style="margin-bottom:68px;scroll-margin-top:20px;">
+    <p class="toc-section">Semana del 8 al 15 de julio 2026</p>
+    <ol>
+      <li><a href="#jul15-precios">Precio gasolina hoy: CDMX baja, Puebla la mas barata de julio</a></li>
+      <li><a href="#jul15-mxusa">Mexico vs EE.UU.: el peso se recupera y el gasolinazo se aleja</a></li>
+      <li><a href="#jul15-noticias">Noticias gasolina Mexico: IEPS, PROFECO y lo que viene en agosto</a></li>
+    </ol>
+
+    <p class="toc-section">Semana del 30 jun al 7 julio 2026</p>
+    <ol>
+      <li><a href="#jul07-precios">Precios de gasolina: Tijuana registra el mayor alza, Puebla la mas barata</a></li>
+      <li><a href="#jul07-mxusa">Mexico vs EE.UU.: dolar a 18 pesos presiona los combustibles</a></li>
+      <li><a href="#jul07-noticias">Noticias gasolina julio 2026: alza en Tijuana y que esperar esta semana</a></li>
+    </ol>
+
+    <p class="toc-section">Semana del 23 al 29 junio 2026</p>
+    <ol>
+      <li><a href="#jun29-precios">Precios gasolina: Monterrey cierra junio como la ciudad mas cara</a></li>
+      <li><a href="#jun29-mxusa">Mexico vs EE.UU.: el acuerdo con Iran derrumbo el crudo</a></li>
+      <li><a href="#jun29-noticias">Noticias sector gasolinero: crudo a la baja y sin estimulo al IEPS</a></li>
+    </ol>
+
+    <p class="toc-section">Edicion inicial · Junio 2026</p>
+    <ol>
+      <li><a href="#jun15-precios">Precios de la semana: comparativa en las 5 ciudades de Gasy</a></li>
+      <li><a href="#jun15-mxusa">Mexico vs EE.UU.: por que llenamos el tanque al doble de precio</a></li>
+      <li><a href="#jun15-noticias">Lo que paso en el sector gasolinero esta semana</a></li>
+      <li><a href="#art4">Que es la CRE y como decide cuanto pagas en la bomba</a></li>
+      <li><a href="#art5">Por que construimos Gasy (y que problema concreto resuelve)</a></li>
+    </ol>
+  </nav>
+
+
+  <!-- ════════════════════════════════════════
+       SEMANA 15 JULIO 2026
+  ════════════════════════════════════════ -->
+
+  <div style="margin-bottom:12px;">
+    <span class="art-week">Semana del 8 al 15 de julio de 2026</span>
+  </div>
+
+  <article id="jul15-precios">
     <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
-      <span class="art-date">Semana del 23 al 29 de junio de 2026</span>
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">15 de julio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>Precios de gasolina esta semana: Monterrey rompe los $24 pesos y cierra junio como la ciudad más cara</h2>
+    <h2>Precio gasolina hoy 15 de julio: CDMX baja a $23.80, Puebla la mas barata de las cinco ciudades</h2>
 
-    <p>Junio termina con una tendencia clara en los datos que monitorea Gasy: Monterrey se consolida como la ciudad con el precio de Magna más alto de las cinco que cubrimos, superando los $24 pesos por litro por tercera semana consecutiva. En el otro extremo, Tijuana mantiene su ventaja fronteriza. Aquí el desglose completo de la última semana del mes.</p>
-
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Ciudad</th>
-            <th>Magna (Regular)</th>
-            <th>Premium</th>
-            <th>Diésel</th>
-            <th>vs. semana anterior</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Ciudad de México</strong></td>
-            <td class="price-val">$23.56</td>
-            <td class="price-val">$27.26</td>
-            <td class="price-val">$26.64</td>
-            <td class="down">▼ -$0.10</td>
-          </tr>
-          <tr>
-            <td><strong>Guadalajara</strong></td>
-            <td class="price-val">$23.91</td>
-            <td class="price-val">$28.83</td>
-            <td class="price-val">$27.24</td>
-            <td class="down">▼ -$0.09</td>
-          </tr>
-          <tr>
-            <td><strong>Monterrey</strong></td>
-            <td class="price-val">$24.06</td>
-            <td class="price-val">$29.51</td>
-            <td class="price-val">$27.08</td>
-            <td class="up">▲ +$0.02</td>
-          </tr>
-          <tr>
-            <td><strong>Puebla</strong></td>
-            <td class="price-val">$23.48</td>
-            <td class="price-val">$27.16</td>
-            <td class="price-val">$26.79</td>
-            <td class="down">▼ -$0.25</td>
-          </tr>
-          <tr>
-            <td><strong>Tijuana</strong></td>
-            <td class="price-val">$22.88</td>
-            <td class="price-val">$28.06</td>
-            <td class="price-val">$26.24</td>
-            <td class="up">▲ +$0.01</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p>Precios en pesos por litro. Promedio estatal según datos CNE/CRE al 29 de junio de 2026. Promedio nacional de Magna: <strong>$23.77/litro</strong>. Premium: $28.48. Diésel: $27.13.</p>
-
-    <div class="callout">
-      <strong>🏆 Ganadora de la semana: Puebla.</strong> La mayor caída semanal la registró Puebla con una baja de $0.25 por litro en Magna — la más pronunciada entre las cinco ciudades. Si vives en Puebla y cargaste esta semana, probablemente fue el precio más bajo del mes. La CDMX también bajó $0.10, lo que la coloca en $23.56, el nivel más accesible entre las grandes ciudades del centro del país.
-    </div>
-
-    <div class="callout callout-purple">
-      <strong>📈 Monterrey, tercer lunes consecutivo arriba de $24.</strong> Con $24.06/litro de Magna y $29.51 de Premium, Monterrey cierra junio como la ciudad más cara de las cinco en ambas categorías. La brecha acumulada con Tijuana es ya de $1.18 por litro — suficiente para que un tanque de 45 litros salga $53 pesos más caro en el noreste que en la frontera noroeste.
-    </div>
-
-    <p>¿Quieres saber cuál es la gasolinera más barata de tu colonia hoy mismo? Abre el mapa de Gasy y activa tu ubicación — los precios se actualizan diariamente con datos de la CNE.</p>
-  </article>
-  <hr class="divider" />
-
-  <article style="margin-bottom:68px;scroll-margin-top:20px;">
-    <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
-      <span class="art-date">29 de junio de 2026</span>
-      <span class="art-author">· Equipo Gasy</span>
-    </div>
-    <h2>México vs. EE.UU.: el dólar rompe los 18 pesos y la gasolina importada se encarece — ¿lo sentiremos en la bomba?</h2>
-
-    <p>Esta semana el tipo de cambio cruzó una barrera psicológica importante: el dólar superó los <strong>18 pesos</strong> por primera vez en varios meses. Eso tiene implicaciones directas para el precio de la gasolina, porque México importa una parte significativa de su combustible refinado y lo paga en dólares. Te explicamos qué esperar.</p>
-
-    <div class="callout callout-amber">
-      <strong>Los números de esta semana:</strong> Magna en México: <strong>$23.77/litro</strong> promedio nacional. En EE.UU., el galón de Regular se ubica alrededor de <strong>$3.95 dólares</strong>. Con el tipo de cambio actual de ~18.10 pesos por dólar, eso equivale a unos <strong>$18.82 pesos por galón ÷ 3.785 litros = ~$10.50 pesos por litro</strong>. La brecha se mantiene: en México pagamos más del doble por el mismo combustible base.
-    </div>
-
-    <p><strong>¿Por qué el dólar caro amenaza los precios?</strong> México refina una parte de su gasolina en las instalaciones de Pemex, pero también importa volúmenes considerables de combustible ya procesado — principalmente desde refinerías de Texas y la Costa del Golfo de EE.UU. Ese combustible se compra en dólares. Cuando el peso se deprecia, cada litro importado le cuesta más a México en términos de pesos, lo que presiona los márgenes de toda la cadena de distribución.</p>
-
-    <p><strong>El amortiguador del IEPS.</strong> Hacienda tiene la capacidad de reducir la cuota del IEPS para compensar el impacto del tipo de cambio y evitar un gasolinazo. Sin embargo, desde principios de 2026 el gobierno ha optado por no aplicar estímulos fiscales al combustible regular, lo que significa que ese colchón está temporalmente desactivado. Si el peso sigue debilitándose, la presión sobre los precios en la bomba podría crecer en las próximas semanas.</p>
-
-    <div class="callout">
-      <strong>¿Qué vigilamos en Gasy para la semana que viene?</strong> El ajuste semanal del IEPS que publica la Secretaría de Hacienda cada viernes en el DOF. Si aparece un estímulo, los precios podrían bajar. Si no aparece — y el dólar sigue arriba de 18 — podríamos ver ligeros incrementos en algunas ciudades. Te lo reportamos el próximo lunes.
-    </div>
-  </article>
-  <hr class="divider" />
-
-  <article style="margin-bottom:68px;scroll-margin-top:20px;">
-    <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
-      <span class="art-date">29 de junio de 2026</span>
-      <span class="art-author">· Equipo Gasy</span>
-    </div>
-    <h2>Noticias del sector gasolinero esta semana: dólar a 18, sin estímulo al IEPS y cierre de mes sin gasolinazo</h2>
-
-    <p>La semana del 23 al 29 de junio tuvo varios frentes relevantes para el mercado de combustibles en México. Aquí el resumen desde la perspectiva de los conductores en las ciudades de Gasy.</p>
-
-    <p><strong>Junio cierra sin gasolinazo — pero con presión acumulada.</strong> A pesar de que el tipo de cambio superó los 18 pesos por dólar y el IEPS no ha recibido estímulo fiscal en semanas, los precios de la Magna se mantuvieron por debajo de los $24.10 pesos en promedio nacional. El gobierno federal y los gasolineros han mantenido un acuerdo tácito de contención de precios, aunque los empresarios del sector advierten que los márgenes se están comprimiendo.</p>
-
-    <p><strong>Puebla registra la mayor caída de la semana.</strong> Con una reducción de $0.25 por litro en Magna respecto a la semana anterior, Puebla fue la ciudad más dinámica en cuanto a movimiento de precios esta semana. Los datos de la CNE muestran mayor competencia entre gasolineras en la zona metropolitana de Puebla-Tlaxcala, lo que puede estar presionando los precios a la baja.</p>
-
-    <p><strong>Especialistas descartan desabasto, pero prevén volatilidad.</strong> El Clúster Energético de Nuevo León y otros analistas del sector coinciden en que, pese a la reapertura del Estrecho de Ormuz, el mercado de combustibles seguirá volátil en el segundo semestre de 2026. La estabilización del precio del crudo internacional es una buena señal, pero el tipo de cambio sigue siendo la variable más impredecible para México.</p>
-
-    <p><strong>CDMX y Puebla, las más competitivas del mes.</strong> Al revisar los datos de junio en Gasy, Ciudad de México y Puebla mostraron mayor movimiento de precios entre gasolineras — lo que indica más competencia y, para el usuario, más oportunidad de encontrar precios debajo del promedio. Guadalajara y Monterrey tuvieron menos variación interna, con precios más homogéneos entre estaciones.</p>
-
-    <div class="callout">
-      <strong>📍 Resumen de junio 2026 en las 5 ciudades de Gasy:</strong> Tijuana fue la ciudad más barata del mes (promedio Magna ~$22.87/L). Monterrey fue la más cara (promedio ~$24.04/L). La CDMX mostró la mayor volatilidad y terminó el mes con una tendencia bajista. Puebla cerró con el precio más accesible entre las ciudades del centro del país. Guadalajara se mantuvo estable en torno a los $23.91/L durante todo el mes.
-    </div>
-
-    <p>El próximo lunes arrancamos julio con los primeros precios del nuevo mes. Si notas alguna inconsistencia entre lo que muestra Gasy y el precio real en tu gasolinera, <a href="/contacto.html">escríbenos</a> — lo investigamos.</p>
-  </article>
-  <hr class="divider" />
-
-  <!-- ═══════════════════════════════════════
-       SEMANA 29 JUNIO 2026 – FIN
-  ═══════════════════════════════════════ -->
-
-  <!-- ═══════════════════════════════════════
-       SEMANA 7 JULIO 2026 – INICIO
-  ═══════════════════════════════════════ -->
-
-  <article id="semana-7jul" style="margin-bottom:68px;scroll-margin-top:20px;">
-    <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
-      <span class="art-date">Semana del 30 de junio al 7 de julio de 2026</span>
-      <span class="art-author">· Equipo Gasy</span>
-    </div>
-    <h2>Precio gasolina hoy en México: cuánto cuesta el litro de Magna, Premium y Diésel en CDMX, Guadalajara, Monterrey, Puebla y Tijuana</h2>
-
-    <p>Arrancamos julio con precios practicamente sin cambio respecto al cierre de junio. El promedio nacional de Magna se ubica en <strong>$23.78 pesos por litro</strong> al corte de este lunes 7 de julio de 2026. Aqui el desglose por ciudad para que sepas exactamente cuanto estas pagando — y cuanto podrias estar ahorrando.</p>
+    <p>Segunda semana de julio con buenas noticias para la mayoria de los conductores en Mexico: el precio de la Magna bajo ligeramente en la Ciudad de Mexico y se mantiene estable en el resto de las ciudades de Gasy. El promedio nacional de Magna se ubica en <strong>$23.78 pesos por litro</strong> hoy miercoles 15 de julio de 2026, segun datos de la CNE y PETROIntelligence.</p>
 
     <div class="tbl-wrap">
       <table>
@@ -491,139 +200,127 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>Ciudad de Mexico</strong></td>
-            <td class="price-val">$23.82</td>
-            <td class="price-val">$28.74</td>
-            <td class="price-val">$26.99</td>
-            <td class="up">&#9650; +$0.26</td>
+            <td><strong>Ciudad de Mexico (CDMX)</strong></td>
+            <td class="pv">$23.80</td>
+            <td class="pv">$28.69</td>
+            <td class="pv">$26.97</td>
+            <td class="down">&#9660; -$0.02</td>
           </tr>
           <tr>
             <td><strong>Guadalajara</strong></td>
-            <td class="price-val">$24.00</td>
-            <td class="price-val">$29.27</td>
-            <td class="price-val">$27.23</td>
-            <td class="up">&#9650; +$0.09</td>
+            <td class="pv">$24.00</td>
+            <td class="pv">$29.27</td>
+            <td class="pv">$27.23</td>
+            <td class="eq">Sin cambio</td>
           </tr>
           <tr>
             <td><strong>Monterrey</strong></td>
-            <td class="price-val">$24.06</td>
-            <td class="price-val">$29.52</td>
-            <td class="price-val">$27.06</td>
+            <td class="pv">$24.06</td>
+            <td class="pv">$29.52</td>
+            <td class="pv">$27.06</td>
             <td class="eq">Sin cambio</td>
           </tr>
           <tr>
             <td><strong>Puebla</strong></td>
-            <td class="price-val">$23.48</td>
-            <td class="price-val">$27.25</td>
-            <td class="price-val">$26.62</td>
-            <td class="eq">Sin cambio</td>
+            <td class="pv">$23.73</td>
+            <td class="pv">$28.04</td>
+            <td class="pv">$27.06</td>
+            <td class="down">&#9660; -$0.25</td>
           </tr>
           <tr>
-            <td><strong>Tijuana</strong></td>
-            <td class="price-val">$23.88</td>
-            <td class="price-val">$27.89</td>
-            <td class="price-val">$27.12</td>
-            <td class="up">&#9650; +$1.00</td>
+            <td><strong>Tijuana (Baja California)</strong></td>
+            <td class="pv">$23.88</td>
+            <td class="pv">$27.89</td>
+            <td class="pv">$27.12</td>
+            <td class="eq">Sin cambio</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p>Datos basados en reportes CNE/CRE al 6 de julio de 2026.</p>
+    <p>Precios en pesos por litro. Promedio estatal segun datos CNE/CRE al 15 de julio de 2026. Fuente: PETROIntelligence y gasolinamx.com.</p>
 
     <div class="callout">
-      <strong>Alerta Tijuana: la mayor alza de la semana.</strong> Tijuana registra un salto de casi $1 peso por litro en Magna respecto a la semana pasada, pasando de $22.88 a $23.88. Sigue siendo competitiva frente al resto del pais, pero pierde su ventaja habitual frente a CDMX. Estaremos monitoreando si esto se consolida o es un ajuste puntual.
+      <strong>&#127942; La mas barata esta semana: Puebla, $23.73/litro de Magna.</strong> Puebla mantiene su tendencia positiva de las ultimas semanas y se consolida como la ciudad mas economica de las cinco que cubre Gasy. La diferencia con Monterrey — la mas cara — es de $0.33 por litro. En un tanque de 45 litros, eso son $14.85 pesos de ahorro solo por estar en diferente ciudad. Dentro de Puebla, las gasolineras mas competitivas estan incluso por debajo de ese promedio — busca la mas barata de tu zona en el mapa de Gasy.
     </div>
 
     <div class="callout callout-purple">
-      <strong>La mas barata de la semana: Puebla.</strong> Con Magna a $23.48/litro y Premium a $27.25 — los precios mas bajos entre las cinco ciudades de Gasy — Puebla se consolida como la opcion mas economica del centro del pais. Usa el mapa de Gasy para encontrar la gasolinera especifica con el precio mas bajo de tu zona en Puebla.
+      <strong>&#128208; Dato clave de esta semana: el IEPS cambio el sabado.</strong> El gobierno federal aumento su aportacion al subsidio del IEPS esta semana — cubriendo el 15.50% de la cuota de la Magna ($1.06 de $6.11 pesos por litro). Eso significa que sin ese subsidio, estarias pagando aproximadamente $1.06 mas por litro de lo que pagas hoy. La Premium, en cambio, lleva seis semanas consecutivas sin estimulo fiscal — por eso sigue siendo la que mas sube en proporcion.
     </div>
 
-    <p><strong>que paso con CDMX?</strong> La Ciudad de Mexico subio $0.26 por litro esta semana, revirtiendo la tendencia bajista de las ultimas semanas. Con Magna a $23.82, la capital queda ahora por encima de Puebla en $0.34 por litro. En un tanque de 40 litros, eso son $13.60 pesos de diferencia.</p>
-
-    <p>Quieres saber que gasolinera especifica tiene el precio mas bajo en tu colonia hoy? Abre el mapa de Gasy, activa tu ubicacion y en segundos tienes la respuesta.</p>
+    <p>Monterrey y Guadalajara siguen siendo las ciudades mas caras del grupo, con Magna por arriba de $24 pesos. Si vives en esas ciudades, el impacto de elegir bien la gasolinera es mayor — porque la brecha interna entre estaciones puede superar $1.80 por litro. Usa el mapa de Gasy para encontrar la mas barata de tu colonia antes de salir.</p>
   </article>
   <hr class="divider" />
 
-  <article style="margin-bottom:68px;scroll-margin-top:20px;">
+  <article id="jul15-mxusa">
     <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
-      <span class="art-date">7 de julio de 2026</span>
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">15 de julio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>Precio gasolina Mexico vs Estados Unidos hoy: el dolar sobre 18 pesos empieza a presionar los combustibles</h2>
+    <h2>Precio gasolina Mexico vs Estados Unidos hoy: el peso se recupera y el gasolinazo se aleja</h2>
 
-    <p>El tipo de cambio sigue siendo la variable mas peligrosa para el precio de la gasolina en Mexico en este inicio de julio. El dolar se mantiene por arriba de los <strong>18 pesos</strong> por segunda semana consecutiva, y aunque Hacienda no ha anunciado un gasolinazo, los efectos empiezan a mostrarse.</p>
+    <p>Buenas noticias en el frente cambiario esta semana: el dolar perdio fuerza frente al peso mexicano, lo que reduce la presion sobre el precio de la gasolina importada. Despues de dos semanas arriba de los 18 pesos, el tipo de cambio empieza a ceder — y eso tiene implicaciones directas para lo que pagas en la bomba.</p>
 
     <div class="callout callout-amber">
-      <strong>Comparativa de esta semana:</strong> Magna en Mexico promedia <strong>$23.78/litro</strong>. En EE.UU., el galon de Regular esta alrededor de <strong>$3.95 dolares</strong>, equivalente a aproximadamente $10.77 pesos por litro al tipo de cambio de 18.20 pesos/dolar. Los mexicanos seguimos pagando mas del doble por el mismo combustible base.
+      <strong>Los numeros de esta semana:</strong> Magna en Mexico: <strong>$23.78/litro</strong> promedio nacional. En EE.UU., el galon de Regular ronda los <strong>$3.95 dolares</strong>. Con el tipo de cambio bajando hacia los 17.80 pesos/dolar, el equivalente es aproximadamente <strong>$10.55 pesos por litro</strong> en EE.UU. La brecha sigue siendo del doble, pero se mantiene estable gracias al subsidio del IEPS.
     </div>
 
-    <p><strong>El dolar caro encarece la gasolina importada.</strong> Mexico importa entre el 60% y 70% de la gasolina que consume, ya refinada, principalmente desde Texas. Esa importacion se paga en dolares. Con el peso depreciado, cada litro importado le cuesta mas pesos a los distribuidores, lo que presiona los precios hacia arriba en toda la cadena.</p>
+    <p><strong>Por que bajo el dolar esta semana?</strong> Segun reportes del 15 de julio, la presion sobre los precios en Estados Unidos disminuyo, lo que redujo el apetito por el dolar y permitio que el peso ganara terreno. Para Mexico, un dolar mas barato significa que cada litro de gasolina importada — que se paga en dolares — cuesta menos pesos, lo que alivia la cadena de distribucion.</p>
 
-    <p><strong>Tijuana lo resiente primero.</strong> No es coincidencia que Tijuana haya registrado la mayor alza semanal entre las ciudades de Gasy (+$1.00/litro). La zona fronteriza importa practicamente todo su combustible directamente desde California y es la primera en absorber los efectos del tipo de cambio. Lo que pasa en Tijuana esta semana suele anticipar lo que viene para el resto del pais en dos o tres semanas.</p>
-
-    <p><strong>Que frena el gasolinazo?</strong> El IEPS sigue siendo el colchon principal. Hacienda puede reducir la cuota del impuesto para compensar la presion cambiaria. En los ultimos dias han comenzado a aplicarse ajustes al subsidio que podrian estabilizar los precios en el corto plazo.</p>
+    <p><strong>El gasolinazo no llego — por ahora.</strong> A pesar de la presion de las ultimas semanas por el tipo de cambio y la tension entre EE.UU. e Iran, los precios en Mexico se mantuvieron estables. El subsidio al IEPS de la Magna actuo como escudo. La Premium, sin embargo, lleva seis semanas sin ese escudo — por eso su precio relativo ha subido mas que la Magna en lo que va del mes.</p>
 
     <div class="callout">
-      <strong>Estrategia practica para esta semana:</strong> Si estas cerca de vaciar el tanque, hazlo antes del viernes cuando el DOF publique los ajustes al IEPS. Si hay recorte de subsidio, los precios podrian subir el sabado o lunes. Usa Gasy para encontrar la gasolinera mas barata antes de cargar.
+      <strong>&#128202; Lo que vigilamos para la proxima semana:</strong> El ajuste semanal del IEPS que publica Hacienda cada viernes en el DOF. Si el peso sigue fortaleciendose, es posible que Hacienda reduzca el subsidio a la Magna — lo que podria subir el precio en bomba unos centavos. Si el tipo de cambio vuelve a subir, Hacienda puede aumentar el subsidio para compensar. Te lo reportamos el proximo lunes.
     </div>
   </article>
   <hr class="divider" />
 
-  <article style="margin-bottom:68px;scroll-margin-top:20px;">
+  <article id="jul15-noticias">
     <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">15 de julio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Noticias gasolina Mexico julio 2026: IEPS favorece a la Magna, PROFECO vigila precios y que esperar en agosto</h2>
+
+    <p>La segunda semana de julio cierra con estabilidad en los surtidores. Aqui el resumen de las noticias mas relevantes para los conductores en las cinco ciudades de Gasy.</p>
+
+    <p><strong>Hacienda aumenta el subsidio al IEPS de la Magna.</strong> A partir del sabado 11 de julio, el gobierno federal incremento su aportacion al subsidio de la Magna a $1.06 pesos por litro de los $6.11 totales del IEPS. Esto significa que el precio en bomba de la Magna no subio tanto como podia haberlo hecho dada la volatilidad del mercado internacional. La Premium, en cambio, sigue sin estimulo fiscal por sexta semana consecutiva.</p>
+
+    <p><strong>PROFECO intensifica operativos en gasolineras.</strong> La Procuraduria Federal del Consumidor anuncio esta semana operativos de verificacion en estaciones de servicio de todo el pais para revisar bombas despachadoras, precios del combustible y proteger a los consumidores. Segun reportes, el gobierno exhibio a 205 gasolineras por vender diesel con precios por encima del margen considerado justo. Si tu gasolinera local te cobra de mas, tienes derecho a denunciarlo ante PROFECO.</p>
+
+    <p><strong>Tension EE.UU.-Iran sigue afectando el precio del crudo.</strong> Las tensiones entre Estados Unidos e Iran tras el anuncio de Donald Trump sobre un bloqueo maritimo siguen generando volatilidad en el precio del petroleo. Sin embargo, la aportacion al IEPS amortiguo el impacto para el consumidor mexicano esta semana. Si la tension escala, podriamos ver ajustes al alza en agosto.</p>
+
+    <p><strong>Monterrey: cuarta semana consecutiva como la ciudad mas cara.</strong> Con Magna a $24.06/litro, Monterrey acumula cuatro semanas seguidas siendo la ciudad mas cara entre las cinco de Gasy. Los analistas del sector senalan mayor concentracion de mercado en el noreste como uno de los factores. Dentro de la zona metropolitana de Monterrey, sin embargo, la brecha entre gasolineras es significativa — hasta $1.80 por litro entre la mas cara y la mas barata.</p>
+
+    <div class="callout">
+      <strong>&#128205; Lo que Gasy detecta esta semana:</strong> La ciudad con mayor variacion interna de precios entre gasolineras sigue siendo Monterrey, seguida de Guadalajara. En ambas ciudades, elegir bien donde cargar puede ahorrarte entre $60 y $80 pesos por tanque. En Puebla y CDMX la competencia es mayor y los precios estan mas homogeneos — aunque siempre hay opciones por debajo del promedio. Busca la tuya en el mapa de Gasy.
+    </div>
+
+    <p>La proxima actualizacion de precios la publicamos el lunes 21 de julio. Si el DOF publica cambios al IEPS este viernes, los reflejaremos en el reporte de la semana. Cualquier inconsistencia entre los precios de Gasy y tu gasolinera local, <a href="/contacto.html">reportanoslo aqui</a>.</p>
+  </article>
+
+  <hr class="week-sep" />
+
+
+  <!-- ════════════════════════════════════════
+       SEMANA 7 JULIO 2026
+  ════════════════════════════════════════ -->
+
+  <div style="margin-bottom:12px;">
+    <span class="art-week">Semana del 30 de junio al 7 de julio de 2026</span>
+  </div>
+
+  <article id="jul07-precios">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
       <span class="art-date">7 de julio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>Noticias gasolina Mexico julio 2026: alza en Tijuana, dolar a 18 pesos y que esperar en el precio esta semana</h2>
+    <h2>Precio gasolina hoy 7 de julio: Tijuana registra el mayor alza de la semana, Puebla la mas barata</h2>
 
-    <p>Primera semana de julio y el mercado de combustibles en Mexico arranca con senales mixtas. Aqui el resumen de lo que mas importa para los conductores en las cinco ciudades de Gasy.</p>
-
-    <p><strong>Tijuana registra el alza mas pronunciada del arranque de julio.</strong> Con un incremento de casi $1 peso por litro en Magna respecto a la semana pasada, Tijuana es la ciudad con mayor movimiento en los datos de la CNE esta semana. Monterrey sigue siendo el punto mas caro entre las grandes ciudades, con Magna en $24.06 pesos el litro.</p>
-
-    <p><strong>Puebla, la sorpresa positiva de la semana.</strong> Mientras la mayoria de las ciudades registraron alzas o se mantuvieron estables, Puebla cierra la semana como la ciudad mas barata de las cinco con Magna a $23.48/litro. Dentro de la ciudad, las gasolineras mas competitivas estan por debajo de ese promedio. Encuentralas en el mapa de Gasy.</p>
-
-    <p><strong>El dolar sobre 18 pesos: la amenaza silenciosa.</strong> El precio del dolar continua arriba de los 18 pesos, lo que presiona los costos de importacion de combustible refinado. Si el peso no se recupera en los proximos dias, es probable que veamos ajustes al alza en algunas regiones durante la segunda semana de julio.</p>
-
-    <p><strong>CDMX revierte su tendencia bajista.</strong> El precio promedio de la gasolina Regular en la CDMX sube a $23.82 pesos por litro, con Premium a $28.74 y Diesel a $26.99. Un repunte respecto a los precios mas bajos que registro la capital a finales de junio, aunque sigue siendo mas accesible que Guadalajara y Monterrey.</p>
-
-    <div class="callout">
-      <strong>Lo que Gasy ve esta semana en las 5 ciudades:</strong> La brecha entre la ciudad mas cara (Monterrey $24.06) y la mas barata (Puebla $23.48) es de $0.58 por litro, la mas estrecha en semanas. Pero la diferencia entre gasolineras dentro de cada ciudad sigue siendo mucho mayor. En Monterrey, la brecha entre la estacion mas cara y la mas barata puede superar $1.80 por litro. Ahi es donde Gasy marca la diferencia: no en el promedio de la ciudad, sino en la gasolinera exacta mas conveniente para ti.
-    </div>
-
-    <p>La proxima actualizacion de precios la publicamos el lunes 14 de julio. Si tienes datos de tu gasolinera local que no coinciden con lo que muestra Gasy, <a href="/contacto.html">reportanoslo</a>.</p>
-  </article>
-  <hr class="divider" />
-
-  <!-- ═══════════════════════════════════════
-       SEMANA 7 JULIO 2026 – FIN
-  ═══════════════════════════════════════ -->
-
-  <nav class="toc">
-    <p class="toc-label">Última actualización · 7 de julio 2026</p>
-    <ol>
-      <li><a href="#art1">Precios de la semana: cuánto costó el litro en las 5 ciudades de Gasy</a></li>
-      <li><a href="#art2">México vs. EE.UU.: por qué llenamos el tanque al doble de precio</a></li>
-      <li><a href="#art3">Lo que pasó en el sector gasolinero esta semana</a></li>
-      <li><a href="#art4">Qué es la CRE y cómo decide cuánto pagas en la bomba</a></li>
-      <li><a href="#art5">Por qué construimos Gasy (y qué problema resuelve)</a></li>
-    </ol>
-  </nav>
-
-  <!-- ═══════════════════════════════════════
-       ARTÍCULO 1 – PRECIOS SEMANALES
-  ═══════════════════════════════════════ -->
-  <article id="art1">
-    <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
-      <span class="art-date">Semana del 9 al 15 de junio de 2026</span>
-      <span class="art-author">· Equipo Gasy</span>
-    </div>
-    <h2>Precios de gasolina esta semana: cuánto costó el litro en CDMX, Guadalajara, Monterrey, Puebla y Tijuana</h2>
-
-    <p>Cada lunes en Gasy revisamos los datos oficiales de la CRE para las cinco ciudades que cubrimos. Esta semana los precios se mantuvieron estables a nivel nacional, con variaciones menores a 15 centavos entre ciudades respecto a la semana anterior. Aquí el resumen completo.</p>
+    <p>Arrancamos julio con una sorpresa en los datos: Tijuana, que habia sido la ciudad mas barata de las cinco durante todo junio, registra el mayor incremento semanal con casi $1 peso por litro adicional en Magna. El promedio nacional se ubica en <strong>$23.78/litro</strong> al corte del lunes 7 de julio de 2026.</p>
 
     <div class="tbl-wrap">
       <table>
@@ -632,219 +329,430 @@
             <th>Ciudad</th>
             <th>Magna (Regular)</th>
             <th>Premium</th>
-            <th>Diésel</th>
-            <th>Variación semanal</th>
+            <th>Diesel</th>
+            <th>vs. semana anterior</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Ciudad de México</strong></td>
-            <td class="price-val">$23.94</td>
-            <td class="price-val">$28.90</td>
-            <td class="price-val">$27.20</td>
-            <td class="eq">≈ Sin cambio</td>
+            <td><strong>Ciudad de Mexico (CDMX)</strong></td>
+            <td class="pv">$23.82</td>
+            <td class="pv">$28.74</td>
+            <td class="pv">$26.99</td>
+            <td class="up">&#9650; +$0.26</td>
           </tr>
           <tr>
             <td><strong>Guadalajara</strong></td>
-            <td class="price-val">$24.00</td>
-            <td class="price-val">$29.28</td>
-            <td class="price-val">$27.31</td>
-            <td class="up">▲ +$0.08</td>
+            <td class="pv">$24.00</td>
+            <td class="pv">$29.27</td>
+            <td class="pv">$27.23</td>
+            <td class="up">&#9650; +$0.09</td>
           </tr>
           <tr>
             <td><strong>Monterrey</strong></td>
-            <td class="price-val">$24.02</td>
-            <td class="price-val">$29.49</td>
-            <td class="price-val">$27.09</td>
-            <td class="up">▲ +$0.05</td>
+            <td class="pv">$24.06</td>
+            <td class="pv">$29.52</td>
+            <td class="pv">$27.06</td>
+            <td class="eq">Sin cambio</td>
           </tr>
           <tr>
             <td><strong>Puebla</strong></td>
-            <td class="price-val">$23.74</td>
-            <td class="price-val">$28.07</td>
-            <td class="price-val">$27.14</td>
-            <td class="down">▼ -$0.03</td>
+            <td class="pv">$23.48</td>
+            <td class="pv">$27.25</td>
+            <td class="pv">$26.62</td>
+            <td class="eq">Sin cambio</td>
           </tr>
           <tr>
-            <td><strong>Tijuana</strong></td>
-            <td class="price-val">$22.82</td>
-            <td class="price-val">$27.98</td>
-            <td class="price-val">$26.16</td>
-            <td class="down">▼ -$0.12</td>
+            <td><strong>Tijuana (Baja California)</strong></td>
+            <td class="pv">$23.88</td>
+            <td class="pv">$27.89</td>
+            <td class="pv">$27.12</td>
+            <td class="up">&#9650; +$1.00</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p>Precios en pesos mexicanos por litro. Promedio estatal según datos CRE al cierre del viernes 13 de junio de 2026.</p>
-
     <div class="callout">
-      <strong>🏆 La más barata de la semana: Tijuana.</strong> Con Magna a $22.82/litro, Tijuana vuelve a ser la ciudad más económica de las cinco que cubre Gasy. No es coincidencia: la zona fronteriza tiene un estímulo fiscal al IEPS que reduce el precio entre $1 y $1.50 por litro respecto al interior del país. Si vives en Tijuana y todavía no usas Gasy para encontrar la gasolinera más barata de tu colonia, estás dejando dinero sobre la mesa.
+      <strong>Alerta Tijuana: +$1.00 por litro en una semana.</strong> La zona fronteriza, que historicamente tiene la gasolina mas barata gracias al estimulo fiscal al IEPS, subio casi un peso esta semana. Sigue siendo competitiva frente al promedio nacional, pero pierde su ventaja habitual frente a CDMX. Estaremos monitoreando si esto se consolida o es un ajuste puntual relacionado con el tipo de cambio.
     </div>
 
     <div class="callout callout-purple">
-      <strong>📊 Nota del equipo Gasy:</strong> La diferencia entre la ciudad más cara (Monterrey, $24.02) y la más barata (Tijuana, $22.82) es de $1.20 por litro esta semana. En un tanque de 40 litros, eso son $48 pesos de diferencia solo por ciudad. Pero dentro de cada ciudad, la brecha entre la gasolinera más cara y la más barata puede ser igual o mayor. Abre el mapa de Gasy y compruébalo tú mismo.
+      <strong>La mas barata de la semana: Puebla, $23.48/litro.</strong> Puebla cierra la semana como la opcion mas economica del centro del pais, con $0.34 menos que CDMX y $0.58 menos que Monterrey por litro. En un tanque de 40 litros, la diferencia Puebla-Monterrey son $23.20 pesos. Usa el mapa de Gasy para encontrar la gasolinera mas barata dentro de Puebla.
     </div>
-
-    <p>El promedio nacional de Magna cerró en <strong>$23.76 por litro</strong>, Premium en $28.48 y Diésel en $27.16. Semana tranquila en general, sin gasolinazos ni ajustes bruscos.</p>
   </article>
   <hr class="divider" />
 
-  <!-- ═══════════════════════════════════════
-       ARTÍCULO 2 – MÉXICO VS USA
-  ═══════════════════════════════════════ -->
-  <article id="art2">
+  <article id="jul07-mxusa">
     <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">7 de julio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Mexico vs EE.UU.: el dolar sobre 18 pesos empieza a presionar los combustibles importados</h2>
+
+    <p>El tipo de cambio se mantiene por arriba de los <strong>18 pesos por dolar</strong> por segunda semana consecutiva, y los efectos empiezan a verse — sobre todo en Tijuana, que fue la primera ciudad en absorber el impacto esta semana.</p>
+
+    <div class="callout callout-amber">
+      <strong>Comparativa 7 de julio:</strong> Magna en Mexico: <strong>$23.78/litro</strong>. En EE.UU., el galon de Regular ronda <strong>$3.95 dolares</strong> (~$10.77 pesos/litro al cambio de 18.20). Los mexicanos seguimos pagando mas del doble por el mismo combustible base.
+    </div>
+
+    <p><strong>Mexico importa entre el 60% y 70% de su gasolina refinada</strong>, principalmente desde Texas. Esa importacion se paga en dolares. Con el peso depreciado, cada litro importado cuesta mas pesos a los distribuidores — presion que eventualmente llega a la bomba. Tijuana lo siente primero porque importa practicamente todo su combustible directamente desde California.</p>
+
+    <div class="callout">
+      <strong>Estrategia de esta semana:</strong> Si estas cerca de vaciar el tanque, hazlo antes del viernes cuando el DOF publique los ajustes al IEPS. Si hay recorte de subsidio, los precios podrian subir el sabado. Usa Gasy para encontrar la gasolinera mas barata antes de cargar.
+    </div>
+  </article>
+  <hr class="divider" />
+
+  <article id="jul07-noticias">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">7 de julio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Noticias gasolina Mexico julio 2026: arranque de mes con alzas puntuales y dolar por arriba de 18</h2>
+
+    <p>Primera semana de julio con senales mixtas. La mayoria de las ciudades se mantuvieron estables o subieron ligeramente, con Tijuana como el caso mas llamativo. Aqui el resumen.</p>
+
+    <p><strong>Tijuana registra el mayor movimiento del arranque de julio.</strong> El alza de casi $1 peso por litro en Magna es la mas pronunciada entre las cinco ciudades de Gasy en semanas. La zona fronteriza importa casi todo su combustible desde California y es la primera en reflejar la presion del tipo de cambio.</p>
+
+    <p><strong>Monterrey, tercer lunes consecutivo arriba de $24.</strong> Con $24.06/litro de Magna y $29.52 de Premium, Monterrey mantiene los precios mas altos del grupo. La diferencia acumulada con Puebla ya es de $0.58 por litro — equivalente a $26 pesos en un tanque de 45 litros.</p>
+
+    <p><strong>El dolar por arriba de 18 pesos: la variable a seguir.</strong> El peso mexicano acumula dos semanas de debilidad frente al dolar. Si no se recupera en los proximos dias, es probable que veamos ajustes adicionales al alza en algunas regiones durante la segunda semana de julio.</p>
+
+    <div class="callout">
+      <strong>&#128205; Lo que Gasy detecta esta semana:</strong> La brecha entre la ciudad mas cara (Monterrey, $24.06) y la mas barata (Puebla, $23.48) es de $0.58 por litro — la mas estrecha en semanas. Pero dentro de cada ciudad la diferencia entre gasolineras sigue siendo mucho mayor: hasta $1.80 en Monterrey y $1.50 en Guadalajara. Ahi es donde Gasy marca la diferencia real.
+    </div>
+  </article>
+
+  <hr class="week-sep" />
+
+
+  <!-- ════════════════════════════════════════
+       SEMANA 29 JUNIO 2026
+  ════════════════════════════════════════ -->
+
+  <div style="margin-bottom:12px;">
+    <span class="art-week">Semana del 23 al 29 de junio de 2026</span>
+  </div>
+
+  <article id="jun29-precios">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">29 de junio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Precio gasolina semana del 29 de junio: Monterrey rompe los $24 y cierra junio como la ciudad mas cara</h2>
+
+    <p>Junio termina con una tendencia clara: Monterrey se consolida como la ciudad mas cara de las cinco que cubre Gasy, superando los $24 pesos de Magna por tercera semana consecutiva. En el otro extremo, Puebla cierra el mes como la opcion mas accesible del centro del pais.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ciudad</th>
+            <th>Magna (Regular)</th>
+            <th>Premium</th>
+            <th>Diesel</th>
+            <th>vs. semana anterior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ciudad de Mexico (CDMX)</strong></td>
+            <td class="pv">$23.56</td>
+            <td class="pv">$27.26</td>
+            <td class="pv">$26.64</td>
+            <td class="down">&#9660; -$0.10</td>
+          </tr>
+          <tr>
+            <td><strong>Guadalajara</strong></td>
+            <td class="pv">$23.91</td>
+            <td class="pv">$28.83</td>
+            <td class="pv">$27.24</td>
+            <td class="down">&#9660; -$0.09</td>
+          </tr>
+          <tr>
+            <td><strong>Monterrey</strong></td>
+            <td class="pv">$24.06</td>
+            <td class="pv">$29.51</td>
+            <td class="pv">$27.08</td>
+            <td class="up">&#9650; +$0.02</td>
+          </tr>
+          <tr>
+            <td><strong>Puebla</strong></td>
+            <td class="pv">$23.48</td>
+            <td class="pv">$27.16</td>
+            <td class="pv">$26.79</td>
+            <td class="down">&#9660; -$0.25</td>
+          </tr>
+          <tr>
+            <td><strong>Tijuana (Baja California)</strong></td>
+            <td class="pv">$22.88</td>
+            <td class="pv">$28.06</td>
+            <td class="pv">$26.24</td>
+            <td class="up">&#9650; +$0.01</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>Resumen de junio 2026 en las 5 ciudades de Gasy:</strong> Tijuana fue la mas barata del mes (promedio ~$22.87/litro). Monterrey la mas cara (~$24.04/litro). CDMX mostro la mayor volatilidad y termino el mes con tendencia bajista. Puebla fue la mas accesible del centro. Guadalajara se mantuvo estable en ~$23.91/litro todo el mes.
+    </div>
+  </article>
+  <hr class="divider" />
+
+  <article id="jun29-mxusa">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">29 de junio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Mexico vs EE.UU. semana del 29 junio: el dolar rompe los 18 pesos y la gasolina importada se encarece</h2>
+
+    <p>El dolar supero los <strong>18 pesos</strong> por primera vez en meses esta semana, lo que tiene implicaciones directas para el precio de la gasolina importada en Mexico.</p>
+
+    <div class="callout callout-amber">
+      <strong>Los numeros de la semana:</strong> Magna en Mexico: <strong>$23.77/litro</strong>. En EE.UU., el galon de Regular ~$3.95 dolares (~$11.00 pesos/litro al cambio de 18.10). La brecha se mantiene: los mexicanos pagamos mas del doble.
+    </div>
+
+    <p>Mexico importa una parte significativa de su gasolina refinada desde Texas. Esa importacion se paga en dolares. Con el peso debilitado, cada litro importado le cuesta mas pesos a los distribuidores, presionando los precios hacia arriba. Si el tipo de cambio no se recupera, podriamos ver ajustes al alza en las proximas semanas.</p>
+
+    <div class="callout">
+      <strong>La unica herramienta que tienes como conductor</strong> para reducir lo que pagas es elegir bien la gasolinera. No puedes cambiar el IEPS ni el tipo de cambio, pero si puedes encontrar donde cobran menos en tu ciudad. Para eso existe Gasy.
+    </div>
+  </article>
+  <hr class="divider" />
+
+  <article id="jun29-noticias">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">29 de junio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Noticias sector gasolinero Mexico: crudo a la baja por acuerdo Iran-EE.UU. y sin estimulo al IEPS por sexta semana</h2>
+
+    <p>La semana del 23 al 29 de junio tuvo varios frentes relevantes para el mercado de combustibles en Mexico.</p>
+
+    <p><strong>El acuerdo EU-Iran derrumbo el precio del petroleo.</strong> El fin de las tensiones en Medio Oriente y la reapertura del Estrecho de Ormuz empujaron el precio del barril hacia abajo. En EE.UU. los precios en bomba ya bajaron. En Mexico, el IEPS amortigua esa caida — cuando el crudo baja, Hacienda sube el impuesto para mantener su recaudacion.</p>
+
+    <p><strong>Sin estimulo al IEPS por sexta semana consecutiva.</strong> Hacienda no aplico ninguna reduccion al IEPS de la Magna en lo que va de junio. Eso significa que los conductores pagan el 100% del impuesto: ~$6.70 pesos por litro de Magna. Cuando el gobierno aplica estimulos, ese numero baja y el precio en bomba tambien.</p>
+
+    <p><strong>Puebla, la mayor caida semanal: -$0.25/litro.</strong> La mayor baja de la semana la registro Puebla, posiblemente por mayor competencia entre gasolineras en la zona metropolitana Puebla-Tlaxcala. Mayor competencia = mejores precios para el conductor.</p>
+
+    <div class="callout">
+      <strong>&#128205; Dato Gasy de la semana:</strong> La mayor brecha entre gasolineras dentro de la misma ciudad se detecto en Monterrey y Guadalajara — hasta $1.50 por litro de diferencia interna. En un tanque de 40 litros son $60 pesos de diferencia solo por elegir donde cargar.
+    </div>
+  </article>
+
+  <hr class="week-sep" />
+
+
+  <!-- ════════════════════════════════════════
+       EDICION INICIAL · JUNIO 2026
+  ════════════════════════════════════════ -->
+
+  <div style="margin-bottom:12px;">
+    <span class="art-week">Edicion inicial · 15 de junio de 2026</span>
+  </div>
+
+  <article id="jun15-precios">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
       <span class="art-date">15 de junio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>México vs. EE.UU.: por qué llenamos el tanque al doble de precio que en Texas</h2>
+    <h2>Precios de gasolina semana del 15 de junio: asi quedo el litro en las 5 ciudades de Gasy</h2>
 
-    <p>Esta semana alguien en redes preguntó algo que escuchamos constantemente: <em>"¿Por qué en Texas la gasolina está a 10 pesos el litro y aquí en México a casi 24?"</em> Es una pregunta justa, y la respuesta no es simple. Aquí la explicamos.</p>
+    <p>Primera edicion del blog de Gasy con los precios oficiales de la semana. Cada lunes consultamos los reportes de la CNE para las cinco ciudades que cubrimos en la app.</p>
 
-    <div class="callout callout-amber">
-      <strong>Los números de esta semana:</strong> Magna en México promedia $23.76/litro. En EE.UU., el galón de Regular cuesta ~$4.15 dólares — que al tipo de cambio actual (~17.40 pesos/dólar) equivale a unos $11.30 pesos por litro. Sí: el mismo combustible base cuesta más del doble aquí.
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ciudad</th>
+            <th>Magna (Regular)</th>
+            <th>Premium</th>
+            <th>Diesel</th>
+            <th>vs. semana anterior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ciudad de Mexico (CDMX)</strong></td>
+            <td class="pv">$23.94</td>
+            <td class="pv">$28.90</td>
+            <td class="pv">$27.20</td>
+            <td class="eq">Sin cambio</td>
+          </tr>
+          <tr>
+            <td><strong>Guadalajara</strong></td>
+            <td class="pv">$24.00</td>
+            <td class="pv">$29.28</td>
+            <td class="pv">$27.31</td>
+            <td class="up">&#9650; +$0.08</td>
+          </tr>
+          <tr>
+            <td><strong>Monterrey</strong></td>
+            <td class="pv">$24.02</td>
+            <td class="pv">$29.49</td>
+            <td class="pv">$27.09</td>
+            <td class="up">&#9650; +$0.05</td>
+          </tr>
+          <tr>
+            <td><strong>Puebla</strong></td>
+            <td class="pv">$23.74</td>
+            <td class="pv">$28.07</td>
+            <td class="pv">$27.14</td>
+            <td class="down">&#9660; -$0.03</td>
+          </tr>
+          <tr>
+            <td><strong>Tijuana (Baja California)</strong></td>
+            <td class="pv">$22.82</td>
+            <td class="pv">$27.98</td>
+            <td class="pv">$26.16</td>
+            <td class="down">&#9660; -$0.12</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <p>La respuesta corta es: <strong>impuestos</strong>. En México cada litro de Magna carga con el IEPS (Impuesto Especial sobre Producción y Servicios), que en 2026 ronda los $6.70 pesos por litro, más el IVA sobre el precio final. Juntos, representan casi la mitad de lo que pagas en la bomba.</p>
+    <div class="callout">
+      <strong>La mas barata esa semana: Tijuana, $22.82/litro.</strong> La zona fronteriza lidera gracias al estimulo fiscal al IEPS que reduce el precio entre $1 y $1.50 por litro respecto al interior del pais. Promedio nacional de Magna: $23.76/litro.
+    </div>
+  </article>
+  <hr class="divider" />
 
-    <p>En Estados Unidos el impuesto federal es de apenas 18.4 centavos de dólar por galón — menos de un peso mexicano por litro. Los impuestos estatales varían, pero incluso sumados quedan muy por debajo de lo que cobra México vía IEPS.</p>
+  <article id="jun15-mxusa">
+    <div class="art-meta">
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
+      <span class="art-date">15 de junio de 2026</span>
+      <span class="art-author">· Equipo Gasy</span>
+    </div>
+    <h2>Gasolina en Mexico vs Estados Unidos: por que llenamos el tanque al doble de precio que en Texas</h2>
+
+    <p>La gasolina Regular en Mexico promedia $23.76/litro. En EE.UU., el galon de Regular cuesta ~$4.15 dolares — equivalente a unos $11.30 pesos por litro al tipo de cambio de ~17.4 pesos/dolar. El mismo combustible base cuesta mas del doble en Mexico que en el vecino del norte. La razon principal: el IEPS.</p>
 
     <div class="tbl-wrap">
       <table>
         <thead>
           <tr>
             <th>Concepto</th>
-            <th>México</th>
+            <th>Mexico</th>
             <th>Estados Unidos</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Precio Regular por litro</td>
-            <td class="price-val">~$23.76 MXN</td>
-            <td class="price-val">~$11.30 MXN equiv.</td>
+            <td class="pv">~$23.76 MXN</td>
+            <td class="pv">~$11.30 MXN equiv.</td>
           </tr>
           <tr>
             <td>Impuesto principal</td>
             <td>IEPS ~$6.70/L + IVA</td>
-            <td>~$0.17 USD/galón federal</td>
+            <td>~$0.17 USD/galon federal</td>
           </tr>
           <tr>
-            <td>¿Precio fijo o libre?</td>
-            <td>Libre desde 2017, vigilado por CRE</td>
+            <td>Precio regulado?</td>
+            <td>Libre desde 2017, vigilado por CNE</td>
             <td>Libre mercado por estado</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p>Hay otros factores: México importa una parte significativa del combustible ya refinado (a pesar de ser productor de crudo), lo que suma costos logísticos. La competencia entre gasolineras también es desigual según la región.</p>
-
     <div class="callout">
-      <strong>¿Y la excepción?</strong> Las zonas fronterizas como Tijuana y Ciudad Juárez. Ahí el gobierno aplica un estímulo al IEPS precisamente para que los mexicanos no crucen la frontera a surtir. Por eso en Gasy siempre verás a Tijuana como la ciudad más barata de las cinco — no porque la gasolina sea distinta, sino porque paga menos impuesto.
+      <strong>La excepcion: zonas fronterizas.</strong> En Tijuana y Ciudad Juarez el gobierno aplica estimulos al IEPS para que los mexicanos no crucen a surtir. Por eso Tijuana siempre aparece como la ciudad mas barata en Gasy.
     </div>
-
-    <p>Mientras tanto, la única herramienta real que tienes como conductor para reducir lo que pagas es elegir bien la gasolinera. No puedes cambiar el IEPS, pero sí puedes encontrar dónde cobran menos dentro de tu ciudad. Para eso existe Gasy.</p>
   </article>
   <hr class="divider" />
 
-  <!-- ═══════════════════════════════════════
-       ARTÍCULO 3 – NOTICIAS DEL SECTOR
-  ═══════════════════════════════════════ -->
-  <article id="art3">
+  <article id="jun15-noticias">
     <div class="art-meta">
-      <span class="art-tag tag-semanal">🔄 Semanal</span>
+      <span class="art-tag tag-semanal">&#128260; Semanal</span>
       <span class="art-date">15 de junio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>Lo que pasó en el sector gasolinero en México esta semana</h2>
+    <h2>Noticias del sector gasolinero en Mexico: semana del 15 de junio 2026</h2>
 
-    <p>Además de los precios del litro, hay cosas que mueven al mercado de combustibles que vale la pena seguir. Aquí el resumen de lo más relevante de la semana del 9 al 15 de junio.</p>
+    <p><strong>Precios estables en junio 2026.</strong> La semana cerro con variaciones minimas a nivel nacional. El promedio de Magna se mantuvo por debajo de los $24 pesos en la mayoria de las ciudades.</p>
 
-    <p><strong>Precios estables, sin gasolinazos en el horizonte cercano.</strong> La semana cerró tranquila. El promedio nacional de Magna no superó los $24 pesos en ninguna de las cinco ciudades que monitorea Gasy, y los ajustes semanales del IEPS por parte de Hacienda no generaron movimientos bruscos. Para la siguiente semana tampoco se anticipan cambios significativos según el comportamiento del mercado internacional.</p>
+    <p><strong>Cambio regulatorio: de CRE a CNE.</strong> La antigua Comision Reguladora de Energia (CRE) fue sustituida por la Comision Nacional de Energia (CNE) en la reforma energetica de la administracion actual. La obligacion de reporte diario de precios por parte de las gasolineras se mantiene intacta. Gasy sigue conectado a esa misma fuente de datos.</p>
 
-    <p><strong>Volatilidad del crudo por tensiones en Medio Oriente.</strong> El precio internacional del petróleo tuvo movimientos esta semana por tensiones geopolíticas en la región. Sin embargo, el mecanismo del IEPS en México actúa como amortiguador: cuando el crudo sube, Hacienda puede bajar la cuota del IEPS para que el precio en la bomba no se dispare. Este colchón fiscal es lo que ha mantenido los precios relativamente estables en lo que va del año.</p>
+    <p><strong>Precios internacionales volatiles.</strong> El precio del barril mostro volatilidad por tensiones geopoliticas en Medio Oriente, aunque su impacto directo en Mexico fue amortiguado por el mecanismo del IEPS.</p>
 
-    <p><strong>La CRE ya es CNE, pero los datos siguen fluyendo.</strong> Desde la reforma energética de la administración actual, la Comisión Reguladora de Energía (CRE) fue sustituida por la Comisión Nacional de Energía (CNE). El cambio es institucional, pero lo importante para los usuarios es que la obligación de reporte diario de precios por parte de las gasolineras se mantiene. Gasy sigue conectado a esa misma fuente de datos, ahora bajo la CNE.</p>
-
-    <div class="callout">
-      <strong>Dato de la semana desde Gasy:</strong> Al revisar los datos de la CRE en nuestras 5 ciudades, la brecha más grande entre la gasolinera más cara y la más barata la encontramos en Monterrey — donde la diferencia puede superar $1.80 por litro dentro de la misma zona metropolitana. Si llenas un tanque de 45 litros en la gasolinera equivocada en Monterrey, puedes estar pagando hasta $81 pesos de más. Así de relevante es buscar bien.
+    <div class="callout callout-purple">
+      <strong>¿Sabes cual es la gasolinera mas barata cerca de ti hoy?</strong> En Gasy puedes verlo en el mapa en tiempo real, con datos actualizados de la CNE. <a href="/">Entra al mapa</a>.
     </div>
-
-    <p><strong>¿Qué sigue?</strong> Estaremos monitoreando el comportamiento del tipo de cambio y el ajuste semanal del IEPS en el DOF. Si hay algo que afecte el precio en la bomba la próxima semana, lo cubriremos aquí el lunes.</p>
   </article>
   <hr class="divider" />
 
-  <!-- ═══════════════════════════════════════
-       ARTÍCULO 4 – QUÉ ES LA CRE
-  ═══════════════════════════════════════ -->
   <article id="art4">
     <div class="art-meta">
-      <span class="art-tag tag-guia">📌 Guía</span>
+      <span class="art-tag tag-guia">&#128204; Guia</span>
       <span class="art-date">15 de junio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>Qué es la CRE y cómo decide cuánto pagas en la bomba</h2>
+    <h2>Que es la CRE y como decide cuanto pagas en la bomba</h2>
 
-    <p>Cuando abres Gasy y ves el precio de cada gasolinera actualizado, esa información viene de un sistema oficial que pocos conocen. Te explicamos cómo funciona, porque entenderlo te ayuda a saber por qué los precios cambian — y cómo sacarle ventaja.</p>
+    <p>Cuando abres Gasy y ves el precio de cada gasolinera actualizado, esa informacion viene de un sistema oficial: la obligacion que tiene cada estacion de servicio del pais de reportar diariamente lo que cobra por litro. Te explicamos como funciona.</p>
 
-    <p><strong>La CRE: el árbitro del mercado de combustibles.</strong> La Comisión Reguladora de Energía fue creada en 1993 para regular los sectores de gas natural, electricidad y petrolíferos en México. En la reforma energética más reciente pasó a llamarse Comisión Nacional de Energía (CNE), pero su función más importante sigue intacta: obligar a todas las gasolineras del país a reportar diariamente sus precios de venta al público.</p>
-
-    <p><strong>¿Qué hace exactamente?</strong> Tres cosas que te afectan directamente como conductor:</p>
+    <p><strong>La CRE (hoy CNE).</strong> La Comision Reguladora de Energia fue creada en 1993 para regular los sectores de gas natural, electricidad y petroliferos en Mexico. En la reforma energetica reciente paso a llamarse Comision Nacional de Energia (CNE), pero su funcion mas importante sigue intacta: obligar a todas las gasolineras del pais a reportar diariamente sus precios de venta al publico.</p>
 
     <ol class="body-list">
-      <li><strong>Reporte diario de precios.</strong> Cada gasolinera con permiso vigente debe publicar en línea lo que cobra por Magna, Premium y Diésel. Es el Acuerdo A/041/2018, y su incumplimiento puede costarle el permiso de operación. Esos datos son públicos — y son exactamente los que Gasy toma para mostrarte el mapa.</li>
-      <li><strong>Permisos de operación.</strong> Ninguna gasolinera en México puede abrir sin un permiso de la CRE/CNE. Eso le da al regulador poder para cerrar estaciones que incumplan, lo que en teoría protege al consumidor de precios abusivos o combustible adulterado.</li>
-      <li><strong>Vigilancia de precios máximos en ciertos combustibles.</strong> Para el gas LP, por ejemplo, la CNE publica precios máximos por región. Para gasolina, el mecanismo es distinto: la Secretaría de Hacienda ajusta el IEPS semanalmente, lo cual actúa como regulador indirecto del precio final.</li>
+      <li><strong>Reporte diario de precios.</strong> Cada gasolinera con permiso vigente debe publicar en linea lo que cobra por Magna, Premium y Diesel — Acuerdo A/041/2018. Esos datos son publicos y son exactamente los que Gasy toma para mostrarte el mapa.</li>
+      <li><strong>Permisos de operacion.</strong> Ninguna gasolinera puede operar sin permiso. Eso le da a la CNE poder para cerrar estaciones que incumplan o adulteren combustible.</li>
+      <li><strong>Vigilancia de precios maximos.</strong> Para gas LP fija precios maximos regionales. Para gasolina, el mecanismo es el IEPS que ajusta Hacienda semanalmente.</li>
     </ol>
 
     <div class="callout">
-      <strong>El IEPS explicado simple:</strong> Imagina que el precio "base" de la gasolina sube porque el crudo internacional subió. Hacienda puede reducir cuánto IEPS cobra por litro esa semana, y el precio en la bomba no sube (o sube menos). A la inversa, cuando el crudo baja, Hacienda sube el IEPS para mantener la recaudación. Por eso el precio de la gasolina en México no sube y baja igual que el petróleo — hay un colchón fiscal en el medio.
+      <strong>El IEPS explicado simple:</strong> Cuando el crudo sube, Hacienda puede reducir cuanto IEPS cobra por litro para que el precio en bomba no dispare. Cuando el crudo baja, Hacienda sube el IEPS para mantener su recaudacion. Por eso el precio de la gasolina en Mexico no sube y baja igual que el petroleo.
     </div>
-
-    <p><strong>¿Por qué esto importa para Gasy?</strong> Porque los datos que publica la CRE/CNE son la única fuente confiable y actualizada de precios gasolineros en México. No hay API privada, no hay otro proveedor oficial. Todo lo que ves en Gasy viene de ahí — procesado, mapeado y presentado de forma útil para que tú no tengas que navegar el portal del gobierno.</p>
-
-    <p>Si quieres consultar los datos directamente puedes hacerlo en <a href="https://www.cre.gob.mx" target="_blank" rel="noopener" style="color:#a78bfa;">cre.gob.mx</a> o en el reporte semanal de PROFECO "Quién es Quién en el Precio de la Gasolina". Nosotros hacemos ese trabajo por ti cada día.</p>
   </article>
   <hr class="divider" />
 
-  <!-- ═══════════════════════════════════════
-       ARTÍCULO 5 – POR QUÉ CREAMOS GASY
-  ═══════════════════════════════════════ -->
   <article id="art5">
     <div class="art-meta">
-      <span class="art-tag tag-editorial">✍️ Editorial</span>
+      <span class="art-tag tag-editorial">&#9997;&#65039; Editorial</span>
       <span class="art-date">15 de junio de 2026</span>
       <span class="art-author">· Equipo Gasy</span>
     </div>
-    <h2>Por qué construimos Gasy (y qué problema concreto resuelve)</h2>
+    <h2>Por que construimos Gasy (y que problema concreto resuelve)</h2>
 
-    <p>Vamos a ser directos: Gasy nació de una frustración personal. Llenar el tanque en México es una de esas decisiones que tomamos en piloto automático — paras en la gasolinera que está en el camino, pagas lo que piden y listo. Nunca sabes si había una más barata a dos cuadras.</p>
+    <p>Gasy nacio de una frustracion personal. Llenar el tanque en Mexico es una de esas decisiones que tomamos en piloto automatico — paras en la gasolinera mas cercana, pagas lo que marcan y sigues. Nadie sabe si habia una mas barata a dos cuadras.</p>
 
-    <p><strong>El problema no es falta de información — es que la información existente no es usable.</strong> En México, la CRE obliga a todas las gasolineras a reportar sus precios diariamente. Eso significa que existe una base de datos pública con el precio de cada estación de servicio del país, actualizada todos los días. El problema es que está en un portal del gobierno que no tiene mapa, no tiene búsqueda por ubicación y no está diseñado para el usuario común.</p>
+    <p>Lo ironico es que la informacion existe y es publica. La CNE obliga a todas las gasolineras del pais a reportar sus precios diariamente. El problema es que estan en un portal del gobierno sin mapa, sin busqueda por ubicacion, no disenado para el usuario comun.</p>
 
     <div class="callout">
-      <strong>El math que nos convenció de construir esto:</strong> En CDMX, la diferencia entre la gasolinera más cara y la más barata del mismo tipo de combustible puede superar $3 pesos por litro. Tanque de 40 litros = $120 pesos de diferencia por carga. Dos cargas por semana = $240 pesos. Al año: <strong>más de $12,000 pesos</strong> que podrías estar ahorrando simplemente eligiendo mejor. Sin cambiar nada más en tu vida.
+      <strong>El math que nos convencio:</strong> En CDMX, la diferencia entre la gasolinera mas cara y la mas barata puede superar $3 pesos por litro. Tanque de 40 litros = $120 pesos de diferencia. Dos cargas por semana = $240 pesos. Al ano: <strong>mas de $12,000 pesos</strong> que podrias ahorrar simplemente eligiendo mejor.
     </div>
 
-    <p><strong>¿Qué hace Gasy diferente?</strong> Tomamos esa base de datos de la CRE, la cruzamos con información geográfica de OpenStreetMap, y la presentamos en un mapa interactivo donde puedes ver en segundos cuál gasolinera cerca de ti tiene el mejor precio hoy, navegar directo con Waze o Google Maps, y filtrar por tipo de combustible. Sin registro, sin suscripción, sin complicaciones.</p>
+    <p>Tomamos la base de datos de la CNE, la cruzamos con OpenStreetMap, y la presentamos en un mapa interactivo donde puedes ver en segundos cual gasolinera cerca de ti tiene el mejor precio hoy. Sin registro, sin complicaciones.</p>
 
-    <p><strong>¿Por qué una app mexicana y no usar algo que ya existe?</strong> Hay apps internacionales de precios de gasolina, pero ninguna está integrada con los datos de la CRE de la forma en que lo hacemos nosotros. No cubren bien la dispersión geográfica de México, no consideran las zonas con estímulos fronterizos y no están optimizadas para el comportamiento del conductor mexicano. Gasy fue construida desde México, para México.</p>
-
-    <p><strong>Lo que viene.</strong> Actualmente cubrimos CDMX, Guadalajara, Monterrey, Puebla y Tijuana. Estamos trabajando para expandirnos a más ciudades, agregar notificaciones de precio y lanzar la app nativa en iOS y Android. También viene un nivel Pro para conductores frecuentes y flotas.</p>
-
-    <div class="callout callout-purple">
-      <strong>Este blog es parte del proyecto.</strong> Cada lunes publicamos los precios reales de la semana, noticias del sector y guías prácticas. No para rellenar páginas, sino porque creemos que un conductor informado es un conductor que ahorra. Si quieres que cubramos tu ciudad o tienes una pregunta sobre gasolina en México, escríbenos. <a href="/">Entra al mapa →</a>
-    </div>
+    <p>Actualmente cubrimos <strong>CDMX, Guadalajara, Monterrey, Puebla y Tijuana</strong>, con mas ciudades en camino. <a href="/nosotros.html">Conoce mas sobre el equipo Gasy</a>.</p>
   </article>
 
 </main>
 
 <footer>
-  <p><strong>Gasy.mx</strong> — Gasolina inteligente, decisiones que ahorran.</p>
-  <p style="margin-top:6px;">Datos basados en reportes oficiales de la <a href="https://www.cre.gob.mx" target="_blank" rel="noopener">Comisión Reguladora de Energía (CRE / CNE)</a> · © 2026 Gasy</p>
+  <div style="max-width:720px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <img src="icon.png" alt="Gasy" style="width:28px;height:28px;border-radius:7px;">
+      <strong>Gasy.mx</strong>
+    </div>
+    <p style="margin-bottom:12px;">Gasolina inteligente, decisiones que ahorran.</p>
+    <div class="footer-links">
+      <a href="/blog.html">Blog</a>
+      <a href="/privacidad.html">Politica de Privacidad</a>
+      <a href="/terminos.html">Terminos y Condiciones</a>
+      <a href="/contacto.html">Contacto</a>
+      <a href="/nosotros.html">Quienes Somos</a>
+    </div>
+    <p>Datos basados en reportes oficiales de la <a href="https://www.cne.gob.mx" target="_blank" rel="noopener">Comision Nacional de Energia (CNE)</a> · &copy; 2026 Gasy.mx</p>
+  </div>
 </footer>
 
 </body>

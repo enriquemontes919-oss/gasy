@@ -620,6 +620,12 @@ async function getPlaceDetails(lat, lng, name, stationId){
     ]);
     if(!res.ok){ placesCache[stationId]=null; return null; }
     const data = await res.json();
+    // Piloto Valero: si esta estacion es una del piloto, forzar el nombre a Valero
+    // aunque Google la tenga como TotalEnergies (Google no la ha actualizado).
+    if(data && typeof esValeroPiloto === 'function' && esValeroPiloto(lat, lng)){
+      data.name = 'Valero';
+      data.found = true;
+    }
     placesCache[stationId] = data.found ? data : null;
     return placesCache[stationId];
   }catch(e){ placesCache[stationId]=null; return null; }
@@ -627,7 +633,7 @@ async function getPlaceDetails(lat, lng, name, stationId){
 
 function renderPlacesInfo(place, stationId){
   if(!place) return;
-  const knownBrands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Total","Chevron","Gulf","Petro-7","Costco Gas"];
+  const knownBrands = ["Pemex","Shell","BP","Mobil","Hidrosina","G500","Oxxo Gas","Repsol","Valero","Total","Chevron","Gulf","Petro-7","Costco Gas"];
 
   // ── Desktop popup ──
   const statusEl = document.getElementById("pop-status-"+stationId);
@@ -2054,7 +2060,7 @@ function showCalcStationDetail(e, id, name, lat, lng, tipoprice, magna, premium,
 // Modulo piloto Valero - popup informativo por proximidad
 const VALERO_PILOTO = [
   { nombre: 'Valero Insurgentes', lat: 19.403569, lng: -99.169571 },
-  { nombre: 'Valero Zona Esmeralda', lat: 19.546794, lng: -99.272517 },
+  { nombre: 'Valero Zona Esmeralda', lat: 19.544997, lng: -99.272668 },
 ];
 
 const VALERO_CLAIM = 'Valero ofrece Supreme 93, que segun la marca es la unica gasolina de 93 octanos en Mexico - ideal para motores de alto rendimiento.';
@@ -2062,13 +2068,23 @@ const VALERO_CLAIM = 'Valero ofrece Supreme 93, que segun la marca es la unica g
 const VALERO_RADIO_KM = 3;
 let valeroMostrado = false;
 
+// True si una coordenada corresponde a una estacion del piloto Valero (radio 300m)
+function esValeroPiloto(lat, lng){
+  if (typeof hav !== 'function') return false;
+  for (const v of VALERO_PILOTO){
+    if (!v.lat || !v.lng) continue;
+    if (hav(lat, lng, v.lat, v.lng) < 0.3) return true;
+  }
+  return false;
+}
+
 function aplicarOverrideValero(sts){
   if (!Array.isArray(sts) || typeof hav !== 'function') return;
   for (const s of sts){
     if (s.lat == null || s.lng == null) continue;
     for (const v of VALERO_PILOTO){
       if (!v.lat || !v.lng) continue;
-      if (hav(s.lat, s.lng, v.lat, v.lng) < 0.15){
+      if (hav(s.lat, s.lng, v.lat, v.lng) < 0.3){
         s.brand = 'Valero';
         break;
       }

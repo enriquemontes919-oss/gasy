@@ -334,40 +334,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .calc-input{flex:1;min-width:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
 .calc-select{flex:1;min-width:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
 .calc-go{padding:8px 14px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
-
-/* ── App Download Popup ── */
-#app-cta-overlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-#app-cta-overlay.show{display:flex;animation:ctaFade 0.3s ease;}
-@keyframes ctaFade{from{opacity:0}to{opacity:1}}
-#app-cta-modal{background:#160828;border:1px solid rgba(75,2,243,0.4);border-radius:24px;max-width:380px;width:100%;padding:32px 24px 24px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5);animation:ctaSlide 0.35s cubic-bezier(0.32,0.72,0,1);}
-@keyframes ctaSlide{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-#app-cta-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#7d95aa;font-size:24px;cursor:pointer;line-height:1;padding:4px;}
-#app-cta-logo{width:72px;height:72px;border-radius:18px;margin:0 auto 16px;display:block;}
-#app-cta-title{font-size:22px;font-weight:800;color:#edf2f7;margin:0 0 8px;font-family:'Outfit',sans-serif;}
-#app-cta-sub{font-size:14px;color:#9b8fb0;margin:0 0 24px;line-height:1.4;}
-#app-cta-appstore{display:inline-block;margin-bottom:14px;transition:transform 0.15s;}
-#app-cta-appstore:active{transform:scale(0.96);}
-#app-cta-appstore img{height:52px;width:auto;}
-#app-cta-continue{display:block;width:100%;background:none;border:none;color:#57d97b;font-size:14px;font-weight:600;cursor:pointer;padding:10px;font-family:'Outfit',sans-serif;text-decoration:underline;text-underline-offset:3px;}
-#app-cta-continue:active{opacity:0.7;}
-
 </style>
 </head>
 <body>
-
-<!-- App Download CTA Popup -->
-<div id="app-cta-overlay">
-  <div id="app-cta-modal">
-    <button id="app-cta-close" onclick="closeAppCta()" aria-label="Cerrar">✕</button>
-    <img id="app-cta-logo" src="icon.png" alt="Gasy">
-    <h2 id="app-cta-title">¡Descarga Gasy!</h2>
-    <p id="app-cta-sub">Lleva los precios de gasolina más baratos en tu bolsillo. Notificaciones, navegación y más — gratis.</p>
-    <a id="app-cta-appstore" href="https://apps.apple.com/mx/app/gasy/id6781545823" target="_blank" rel="noopener" onclick="trackAppCta()">
-      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store">
-    </a>
-    <button id="app-cta-continue" onclick="closeAppCta()">Continuar en el navegador</button>
-  </div>
-</div>
 
 <div id="welcome">
   <img src="logo-welcome.png" style="height:clamp(180px,35vw,320px);max-width:92vw;object-fit:contain;" alt="Gasy — encuentra tu gasolinera barata">
@@ -1340,6 +1309,7 @@ function requestGPS(){
       initMap(uLat,uLng);
       fetchAll(uLat,uLng);
       loadSavingsBanner(uLat,uLng);
+      checkValeroProximidad(uLat,uLng);
     },
     err=>{
       if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}
@@ -1429,6 +1399,7 @@ async function fetchAll(lat,lng){
     $('cre-badge').classList.add('show');
   }
   stations = merged;
+  aplicarOverrideValero(stations);
   setBar(95);setTxt('CARGANDO MAPA...');
   renderMarkers(fuel);
   renderCards(fuel);
@@ -1616,6 +1587,7 @@ function normalizeBrand(n){
   if(u.includes('OXXO')) return 'Oxxo Gas';
   if(u.includes('EXXON')) return 'Exxon';
   if(u.includes('MOBIL')) return 'Mobil';
+  if(u.includes('VALERO')) return 'Valero';
   if(u.includes('TOTAL')) return 'TotalEnergies';
   const f=n.trim().split(/\s+/)[0];
   return f.charAt(0).toUpperCase()+f.slice(1).toLowerCase();
@@ -2078,32 +2050,66 @@ function showCalcStationDetail(e, id, name, lat, lng, tipoprice, magna, premium,
   `;
 }
 </script>
-
 <script>
-// App Download CTA — una vez por sesión
-(function(){
-  function showAppCta(){
-    try{
-      if(sessionStorage.getItem('gasy_app_cta_shown')==='1') return;
-    }catch(e){}
-    var ov=document.getElementById('app-cta-overlay');
-    if(ov){ ov.classList.add('show'); }
+// Modulo piloto Valero - popup informativo por proximidad
+const VALERO_PILOTO = [
+  { nombre: 'Valero Insurgentes', lat: 19.403569, lng: -99.169571 },
+  { nombre: 'Valero Zona Esmeralda', lat: 19.546794, lng: -99.272517 },
+];
+
+const VALERO_CLAIM = 'Valero ofrece Supreme 93, que segun la marca es la unica gasolina de 93 octanos en Mexico - ideal para motores de alto rendimiento.';
+
+const VALERO_RADIO_KM = 3;
+let valeroMostrado = false;
+
+function aplicarOverrideValero(sts){
+  if (!Array.isArray(sts) || typeof hav !== 'function') return;
+  for (const s of sts){
+    if (s.lat == null || s.lng == null) continue;
+    for (const v of VALERO_PILOTO){
+      if (!v.lat || !v.lng) continue;
+      if (hav(s.lat, s.lng, v.lat, v.lng) < 0.15){
+        s.brand = 'Valero';
+        break;
+      }
+    }
   }
-  window.closeAppCta=function(){
-    var ov=document.getElementById('app-cta-overlay');
-    if(ov) ov.classList.remove('show');
-    try{ sessionStorage.setItem('gasy_app_cta_shown','1'); }catch(e){}
-  };
-  window.trackAppCta=function(){
-    try{ sessionStorage.setItem('gasy_app_cta_shown','1'); }catch(e){}
-  };
-  // Mostrar al cargar
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',function(){ setTimeout(showAppCta,600); });
-  } else {
-    setTimeout(showAppCta,600);
+}
+
+function checkValeroProximidad(userLat, userLng){
+  if (valeroMostrado) return;
+  if (typeof hav !== 'function') return;
+  let masCercana = null, minDist = Infinity;
+  for (const v of VALERO_PILOTO){
+    if (!v.lat || !v.lng) continue;
+    const d = hav(userLat, userLng, v.lat, v.lng);
+    if (d <= VALERO_RADIO_KM && d < minDist){ minDist = d; masCercana = v; }
   }
-})();
+  if (masCercana) mostrarValeroPopup(masCercana, minDist);
+}
+
+function mostrarValeroPopup(estacion, dist){
+  valeroMostrado = true;
+  const waze  = 'https://waze.com/ul?ll=' + estacion.lat + ',' + estacion.lng + '&navigate=yes';
+  const gmaps = 'https://www.google.com/maps/dir/?api=1&destination=' + estacion.lat + ',' + estacion.lng + '&travelmode=driving';
+  const distTxt = dist < 1 ? Math.round(dist*1000) + ' m' : dist.toFixed(1) + ' km';
+  const overlay = document.createElement('div');
+  overlay.className = 'plus-modal-overlay';
+  overlay.innerHTML =
+    '<div class="plus-modal" style="max-width:320px;text-align:left;">' +
+      '<div style="display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--text3);background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:10px;margin-bottom:12px;">Informacion de Valero</div>' +
+      '<div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">Hay una gasolinera Valero a ' + distTxt + '</div>' +
+      '<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px;">' + VALERO_CLAIM + '</div>' +
+      '<div style="font-size:12px;color:var(--text3);margin-bottom:16px;">' + estacion.nombre + '</div>' +
+      '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+        '<a href="' + waze + '" target="_blank" style="flex:1;text-align:center;padding:10px;background:#33CCFF;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;">Waze</a>' +
+        '<a href="' + gmaps + '" target="_blank" style="flex:1;text-align:center;padding:10px;background:#4b02f3;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;">Google Maps</a>' +
+      '</div>' +
+      '<button class="plus-modal-close" onclick="this.closest(\'.plus-modal-overlay\').remove()">Cerrar</button>' +
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
+}
 </script>
 </body>
 </html>

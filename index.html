@@ -628,7 +628,9 @@ function ratingBadgeHTML(rating, reviews){
   if(!b) return '';
   const bg = b.tipo==='best'?'rgba(87,217,123,0.1)':b.tipo==='bad'?'rgba(255,61,87,0.1)':'rgba(255,255,255,0.04)';
   const bd = b.tipo==='best'?'rgba(87,217,123,0.3)':b.tipo==='bad'?'rgba(255,61,87,0.3)':'rgba(255,255,255,0.08)';
-  const iconImg = b.tipo==='best'?'<img src="best.png" style="width:18px;height:18px;" alt="">':b.tipo==='bad'?'<img src="bad.png" style="width:18px;height:18px;" alt="">':'';
+  const bestURI = "data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#57d97b"><path d="m389-400 91-55 91 55-24-104 80-69-105-9-42-98-42 98-105 9 80 69-24 104ZM200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Z"/></svg>');
+  const badURI = "data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#EA3323"><path d="M440-520h80v-200h-80v200Zm40 160q17 0 28.5-11.5T520-400q0-17-11.5-28.5T480-440q-17 0-28.5 11.5T440-400q0 17 11.5 28.5T480-360Zm0 280Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/></svg>');
+  const iconImg = b.tipo==='best'?`<img src="${bestURI}" style="width:20px;height:20px;flex-shrink:0;" alt="">`:b.tipo==='bad'?`<img src="${badURI}" style="width:20px;height:20px;flex-shrink:0;" alt="">`:'';
   const labelTxt = b.label?' · '+b.label:'';
   return `<div style="display:flex;align-items:center;gap:8px;margin:8px 0;padding:8px 10px;border-radius:10px;background:${bg};border:0.5px solid ${bd};">
     ${iconImg}

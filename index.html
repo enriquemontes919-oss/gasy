@@ -628,10 +628,10 @@ function ratingBadgeHTML(rating, reviews){
   if(!b) return '';
   const bg = b.tipo==='best'?'rgba(87,217,123,0.1)':b.tipo==='bad'?'rgba(255,61,87,0.1)':'rgba(255,255,255,0.04)';
   const bd = b.tipo==='best'?'rgba(87,217,123,0.3)':b.tipo==='bad'?'rgba(255,61,87,0.3)':'rgba(255,255,255,0.08)';
-  const icon = b.tipo==='best'?'★':b.tipo==='bad'?'⚠':'';
+  const iconImg = b.tipo==='best'?'<img src="best.png" style="width:18px;height:18px;" alt="">':b.tipo==='bad'?'<img src="bad.png" style="width:18px;height:18px;" alt="">':'';
   const labelTxt = b.label?' · '+b.label:'';
   return `<div style="display:flex;align-items:center;gap:8px;margin:8px 0;padding:8px 10px;border-radius:10px;background:${bg};border:0.5px solid ${bd};">
-    <span style="font-size:15px;color:${b.color};">${icon}</span>
+    ${iconImg}
     <div>
       <div style="font-size:13px;font-weight:800;color:${b.color};">${b.rating.toFixed(1)} en Google${labelTxt}</div>
       <div style="font-size:10px;color:#5a4870;">${b.reviews} reseñas en Google Maps</div>
@@ -681,7 +681,6 @@ function renderPlacesInfo(place, stationId){
     }
     // Insignia de rating de Google
     if(place.rating!=null && place.reviews!=null){
-      RATING_CACHE[ratingKey(lat, lng)] = {rating:place.rating, reviews:place.reviews};
       const badgeEl = document.getElementById("pop-rating-"+stationId);
       if(badgeEl){ badgeEl.innerHTML = ratingBadgeHTML(place.rating, place.reviews); }
     }
@@ -707,7 +706,6 @@ function renderPlacesInfo(place, stationId){
   }
   // Insignia de rating de Google en bottom sheet mobile
   if(place.rating!=null && place.reviews!=null){
-    RATING_CACHE[ratingKey(lat, lng)] = {rating:place.rating, reviews:place.reviews};
     const mobRatingEl = document.getElementById('ms-rating');
     if(mobRatingEl){ mobRatingEl.innerHTML = ratingBadgeHTML(place.rating, place.reviews); }
   }

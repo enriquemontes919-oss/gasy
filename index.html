@@ -485,6 +485,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
         <div class="ms-dot unk" id="ms-dot"></div>
         <span class="ms-status-txt" id="ms-status-txt"></span>
       </div>
+      <div id="ms-rating"></div>
       <div class="ms-badges" id="ms-amenity-badges"></div>
       <div class="ms-badges" id="ms-report-badges"></div>
       <div class="ms-prices">
@@ -610,6 +611,34 @@ const ratingsCache = {};
 // ── GOOGLE PLACES CACHE ──
 const placesCache = {};
 
+// Cache de ratings de Google por coordenadas (para cards/lista, costo cero)
+const RATING_CACHE = {};
+function ratingKey(lat,lng){ return lat.toFixed(4)+','+lng.toFixed(4); }
+
+// Insignia de rating de Google. Solo confiable con 10+ resenas.
+function ratingBadge(rating, reviews){
+  if(rating==null || reviews==null || reviews < 10) return null;
+  if(rating >= 4.5) return {tipo:'best', color:'#57d97b', label:'Recomendada', rating, reviews};
+  if(rating <= 3.0) return {tipo:'bad', color:'#ff3d57', label:'Precaución', rating, reviews};
+  return {tipo:'neutral', color:'#9b8fb0', label:null, rating, reviews};
+}
+
+function ratingBadgeHTML(rating, reviews){
+  const b = ratingBadge(rating, reviews);
+  if(!b) return '';
+  const bg = b.tipo==='best'?'rgba(87,217,123,0.1)':b.tipo==='bad'?'rgba(255,61,87,0.1)':'rgba(255,255,255,0.04)';
+  const bd = b.tipo==='best'?'rgba(87,217,123,0.3)':b.tipo==='bad'?'rgba(255,61,87,0.3)':'rgba(255,255,255,0.08)';
+  const icon = b.tipo==='best'?'★':b.tipo==='bad'?'⚠':'';
+  const labelTxt = b.label?' · '+b.label:'';
+  return `<div style="display:flex;align-items:center;gap:8px;margin:8px 0;padding:8px 10px;border-radius:10px;background:${bg};border:0.5px solid ${bd};">
+    <span style="font-size:15px;color:${b.color};">${icon}</span>
+    <div>
+      <div style="font-size:13px;font-weight:800;color:${b.color};">${b.rating.toFixed(1)} en Google${labelTxt}</div>
+      <div style="font-size:10px;color:#5a4870;">${b.reviews} reseñas en Google Maps</div>
+    </div>
+  </div>`;
+}
+
 async function getPlaceDetails(lat, lng, name, stationId){
   if(placesCache[stationId] !== undefined) return placesCache[stationId];
   try{
@@ -650,6 +679,12 @@ function renderPlacesInfo(place, stationId){
       const matched = knownBrands.find(b=>place.name.toLowerCase().includes(b.toLowerCase()));
       if(matched) brandEl.textContent = matched;
     }
+    // Insignia de rating de Google
+    if(place.rating!=null && place.reviews!=null){
+      RATING_CACHE[ratingKey(lat, lng)] = {rating:place.rating, reviews:place.reviews};
+      const badgeEl = document.getElementById("pop-rating-"+stationId);
+      if(badgeEl){ badgeEl.innerHTML = ratingBadgeHTML(place.rating, place.reviews); }
+    }
   }
 
   // ── Mobile bottom sheet ── actualizar siempre, independiente del desktop
@@ -669,6 +704,12 @@ function renderPlacesInfo(place, stationId){
     mobStatusTxtEl.textContent = label + (hours ? ' · '+hours : '');
     mobStatusTxtEl.style.color = isOpen===true?'#57d97b':isOpen===false?'#ff3d57':'#9b8fb0';
     if(label) mobStatusEl.style.display = 'flex';
+  }
+  // Insignia de rating de Google en bottom sheet mobile
+  if(place.rating!=null && place.reviews!=null){
+    RATING_CACHE[ratingKey(lat, lng)] = {rating:place.rating, reviews:place.reviews};
+    const mobRatingEl = document.getElementById('ms-rating');
+    if(mobRatingEl){ mobRatingEl.innerHTML = ratingBadgeHTML(place.rating, place.reviews); }
   }
 }
 
@@ -1132,6 +1173,12 @@ function openMobStation(s, isStar){
     txtEl.textContent = label + hours;
     txtEl.style.color = isOpen===true?'#57d97b':isOpen===false?'#ff3d57':'#9b8fb0';
     if(label) $('ms-status').style.display = 'flex';
+    // Insignia de rating de Google
+    if(place.rating!=null && place.reviews!=null){
+      RATING_CACHE[ratingKey(s.lat, s.lng)] = {rating:place.rating, reviews:place.reviews};
+      const mr = $('ms-rating');
+      if(mr){ mr.innerHTML = ratingBadgeHTML(place.rating, place.reviews); }
+    }
   });
 }
 
@@ -1673,7 +1720,7 @@ function renderMarkers(f){
     const starsSection = starsHtml(stationId, stationName, cachedRating);
     const rawName = s.name || s.brand || 'Gasolinera';
     const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
-    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div id="pop-amenities-${stationId}" class="pop-amenities"></div><div id="pop-reports-${stationId}" class="pop-reports"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr&&s.addr!=='undefined'&&s.addr.length>2?s.addr:(s.municipio&&s.municipio.length>2?s.municipio:''))}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
+    const popup=`<div class="pop">${starBadge}<div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div><div id="pop-status-${stationId}" class="pop-status" style="display:none"></div><div id="pop-rating-${stationId}"></div><div id="pop-amenities-${stationId}" class="pop-amenities"></div><div id="pop-reports-${stationId}" class="pop-reports"></div><div class="pop-addr"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> ${(s.addr&&s.addr!=='undefined'&&s.addr.length>2?s.addr:(s.municipio&&s.municipio.length>2?s.municipio:''))}</div><div class="pop-divider"></div><div class="pop-prices"><div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div><div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div><div class="pop-row"><span class="pop-fuel">Diésel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div></div>${starsSection}<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a><a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div><div class="pop-src" style="color:${srcColor}">Fuente: ${srcLabel}</div></div>`;
     const zIdx = isStar ? 2000 : 1000;
     const _isMobile=window.innerWidth<600;const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:_isMobile?window.innerWidth-32:300,minWidth:_isMobile?window.innerWidth-32:260,autoPanPaddingTopLeft:L.point(10,_isMobile?120:100),autoPanPaddingBottomRight:L.point(10,_isMobile?220:40),keepInView:true}).addTo(map);
     mk.on('popupopen', async ()=>{

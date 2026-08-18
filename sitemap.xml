@@ -1,45 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://gasy.mx/</loc>
-    <lastmod>2025-06-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://gasy.mx/ciudad-de-mexico</loc>
-    <lastmod>2025-06-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://gasy.mx/guadalajara</loc>
-    <lastmod>2025-06-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://gasy.mx/monterrey</loc>
-    <lastmod>2025-06-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://gasy.mx/puebla</loc>
-    <lastmod>2025-06-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://gasy.mx/tijuana</loc>
-    <lastmod>2025-06-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://gasy.mx/privacidad</loc>
-    <lastmod>2025-06-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
+
+  <!-- PÁGINAS PRINCIPALES -->
+  <url><loc>https://gasy.mx/</loc><changefreq>daily</changefreq><priority>1.0</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/blog.html</loc><changefreq>weekly</changefreq><priority>0.9</priority><lastmod>2026-08-17</lastmod></url>
+
+  <!-- PÁGINAS DE CIUDAD (TOP 5) -->
+  <url><loc>https://gasy.mx/ciudad-de-mexico</loc><changefreq>weekly</changefreq><priority>0.9</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/guadalajara</loc><changefreq>weekly</changefreq><priority>0.9</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/monterrey</loc><changefreq>weekly</changefreq><priority>0.9</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/puebla</loc><changefreq>weekly</changefreq><priority>0.9</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/tijuana</loc><changefreq>weekly</changefreq><priority>0.9</priority><lastmod>2026-08-17</lastmod></url>
+
+  <!-- PÁGINAS DE ESTADO -->
+  <url><loc>https://gasy.mx/baja-california</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/jalisco</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/nuevo-leon</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/yucatan</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/queretaro</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+
+  <!-- PÁGINAS DE CIUDAD (NUEVAS) -->
+  <url><loc>https://gasy.mx/leon</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/ciudad-juarez</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/san-luis-potosi</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/culiacan</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/acapulco</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/cuernavaca</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/morelos</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/cancun</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/morelia</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/veracruz-ciudad</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/chihuahua-ciudad</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+  <url><loc>https://gasy.mx/torreon</loc><changefreq>weekly</changefreq><priority>0.8</priority><lastmod>2026-08-17</lastmod></url>
+
+  <!-- PÁGINAS LEGALES -->
+  <url><loc>https://gasy.mx/privacidad.html</loc><changefreq>yearly</changefreq><priority>0.4</priority><lastmod>2026-06-29</lastmod></url>
+  <url><loc>https://gasy.mx/terminos.html</loc><changefreq>yearly</changefreq><priority>0.4</priority><lastmod>2026-06-29</lastmod></url>
+  <url><loc>https://gasy.mx/contacto.html</loc><changefreq>yearly</changefreq><priority>0.4</priority><lastmod>2026-06-29</lastmod></url>
+  <url><loc>https://gasy.mx/nosotros.html</loc><changefreq>yearly</changefreq><priority>0.4</priority><lastmod>2026-06-29</lastmod></url>
+
 </urlset>

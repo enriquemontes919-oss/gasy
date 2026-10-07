@@ -343,6 +343,82 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   gtag("js", new Date());
   gtag("config", "G-4B5V8BHHFQ");
 </script>
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "yu4vg8s2ww");
+</script>
+<!-- Gasy: medición (GA4 + Clarity). Todos los eventos pasan por gasyTrack() -->
+<script>
+(function(){
+  function stationCtx(){
+    var s = window._gasyStation, o = {};
+    if(!s) return o;
+    if(s.brand) o.marca = s.brand;
+    if(s.municipio) o.municipio = s.municipio;
+    if(s.estado) o.estado = s.estado;
+    if(s.source) o.fuente = s.source;
+    return o;
+  }
+  // name: nombre del evento (snake_case). params: parámetros extra. withStation: añade marca/municipio/estado/combustible.
+  window.gasyTrack = function(name, params, withStation){
+    try{
+      var p = {}, k;
+      if(withStation){
+        var c = stationCtx();
+        for(k in c) p[k] = c[k];
+        if(typeof fuel !== 'undefined') p.tipo_combustible = fuel;
+      }
+      if(params){
+        for(k in params){
+          if(params[k] !== undefined && params[k] !== null && params[k] !== '') p[k] = params[k];
+        }
+      }
+      gtag('event', name, p);
+      if(typeof window.clarity === 'function') window.clarity('event', name);
+    }catch(e){}
+  };
+  // Vista de ficha de estación (evita duplicados si se abre popup y ficha casi a la vez)
+  window.gasyDetailView = function(s){
+    try{
+      window._gasyStation = s;
+      var key = s.cre_id || s.osm_id || s.id;
+      var now = Date.now();
+      if(window._gdv && window._gdv.k === key && now - window._gdv.t < 3000) return;
+      window._gdv = {k: key, t: now};
+      window.gasyTrack('station_detail_view', null, true);
+    }catch(e){}
+  };
+  // Clics delegados: cómo llegar (Waze / Google Maps), descarga de app y popup de socio
+  document.addEventListener('click', function(ev){
+    try{
+      var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+      if(!a) return;
+      var href = a.getAttribute('href') || '';
+      var isIos = href.indexOf('apps.apple.com') > -1;
+      var isAndroid = href.indexOf('play.google.com') > -1;
+      if(isIos || isAndroid){
+        window.gasyTrack('app_download_click', {plataforma: isIos ? 'ios' : 'android', ubicacion_boton: a.getAttribute('data-ubicacion') || 'otro'});
+        return;
+      }
+      var app = href.indexOf('waze.com/ul') > -1 ? 'waze' : (href.indexOf('google.com/maps/dir') > -1 ? 'google_maps' : null);
+      if(!app) return;
+      var partner = a.closest('[data-partner]');
+      if(partner){
+        window.gasyTrack('partner_popup_click', {socio: partner.getAttribute('data-partner'), aplicacion: app});
+        return;
+      }
+      var origen = a.closest('#mob-station-sheet') ? 'ficha_movil'
+                 : a.closest('.leaflet-popup') ? 'popup_mapa'
+                 : a.closest('.plus-modal') ? 'calculadora' : 'otro';
+      window.gasyTrack('directions_click', {aplicacion: app, origen: origen}, origen === 'ficha_movil' || origen === 'popup_mapa');
+    }catch(err){}
+  }, true);
+})();
+</script>
 </head>
 <body>
 
@@ -442,7 +518,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   </div>
 </header>
 
-<div id="map"></div>
+<div id="map" data-clarity-mask="True"></div>
 <div id="cre-badge">✦ Precios CRE en tiempo real</div>
 
 <button id="headingbtn" onclick="toggleHeading()" aria-label="Orientación del mapa" title="Activar modo navegación">
@@ -565,7 +641,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
           <label class="ms-chk-item" style="color:#57d97b;background:rgba(87,217,123,0.06);border-color:rgba(87,217,123,0.2);"><input type="checkbox" id="ms-chk-tarjeta"> 💳 Tarjeta segura</label>
           <label class="ms-chk-item" style="color:#ff3d57;background:rgba(255,61,87,0.06);border-color:rgba(255,61,87,0.2);"><input type="checkbox" id="ms-chk-clona"> ⛔ Clona tarjetas</label>
         </div>
-        <textarea class="ms-textarea" id="ms-new-comment" placeholder="Escribe un comentario (opcional)..."></textarea>
+        <textarea class="ms-textarea" id="ms-new-comment" data-clarity-mask="True" placeholder="Escribe un comentario (opcional)..."></textarea>
         <button class="ms-submit-btn" id="ms-submit-btn" onclick="submitMobStation()">Publicar</button>
       </div>
       <div class="ms-src" id="ms-src">Fuente: CRE</div>
@@ -879,7 +955,7 @@ async function showComments(stationId, stationName){
         <input type="checkbox" id="chk-clona-${stationId}" style="accent-color:#ff3d57;"> <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="#EA3323"><path d="m396-340 84-84 84 84 56-56-84-84 84-84-56-56-84 84-84-84-56 56 84 84-84 84 56 56Zm84 260q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Z"/></svg> Clona tarjetas
       </label>
     </div>
-    <textarea id="comment-input-${stationId}" placeholder="Escribe un comentario (opcional)..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;padding:8px;resize:none;height:60px;margin-bottom:8px;"></textarea>
+    <textarea id="comment-input-${stationId}" data-clarity-mask="True" placeholder="Escribe un comentario (opcional)..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;padding:8px;resize:none;height:60px;margin-bottom:8px;"></textarea>
     <button onclick="submitComment(this.dataset.id,this.dataset.name)" data-id="${stationId}" data-name="${stationName}" style="width:100%;padding:8px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;margin-bottom:8px;">Publicar</button>
     <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Cerrar</button>
   </div>`;
@@ -952,6 +1028,7 @@ async function submitComment(stationId, stationName){
         }).catch(()=>{});
       }
       input.value = '';
+      {const _t=[];if(text)_t.push('comentario');if(hasStore||hasRestroom||hasAtm)_t.push('amenidad');if(litroCompleto||noLitro||zonaSeg||zonaInseg||tarjeta||clona)_t.push('reporte');gasyTrack('report_submit',{tipo:_t.join('+'),origen:'popup_mapa'},true);}
       toast('💬 ¡Gracias por tu aporte!');
       // Recargar lista sin crear nuevo overlay
       const list = document.getElementById('comments-list-'+stationId);
@@ -1002,6 +1079,7 @@ async function rateStar(stationId, stationName, stars){
   const ok = await submitRating(stationId, stationName, stars);
   if(ok){
     delete ratingsCache[stationId];
+    gasyTrack('rating_submit',{estrellas:stars,origen:'popup_mapa'},true);
     toast('⭐ Valoración guardada');
     // Recargar y actualizar promedio visible
     setTimeout(async()=>{
@@ -1089,6 +1167,7 @@ async function loadSavingsBanner(userLat, userLng){
 window.addEventListener('load', ()=>loadSavingsBanner(19.4326, -99.1332));
 
 let map, uMarker, uLat, uLng;
+let _gasyLocMethod = 'gps';
 let fuel = 'magna';
 let currentRadio = 12000;
 let stations = [];
@@ -1110,6 +1189,7 @@ function setRadio(km, btn){
   document.querySelectorAll('.rbtn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   $('radio-txt').textContent = km + 'km';
+  gasyTrack('change_radius',{radio_km:km,origen:'header'});
   const mlbl = $('mobile-radio-label');
   if(mlbl) mlbl.textContent = km + 'km';
   if(uLat && stations.length > 0){
@@ -1125,6 +1205,7 @@ let _mobCommentsLoaded = false;
 
 function openMobStation(s, isStar){
   _mobStation = s;
+  gasyDetailView(s);
   _mobUserRating = 0;
   _mobCommentsLoaded = false;
   const stationId = s.cre_id || s.osm_id || `osm_${s.id}`;
@@ -1255,6 +1336,7 @@ async function mobileRateStar(n){
   const stationId = _mobStation.cre_id || _mobStation.osm_id || `osm_${_mobStation.id}`;
   const stationName = _mobStation.name || _mobStation.brand;
   await submitRating(stationId, stationName, n);
+  gasyTrack('rating_submit',{estrellas:n,origen:'ficha_movil'},true);
   $('ms-rating-thanks').style.display = 'block';
   const rating = await getRatings(stationId);
   if(rating && rating.count > 0){
@@ -1297,6 +1379,7 @@ async function submitMobStation(){
     if(chkStore||chkRestroom||chkAtm) await fetch(`${SUPA_URL}/rest/v1/amenities`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({station_id:stationId,station_name:stationName,has_store:chkStore,has_restroom:chkRestroom,has_atm:chkAtm})});
     if(chkLitro||chkNoLitro||chkSeg||chkInseg||chkTarjeta||chkClona) await fetch(`${SUPA_URL}/rest/v1/reports`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({station_id:stationId,station_name:stationName,litro_completo:chkLitro,no_litro:chkNoLitro,zona_segura:chkSeg,zona_insegura:chkInseg,acepta_tarjeta:chkTarjeta,clona_tarjeta:chkClona})});
     btn.textContent='¡Publicado!'; toast('✓ Aportación guardada');
+    {const _t=[];if(comment)_t.push('comentario');if(chkStore||chkRestroom||chkAtm)_t.push('amenidad');if(chkLitro||chkNoLitro||chkSeg||chkInseg||chkTarjeta||chkClona)_t.push('reporte');gasyTrack('report_submit',{tipo:_t.join('+'),origen:'ficha_movil'},true);}
     $('ms-new-comment').value='';
     ['ms-chk-store','ms-chk-restroom','ms-chk-atm','ms-chk-litro','ms-chk-nolitro','ms-chk-seg','ms-chk-inseg','ms-chk-tarjeta','ms-chk-clona'].forEach(id=>{ const el=$(id); if(el) el.checked=false; });
     _mobCommentsLoaded=false;
@@ -1321,6 +1404,8 @@ function closeFuelSheet(e){
 function selectFuelSheet(f){
   const labels={magna:'Magna',premium:'Premium',diesel:'Diésel'};
   fuel=f;
+  gasyTrack('filter_fuel',{tipo_combustible:f,origen:'hoja_movil'});
+  if(window.clarity) clarity('set','combustible',f);
   document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
   const desktopBtn=document.querySelector(`.fbtn[onclick="setFuel('${f}',this)"]`);
   if(desktopBtn) desktopBtn.classList.add('on');
@@ -1344,6 +1429,7 @@ function closeRadioSheet(e){
 function selectRadioSheet(km){
   currentRadio=km*1000;
   $('radio-txt').textContent=km+'km';
+  gasyTrack('change_radius',{radio_km:km,origen:'hoja_movil'});
   const mlbl=$('mobile-radio-label');
   if(mlbl) mlbl.textContent=km+'km';
   document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('on'));
@@ -1374,6 +1460,7 @@ function toast(msg){
 }
 
 function startApp(){
+  gasyTrack('start_click');
   $('welcome').classList.add('out');
   setTimeout(()=>$('welcome').style.display='none',400);
   $('loading').classList.add('show');
@@ -1388,13 +1475,14 @@ function requestGPS(){
     pos=>{
       uLat=pos.coords.latitude;uLng=pos.coords.longitude;
       setBar(30);setTxt('POSICIÓN DETECTADA...');
+      gasyTrack('gps_permission',{resultado:'concedido'});
       initMap(uLat,uLng);
       fetchAll(uLat,uLng);
       loadSavingsBanner(uLat,uLng);
       checkValeroProximidad(uLat,uLng);
     },
     err=>{
-      if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}
+      gasyTrack('gps_permission',{resultado: err.code===1?'denegado':'error'});if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}
       else useFallback();
     },
     {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
@@ -1428,7 +1516,7 @@ function requestGPS(){
 }
 
 function retryGPS(){$('errmsg').classList.remove('show');$('loading').classList.add('show');requestGPS();}
-function useFallback(){uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);fetchAll(uLat,uLng);loadSavingsBanner(uLat,uLng);toast('Sin GPS — mostrando CDMX');}
+function useFallback(){_gasyLocMethod='fallback_cdmx';uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);fetchAll(uLat,uLng);loadSavingsBanner(uLat,uLng);toast('Sin GPS — mostrando CDMX');}
 
 function initMap(lat,lng){
   map=L.map('map',{zoomControl:true,attributionControl:false}).setView([lat,lng],15);
@@ -1472,6 +1560,7 @@ async function fetchAll(lat,lng){
   }
   if(merged.length === 0){
     merged = generateDemo(lat, lng);
+    gasyTrack('search_no_results',{radio_km:currentRadio/1000,metodo:_gasyLocMethod});
     toast('Demo — sin conexión a fuentes de datos');
   } else {
     let src = [];
@@ -1482,6 +1571,8 @@ async function fetchAll(lat,lng){
   }
   stations = merged;
   aplicarOverrideValero(stations);
+  gasyTrack('search_station',{metodo:_gasyLocMethod,radio_km:currentRadio/1000,tipo_combustible:fuel,resultados:stations.filter(s=>s.source!=='demo').length});
+  if(window.clarity) clarity('set','metodo_ubicacion',_gasyLocMethod);
   setBar(95);setTxt('CARGANDO MAPA...');
   renderMarkers(fuel);
   renderCards(fuel);
@@ -1491,6 +1582,7 @@ async function fetchAll(lat,lng){
     $('loading').classList.add('out');
     setTimeout(()=>{$('loading').classList.remove('show','out');},400);
     toast('✓ '+stations.length+' gasolineras encontradas');
+    if(typeof gasyMaybeShowAppPrompt==='function') gasyMaybeShowAppPrompt();
   },300);
 }
 
@@ -1753,6 +1845,7 @@ function renderMarkers(f){
     const zIdx = isStar ? 2000 : 1000;
     const _isMobile=window.innerWidth<600;const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:zIdx}).bindPopup(popup,{maxWidth:_isMobile?window.innerWidth-32:300,minWidth:_isMobile?window.innerWidth-32:260,autoPanPaddingTopLeft:L.point(10,_isMobile?120:100),autoPanPaddingBottomRight:L.point(10,_isMobile?220:40),keepInView:true}).addTo(map);
     mk.on('popupopen', async ()=>{
+      gasyDetailView(s);
       // Cargar amenidades y reportes validados
       loadAmenities(stationId);
       loadReports(stationId);
@@ -1821,6 +1914,8 @@ function selectStation(id){
 function setFuel(f,btn){
   const labels={magna:'Magna',premium:'Premium',diesel:'Diésel'};
   fuel=f;
+  gasyTrack('filter_fuel',{tipo_combustible:f,origen:'header'});
+  if(window.clarity) clarity('set','combustible',f);
   document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   const mlbl=$('mobile-fuel-label');
@@ -1933,6 +2028,7 @@ function acceptCookies(){
 window.addEventListener('load', initCookieBanner);
 
 function showCalcModal(){
+  gasyTrack('calculator_open');
   const overlay = document.createElement('div');
   overlay.className = 'plus-modal-overlay';
   overlay.innerHTML = `<div class="plus-modal" style="max-height:85vh;overflow-y:auto;text-align:left;">
@@ -2024,6 +2120,7 @@ async function runCalc(){
     return;
   }
 
+  gasyTrack('savings_calculator_use',{tipo_combustible:tipo,litros:litros,resultados:valid.length});
   const maxPrice=Math.max(...valid.map(s=>s.prices[tipo]));
   const cheapest=[...valid].sort((a,b)=>a.prices[tipo]-b.prices[tipo]).slice(0,3);
   const trusted=[...valid].sort((a,b)=>{
@@ -2201,7 +2298,102 @@ function mostrarValeroPopup(estacion, dist){
     '</div>';
   document.body.appendChild(overlay);
   overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
+  overlay.setAttribute('data-partner','valero');
+  gasyTrack('partner_popup_view',{socio:'valero',distancia_km:Math.round(dist*10)/10});
 }
+</script>
+<script>
+// Popup de descarga de la app (solo iOS, tras la primera búsqueda exitosa)
+(function(){
+  var KEY = 'gasy_app_prompt';
+  var URL_IOS = 'https://apps.apple.com/mx/app/gasy-mx/id6781545823?ct=web_popup';
+  var DAY = 86400000;
+  var shown = false, scheduled = false, tries = 0, overlay = null;
+
+  function isIOS(){
+    var ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function standalone(){
+    return window.navigator.standalone === true || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  }
+  function readState(){
+    try{ return JSON.parse(localStorage.getItem(KEY) || 'null'); }catch(e){ return null; }
+  }
+  function saveState(estado){
+    try{ localStorage.setItem(KEY, JSON.stringify({estado: estado, t: Date.now()})); }catch(e){}
+  }
+  // Cerrado: no volver a mostrar por 14 días. Clic en descargar: 90 días.
+  function suppressed(){
+    var s = readState();
+    if(!s) return false;
+    var dias = s.estado === 'clicked' ? 90 : 14;
+    return (Date.now() - s.t) < dias * DAY;
+  }
+  function busy(){
+    return !!document.querySelector('.plus-modal-overlay')
+      || !!document.querySelector('#mob-station-overlay.open')
+      || !!document.querySelector('.bsheet-overlay.open')
+      || document.getElementById('errmsg').classList.contains('show')
+      || document.getElementById('loading').classList.contains('show');
+  }
+  function removeOverlay(){
+    if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    overlay = null;
+    document.removeEventListener('keydown', onKey);
+  }
+  function onKey(e){ if(e.key === 'Escape') dismiss('esc'); }
+  function dismiss(metodo){
+    if(!overlay) return;
+    saveState('dismissed');
+    gasyTrack('app_prompt_dismiss', {metodo: metodo, ubicacion_boton: 'popup_home'});
+    removeOverlay();
+  }
+  function show(){
+    shown = true;
+    overlay = document.createElement('div');
+    overlay.className = 'plus-modal-overlay';
+    overlay.innerHTML =
+      '<div class="plus-modal" role="dialog" aria-modal="true" aria-label="Descarga la app de Gasy" style="position:relative;max-width:320px;">' +
+        '<button id="gasy-app-x" aria-label="Cerrar" style="position:absolute;top:8px;right:10px;background:none;border:none;color:var(--text3);font-size:20px;line-height:1;cursor:pointer;padding:8px;">&#10005;</button>' +
+        '<img src="icon.png" alt="Gasy" style="width:64px;height:64px;border-radius:16px;display:block;margin:4px auto 12px;">' +
+        '<div class="plus-modal-title">Lleva Gasy contigo</div>' +
+        '<div class="plus-modal-sub">Mapa, consulta de precios, valoraciones y c&aacute;lculo de ahorro en un solo lugar, en el momento y lugar que quieras desde tu celular.</div>' +
+        '<a id="gasy-app-dl" href="' + URL_IOS + '" data-ubicacion="popup_home" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;padding:13px;background:#57d97b;color:#0a0414;border-radius:30px;font-family:var(--sans);font-weight:700;font-size:15px;text-decoration:none;margin-bottom:8px;">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#0a0414" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>' +
+          'Descargar en App Store' +
+        '</a>' +
+        '<button class="plus-modal-close" id="gasy-app-skip">Seguir en el sitio web</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    document.addEventListener('keydown', onKey);
+    overlay.addEventListener('click', function(e){ if(e.target === overlay) dismiss('fuera'); });
+    document.getElementById('gasy-app-x').addEventListener('click', function(){ dismiss('cerrar'); });
+    document.getElementById('gasy-app-skip').addEventListener('click', function(){ dismiss('seguir_web'); });
+    document.getElementById('gasy-app-dl').addEventListener('click', function(){
+      // app_download_click lo registra el listener global de clics
+      saveState('clicked');
+      setTimeout(removeOverlay, 150);
+    });
+    gasyTrack('app_prompt_view', {ubicacion_boton: 'popup_home'});
+  }
+  function attempt(){
+    if(shown) return;
+    if(busy()){
+      tries++;
+      if(tries < 4) setTimeout(attempt, 5000);
+      return;
+    }
+    show();
+  }
+  // Se llama cuando termina la primera búsqueda con resultados
+  window.gasyMaybeShowAppPrompt = function(){
+    if(shown || scheduled) return;
+    if(!isIOS() || standalone() || suppressed()) return;
+    scheduled = true;
+    setTimeout(attempt, 3500);
+  };
+})();
 </script>
 </body>
 </html>

@@ -1601,7 +1601,7 @@ async function fetchAll(lat,lng){
   } else if(osmStations.length > 0){
     merged = osmStations.map((s,i)=>({...s,id:i}));
   } else if(creStations.length > 0){
-    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,200).map((s,i)=>({...s,id:i}));
+    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,600).map((s,i)=>({...s,id:i}));
   }
   if(merged.length === 0){
     merged = generateDemo(lat, lng);
@@ -1848,7 +1848,7 @@ function renderMarkers(f){
   if(!valid.length) return;
 
   // Límite de markers según radio — más radio, más markers permitidos
-  const maxMarkers = currentRadio >= 40000 ? 500 : currentRadio >= 15000 ? 300 : 200;
+  const maxMarkers = currentRadio >= 40000 ? 1000 : currentRadio >= 15000 ? 600 : 400;
   const limited = uLat
     ? [...valid].map(s=>({...s,_d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a._d-b._d).slice(0,maxMarkers)
     : valid.slice(0,maxMarkers);

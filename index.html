@@ -833,15 +833,59 @@ async function getRatings(stationId){
   }catch(e){ return null; }
 }
 
+// Guest ID anónimo del visitante web (persiste en localStorage, como el device_id de la app)
+function getGuestId(){
+  try{
+    let id = localStorage.getItem('gasy_guest_id');
+    if(!id){
+      id = 'web_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,11);
+      localStorage.setItem('gasy_guest_id', id);
+    }
+    return id;
+  }catch(e){
+    // Si localStorage falla (incógnito estricto), usa un id de sesión en memoria
+    if(!window._gasyGuestTmp) window._gasyGuestTmp = 'tmp_' + Math.random().toString(36).slice(2,11);
+    return window._gasyGuestTmp;
+  }
+}
+
+// UPSERT: si este visitante ya votó esta estación, actualiza; si no, crea.
 async function submitRating(stationId, stationName, stars){
   try{
-    const res = await fetch(`${SUPA_URL}/rest/v1/ratings`, {
+    const gid = getGuestId();
+    const res = await fetch(`${SUPA_URL}/rest/v1/ratings?on_conflict=station_id,device_id`, {
       method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({station_id:stationId, station_name:stationName, stars:stars})
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify({station_id:stationId, station_name:stationName, stars:stars, device_id:gid})
     });
     return res.ok || res.status === 201;
   }catch(e){ return false; }
+}
+
+// Lee el voto previo de este visitante en esta estación (para precargarlo).
+async function getMyRating(stationId){
+  try{
+    const gid = getGuestId();
+    const res = await fetch(`${SUPA_URL}/rest/v1/ratings?station_id=eq.${encodeURIComponent(stationId)}&device_id=eq.${encodeURIComponent(gid)}&select=stars`, {
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    });
+    if(!res.ok) return 0;
+    const d = await res.json();
+    return (d.length && d[0].stars) ? d[0].stars : 0;
+  }catch(e){ return 0; }
+}
+
+// Precarga visualmente el voto previo del visitante en las estrellas de una estación.
+async function preloadMyRating(stationId){
+  try{
+    const my = await getMyRating(stationId);
+    if(my <= 0) return;
+    const row = document.getElementById('stars-row-'+stationId);
+    if(row){
+      const btns = row.querySelectorAll('.star-btn');
+      btns.forEach((b,i)=>{ b.classList.toggle('filled',i<my); b.style.opacity=i<my?'1':'0.6'; });
+    }
+  }catch(e){}
 }
 
 function starsHtml(stationId, stationName, ratingData){
@@ -1071,7 +1115,7 @@ async function rateStar(stationId, stationName, stars){
   const row = document.getElementById('stars-row-'+stationId);
   if(row){
     const btns = row.querySelectorAll('.star-btn');
-    btns.forEach((b,i)=>{ b.classList.toggle('filled',i<stars); b.disabled=true; b.style.opacity=i<stars?'1':'0.2'; });
+    btns.forEach((b,i)=>{ b.classList.toggle('filled',i<stars); b.style.opacity=i<stars?'1':'0.6'; });
   }
   const thanks = document.getElementById('stars-thanks-'+stationId);
   if(thanks) thanks.classList.add('show');
@@ -1262,6 +1306,7 @@ function openMobStation(s, isStar){
   document.body.style.overflow = 'hidden';
 
   // Cargar datos async
+  preloadMyRating(stationId); // precarga el voto previo de este visitante
   getRatings(stationId).then(rating => {
     if(!rating) return;
     if(rating.count > 0){
@@ -1849,6 +1894,7 @@ function renderMarkers(f){
       loadAmenities(stationId);
       loadReports(stationId);
       // Cargar ratings
+      preloadMyRating(stationId); // precarga el voto previo de este visitante
       const rating = await getRatings(stationId);
       if(rating && rating.count > 0){
         const avgEl = document.getElementById('stars-avg-num-'+stationId);

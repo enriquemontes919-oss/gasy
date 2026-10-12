@@ -2446,9 +2446,8 @@ function mostrarValeroPopup(estacion, dist){
            '</a>';
   }
   function botonesTienda(){
-    if(isIOS()) return btnApple();
-    if(isAndroid()) return btnGoogle();
-    return btnApple() + btnGoogle();
+    // Siempre las dos tiendas. Primero la que corresponde al dispositivo.
+    return isAndroid() ? (btnGoogle() + btnApple()) : (btnApple() + btnGoogle());
   }
   function show(){
     shown = true;

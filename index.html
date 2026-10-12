@@ -1512,6 +1512,28 @@ function startApp(){
   requestGPS();
 }
 
+// Apertura directa desde las paginas de ciudad: /?lat=..&lng=..&z=..&ciudad=..
+// Si vienen coordenadas en la URL, saltamos la bienvenida y abrimos el mapa ahi.
+function ciudadDesdeURL(){
+  try{
+    const p = new URLSearchParams(location.search);
+    const lat = parseFloat(p.get('lat')), lng = parseFloat(p.get('lng'));
+    if(isNaN(lat) || isNaN(lng)) return false;
+    if(lat < 14 || lat > 33 || lng < -119 || lng > -86) return false; // fuera de Mexico: ignorar
+    const z = Math.min(Math.max(parseInt(p.get('z')) || 12, 5), 18);
+    _gasyLocMethod = 'ciudad_url';
+    gasyTrack('abrir_desde_ciudad', {ciudad: (p.get('ciudad')||'').slice(0,40)});
+    $('welcome').style.display = 'none';
+    $('loading').classList.add('show');
+    initMap(lat, lng);
+    map.setView([lat, lng], z);
+    fetchAll(lat, lng);
+    loadSavingsBanner(lat, lng);
+    return true;
+  }catch(e){ console.warn('ciudadDesdeURL:', e); return false; }
+}
+window.addEventListener('load', ciudadDesdeURL);
+
 function requestGPS(){
   setBar(15);setTxt('LOCALIZANDO GPS...');
   if(!navigator.geolocation){useFallback();return;}
@@ -1564,6 +1586,7 @@ function retryGPS(){$('errmsg').classList.remove('show');$('loading').classList.
 function useFallback(){_gasyLocMethod='fallback_cdmx';uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);fetchAll(uLat,uLng);loadSavingsBanner(uLat,uLng);toast('Sin GPS — mostrando CDMX');}
 
 function initMap(lat,lng){
+  if(map){ map.setView([lat,lng],15); return; }
   map=L.map('map',{zoomControl:true,attributionControl:false}).setView([lat,lng],15);
   const _hora = new Date().getHours();
   const _esDia = _hora >= 6 && _hora < 18;

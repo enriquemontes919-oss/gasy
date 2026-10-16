@@ -287,6 +287,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 /* ERROR */
 #errmsg{position:fixed;inset:0;z-index:9997;background:rgba(10,4,20,0.96);backdrop-filter:blur(20px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;text-align:center;}
 #errmsg.show{display:flex;}
+#city-picker{position:fixed;inset:0;z-index:9997;background:rgba(10,4,20,0.97);backdrop-filter:blur(20px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px 24px;text-align:center;}
+#city-picker.show{display:flex;}
+#city-picker h2{font-size:22px;font-weight:700;}
+#city-picker p{font-size:14px;color:var(--text2);line-height:1.6;max-width:300px;}
+#city-picker-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:340px;margin:4px 0 6px;}
+#city-picker-list button{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:22px;padding:9px 15px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:background 0.15s,border-color 0.15s;}
+#city-picker-list button:hover{background:rgba(87,217,123,0.16);border-color:rgba(87,217,123,0.55);}
 #errmsg h2{font-size:22px;font-weight:700;}
 #errmsg p{font-size:14px;color:var(--text2);line-height:1.6;max-width:290px;}
 .err-btn{margin-top:8px;padding:13px 32px;background:#57d97b;color:#0a0414;border:none;border-radius:30px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;}
@@ -700,9 +707,18 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 
 <div id="errmsg">
   <div style="font-size:48px">📡</div>
-  <h2>Activa tu ubicación</h2>
-  <p>Ve a Configuración → Safari → Ubicación y permite el acceso.</p>
+  <h2 id="errmsg-title">Activa tu ubicación</h2>
+  <p id="errmsg-text">Permite el acceso a tu ubicación para ver las gasolineras cerca de ti.</p>
   <button class="err-btn" onclick="retryGPS()">Intentar de nuevo</button>
+  <button class="err-btn" id="errmsg-sin-gps" onclick="verSinUbicacion()" style="background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--text2);">Ver sin mi ubicación</button>
+</div>
+
+<div id="city-picker">
+  <div style="font-size:40px">📍</div>
+  <h2>Elige tu ciudad</h2>
+  <p>Te mostramos las gasolineras de esa zona. Puedes activar tu ubicación cuando quieras.</p>
+  <div id="city-picker-list"></div>
+  <button class="err-btn" onclick="volverAUbicacion()" style="background:transparent;border:1px solid rgba(255,255,255,0.25);color:var(--text2);">Volver</button>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1552,7 +1568,7 @@ function requestGPS(){
       checkValeroProximidad(uLat,uLng);
     },
     err=>{
-      gasyTrack('gps_permission',{resultado: err.code===1?'denegado':'error'});if(err.code===1){$('loading').classList.remove('show');$('errmsg').classList.add('show');}
+      gasyTrack('gps_permission',{resultado: err.code===1?'denegado':'error'});if(err.code===1){ mostrarErrorUbicacion(); }
       else useFallback();
     },
     {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
@@ -1586,6 +1602,100 @@ function requestGPS(){
 }
 
 function retryGPS(){$('errmsg').classList.remove('show');$('loading').classList.add('show');requestGPS();}
+
+// ── Manejo del permiso de ubicación ──────────────────────────────────────
+// Si el navegador ya bloqueó la ubicación, el sitio NO puede volver a pedirla:
+// solo el usuario puede reactivarla. Por eso aquí distinguimos los dos casos
+// y, pase lo que pase, siempre dejamos una salida para usar el mapa.
+var CIUDADES_GASY = [
+  ['CDMX',19.4326,-99.1332], ['Guadalajara',20.6597,-103.3496],
+  ['Monterrey',25.6866,-100.3161], ['Puebla',19.0414,-98.2063],
+  ['Querétaro',20.5888,-100.3899], ['Tijuana',32.5149,-117.0382],
+  ['León',21.1219,-101.6833], ['Morelia',19.7008,-101.1844],
+  ['Mérida',20.9674,-89.5926], ['Cancún',21.1619,-86.8515]
+];
+
+function permisoUbicacion(){
+  try{
+    if(!navigator.permissions || !navigator.permissions.query) return Promise.resolve('desconocido');
+    return navigator.permissions.query({name:'geolocation'}).then(function(r){ return r.state; })
+      .catch(function(){ return 'desconocido'; });
+  }catch(e){ return Promise.resolve('desconocido'); }
+}
+
+function comoReactivar(){
+  var ua = navigator.userAgent || '';
+  if(/iPhone|iPad|iPod/i.test(ua))
+    return 'En Safari toca <strong>aA</strong> en la barra de direcciones &rarr; Configuraci&oacute;n del sitio web &rarr; Ubicaci&oacute;n &rarr; Permitir.';
+  if(/Android/i.test(ua))
+    return 'Toca el <strong>candado</strong> junto a la direcci&oacute;n &rarr; Permisos &rarr; Ubicaci&oacute;n &rarr; Permitir.';
+  return 'Haz clic en el <strong>candado</strong> junto a la direcci&oacute;n del sitio &rarr; Ubicaci&oacute;n &rarr; Permitir, y recarga la p&aacute;gina.';
+}
+
+function mostrarErrorUbicacion(){
+  $('loading').classList.remove('show');
+  permisoUbicacion().then(function(estado){
+    var t = $('errmsg-text');
+    if(estado === 'denied'){
+      $('errmsg-title').textContent = 'Ubicaci\u00f3n bloqueada';
+      t.innerHTML = 'Tu navegador tiene bloqueada la ubicaci&oacute;n para Gasy. ' + comoReactivar() +
+                    '<br><br>Mientras tanto puedes ver el mapa eligiendo tu ciudad.';
+    } else {
+      $('errmsg-title').textContent = 'Activa tu ubicaci\u00f3n';
+      t.innerHTML = 'Toca <strong>Intentar de nuevo</strong> y acepta el permiso para ver las gasolineras cerca de ti.';
+    }
+    gasyTrack('gps_error_view', {estado_permiso: estado});
+    $('errmsg').classList.add('show');
+  });
+}
+
+function verSinUbicacion(){
+  $('errmsg').classList.remove('show');
+  var cont = $('city-picker-list');
+  if(!cont.childNodes.length){
+    CIUDADES_GASY.forEach(function(c){
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = c[0];
+      b.addEventListener('click', function(){ abrirCiudad(c[1], c[2], c[0]); });
+      cont.appendChild(b);
+    });
+  }
+  gasyTrack('ver_sin_ubicacion');
+  $('city-picker').classList.add('show');
+}
+
+function volverAUbicacion(){
+  $('city-picker').classList.remove('show');
+  $('errmsg').classList.add('show');
+}
+
+function abrirCiudad(lat, lng, nombre){
+  $('city-picker').classList.remove('show');
+  $('errmsg').classList.remove('show');
+  $('loading').classList.add('show');
+  _gasyLocMethod = 'ciudad_manual';
+  gasyTrack('ciudad_manual', {ciudad: nombre});
+  initMap(lat, lng);
+  map.setView([lat, lng], 12);
+  fetchAll(lat, lng);
+  loadSavingsBanner(lat, lng);
+}
+
+// Si el usuario reactiva el permiso desde los ajustes con la pagina abierta,
+// nos recuperamos solos: no hace falta que recargue.
+(function(){
+  try{
+    if(!navigator.permissions || !navigator.permissions.query) return;
+    navigator.permissions.query({name:'geolocation'}).then(function(r){
+      r.onchange = function(){
+        if(r.state === 'granted' && !map){
+          $('city-picker').classList.remove('show');
+          retryGPS();
+        }
+      };
+    }).catch(function(){});
+  }catch(e){}
+})();
 function useFallback(){_gasyLocMethod='fallback_cdmx';uLat=19.4326;uLng=-99.1332;setBar(30);initMap(uLat,uLng);fetchAll(uLat,uLng);loadSavingsBanner(uLat,uLng);toast('Sin GPS — mostrando CDMX');}
 
 function initMap(lat,lng){

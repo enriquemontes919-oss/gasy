@@ -429,8 +429,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   }, true);
 })();
 </script>
+<!-- Meta Pixel Code -->
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1151043740756423');
+fbq('track', 'PageView');</script>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
+<!-- Meta Pixel (sin JavaScript) -->
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1151043740756423&ev=PageView&noscript=1"/></noscript>
 
 <div id="welcome">
   <img src="logo-welcome.png" style="height:clamp(180px,35vw,320px);max-width:92vw;object-fit:contain;" alt="Gasy — encuentra tu gasolinera barata">
@@ -474,7 +481,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
     <a href="/morelos" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Morelos</a>
     <a href="/" style="background:rgba(87,217,123,0.08);border:1px solid rgba(87,217,123,0.2);border-radius:20px;padding:4px 12px;font-size:11px;color:#57d97b;text-decoration:none;">+ Todo México &#8594;</a>
   </div>
-  <a href="/blog.html" style="margin-top:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.05em;">📰 Blog · Noticias de gasolina</a>
+  <a href="/blog.html" style="margin-top:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.05em;">📰 Noticias de gasolina</a>
 <div style="display:flex;gap:16px;justify-content:center;margin-top:4px;">
     <a href="/privacidad" style="font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;">Aviso de Privacidad</a>
     <a href="/privacidad#terminos" style="font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;">Términos y Condiciones</a>
@@ -496,7 +503,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
       <img class="logo-icon" src="icon.png" alt="Gasy" style="width:32px;height:32px;border-radius:8px;">
       <span class="logo-text">Gasy</span>
     </a>
-    <a href="/blog.html" class="blog-link-hdr" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;white-space:nowrap;">Blog</a>
+    <a href="/blog.html" class="blog-link-hdr" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;white-space:nowrap;">Noticias</a>
     <button onclick="showCalcModal()" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#57d97b;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.3);border-radius:20px;padding:4px 10px;cursor:pointer;white-space:nowrap;"><svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</button>
     <div id="fuel-wrap">
       <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
@@ -1565,7 +1572,6 @@ function requestGPS(){
       initMap(uLat,uLng);
       fetchAll(uLat,uLng);
       loadSavingsBanner(uLat,uLng);
-      checkValeroProximidad(uLat,uLng);
     },
     err=>{
       gasyTrack('gps_permission',{resultado: err.code===1?'denegado':'error'});if(err.code===1){ mostrarErrorUbicacion(); }
@@ -2417,11 +2423,6 @@ const VALERO_PILOTO = [
   { nombre: 'Valero Zona Esmeralda', lat: 19.544997, lng: -99.272668 },
 ];
 
-const VALERO_CLAIM = 'Valero ofrece Supreme 93, que segun la marca es la unica gasolina de 93 octanos en Mexico - ideal para motores de alto rendimiento.';
-
-const VALERO_RADIO_KM = 3;
-let valeroMostrado = false;
-
 // True si una coordenada corresponde a una estacion del piloto Valero (radio 300m)
 function esValeroPiloto(lat, lng){
   if (typeof hav !== 'function') return false;
@@ -2446,42 +2447,7 @@ function aplicarOverrideValero(sts){
   }
 }
 
-function checkValeroProximidad(userLat, userLng){
-  if (valeroMostrado) return;
-  if (typeof hav !== 'function') return;
-  let masCercana = null, minDist = Infinity;
-  for (const v of VALERO_PILOTO){
-    if (!v.lat || !v.lng) continue;
-    const d = hav(userLat, userLng, v.lat, v.lng);
-    if (d <= VALERO_RADIO_KM && d < minDist){ minDist = d; masCercana = v; }
-  }
-  if (masCercana) mostrarValeroPopup(masCercana, minDist);
-}
-
-function mostrarValeroPopup(estacion, dist){
-  valeroMostrado = true;
-  const waze  = 'https://waze.com/ul?ll=' + estacion.lat + ',' + estacion.lng + '&navigate=yes';
-  const gmaps = 'https://www.google.com/maps/dir/?api=1&destination=' + estacion.lat + ',' + estacion.lng + '&travelmode=driving';
-  const distTxt = dist < 1 ? Math.round(dist*1000) + ' m' : dist.toFixed(1) + ' km';
-  const overlay = document.createElement('div');
-  overlay.className = 'plus-modal-overlay';
-  overlay.innerHTML =
-    '<div class="plus-modal" style="max-width:320px;text-align:left;">' +
-      '<div style="display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--text3);background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:10px;margin-bottom:12px;">Informacion de Valero</div>' +
-      '<div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">Hay una gasolinera Valero a ' + distTxt + '</div>' +
-      '<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px;">' + VALERO_CLAIM + '</div>' +
-      '<div style="font-size:12px;color:var(--text3);margin-bottom:16px;">' + estacion.nombre + '</div>' +
-      '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
-        '<a href="' + waze + '" target="_blank" style="flex:1;text-align:center;padding:10px;background:#33CCFF;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;">Waze</a>' +
-        '<a href="' + gmaps + '" target="_blank" style="flex:1;text-align:center;padding:10px;background:#4b02f3;border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;">Google Maps</a>' +
-      '</div>' +
-      '<button class="plus-modal-close" onclick="this.closest(\'.plus-modal-overlay\').remove()">Cerrar</button>' +
-    '</div>';
-  document.body.appendChild(overlay);
-  overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.remove(); });
-  overlay.setAttribute('data-partner','valero');
-  gasyTrack('partner_popup_view',{socio:'valero',distancia_km:Math.round(dist*10)/10});
-}
+// Popup promocional de Valero: retirado (participacion no confirmada).
 </script>
 <script>
 // Popup de descarga de la app: aparece al llegar al sitio, antes de "Encontrar gasolineras".

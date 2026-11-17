@@ -49,16 +49,42 @@
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--sans);color:var(--text);}
 
 /* WELCOME */
-#welcome{position:fixed;inset:0;z-index:9999;background:#4b02f3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;text-align:center;transition:opacity 0.4s ease;}
+/* ── HOME ─────────────────────────────────────────────────────────────
+   Tres grupos con mucho aire entre ellos y poco aire dentro de cada uno.
+   Regla: nada en esta pantalla tiene forma de boton excepto el boton.  */
+#welcome{position:fixed;inset:0;z-index:9999;background:#4b02f3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(30px,6.5vh,50px);padding:max(30px,env(safe-area-inset-top)) 24px calc(26px + env(safe-area-inset-bottom));overflow-y:auto;transition:opacity 0.4s ease;}
 #welcome.out{opacity:0;pointer-events:none;}
-.wlc-features{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;}
-.wlc-feat{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.85);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.15s,border-color 0.15s,transform 0.1s;}
-.wlc-feat:hover{background:rgba(255,255,255,0.16);border-color:rgba(87,217,123,0.55);}
-.wlc-feat:active{transform:scale(0.975);}
-.wlc-feat:focus-visible{outline:2px solid #57d97b;outline-offset:2px;}
-.wlc-btn{width:100%;max-width:280px;padding:16px;background:#57d97b;color:#0a0414;border:none;border-radius:40px;font-family:var(--sans);font-weight:700;font-size:17px;cursor:pointer;box-shadow:0 0 28px rgba(87,217,123,0.4);}
-.wlc-btn:active{transform:scale(0.97);}
-.wlc-note{font-size:11px;color:rgba(255,255,255,0.5);}
+
+/* 1 - Marca y promesa */
+.wlc-marca{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.wlc-icono{width:clamp(98px,25vw,120px);height:clamp(98px,25vw,120px);display:block;}
+.wlc-wordmark{font-size:clamp(28px,8vw,36px);font-weight:800;letter-spacing:-0.035em;line-height:1;margin-top:2px;}
+.wlc-promesa{margin-top:13px;font-size:clamp(18px,5vw,21px);font-weight:500;line-height:1.3;letter-spacing:-0.015em;color:rgba(255,255,255,0.82);max-width:17ch;}
+
+/* 2 - La accion */
+.wlc-accion{display:flex;flex-direction:column;align-items:center;width:100%;flex-shrink:0;}
+.wlc-btn{width:100%;max-width:340px;padding:21px 24px;background:#57d97b;color:#0a0414;border:none;border-radius:48px;font-family:var(--sans);font-weight:700;font-size:18.5px;letter-spacing:-0.012em;cursor:pointer;box-shadow:0 12px 40px rgba(87,217,123,0.4), 0 2px 0 rgba(255,255,255,0.22) inset;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,box-shadow .12s ease;}
+.wlc-btn:hover{box-shadow:0 14px 48px rgba(87,217,123,0.54), 0 2px 0 rgba(255,255,255,0.22) inset;}
+.wlc-btn:active{transform:scale(0.975);}
+.wlc-btn:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+.wlc-note{margin-top:12px;font-size:12px;color:rgba(255,255,255,0.45);}
+
+/* 3 - Cierre: ciudades plegadas y pie */
+.wlc-cierre{display:flex;flex-direction:column;align-items:center;gap:17px;width:100%;flex-shrink:0;}
+.wlc-ciudades{width:100%;max-width:340px;}
+.wlc-ciudades summary{list-style:none;cursor:pointer;font-size:13px;font-weight:600;color:rgba(255,255,255,0.58);padding:8px;transition:color .15s;}
+.wlc-ciudades summary::-webkit-details-marker{display:none;}
+.wlc-ciudades summary:hover{color:#fff;}
+.wlc-ciudades summary:focus-visible{outline:2px solid #57d97b;outline-offset:3px;border-radius:8px;}
+.wlc-ciudades summary .flecha{display:inline-block;font-size:9px;transition:transform .2s ease;}
+.wlc-ciudades[open] summary .flecha{transform:rotate(180deg);}
+.wlc-lista{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding-top:14px;}
+.wlc-lista a{font-size:12px;color:rgba(255,255,255,0.66);text-decoration:none;padding:5px 11px;border-radius:16px;background:rgba(255,255,255,0.07);transition:background .15s,color .15s;}
+.wlc-lista a:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.wlc-lista a.todas{color:#57d97b;background:rgba(87,217,123,0.1);}
+.wlc-pie{display:flex;flex-wrap:wrap;gap:3px 14px;justify-content:center;max-width:330px;}
+.wlc-pie a{font-size:11px;color:rgba(255,255,255,0.32);text-decoration:none;transition:color .15s;}
+.wlc-pie a:hover{color:rgba(255,255,255,0.7);}
 
 /* LOADING */
 #loading{position:fixed;inset:0;z-index:9998;background:#4b02f3;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 0.4s;}
@@ -299,11 +325,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .err-btn{margin-top:8px;padding:13px 32px;background:#57d97b;color:#0a0414;border:none;border-radius:30px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;}
 
 /* DATO DE AHORRO — WELCOME */
-#savings-banner{display:none;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.3);border-radius:14px;padding:10px 16px;text-align:center;width:100%;max-width:280px;}
+/* El ahorro es un dato, no un banner: sin caja ni borde.
+   min-height reserva el espacio para que no salte el layout al cargar. */
+.wlc-ahorro{max-width:27ch;min-height:56px;display:flex;flex-direction:column;justify-content:center;flex-shrink:0;}
+#savings-banner{display:none;font-size:15px;font-weight:500;line-height:1.45;color:rgba(255,255,255,0.88);}
 #savings-banner.show{display:block;}
-.savings-label{font-size:10px;font-weight:700;color:#ffffff;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px;}
-.savings-amount{font-size:24px;font-weight:800;color:#57d97b;letter-spacing:-0.5px;}
-.savings-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;line-height:1.4;}
+.savings-amount{font-family:var(--mono);font-weight:700;font-size:19px;color:#57d97b;letter-spacing:-0.02em;word-spacing:-0.18em;}
+.savings-sub{margin-top:7px;font-size:11.5px;line-height:1.4;color:rgba(255,255,255,0.42);}
 
 /* ESTRELLAS EN POPUP */
 .pop-stars{margin:5px 0 3px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:6px 8px;}
@@ -440,54 +468,54 @@ fbq('track', 'PageView');</script>
 <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1151043740756423&ev=PageView&noscript=1"/></noscript>
 
 <div id="welcome">
-  <img src="logo-welcome.png" style="height:clamp(180px,35vw,320px);max-width:92vw;object-fit:contain;" alt="Gasy — encuentra tu gasolinera barata">
-  <div class="wlc-features">
-    <div class="wlc-feat" role="button" tabindex="0" onclick="startApp()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startApp();}"><span><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#57d97b"><path d="M160-120v-640q0-33 23.5-56.5T240-840h240q33 0 56.5 23.5T560-760v280h40q33 0 56.5 23.5T680-400v180q0 17 11.5 28.5T720-180q17 0 28.5-11.5T760-220v-288q-9 5-19 6.5t-21 1.5q-42 0-71-29t-29-71q0-32 17.5-57.5T684-694l-84-84 42-42 148 144q15 15 22.5 35t7.5 41v380q0 42-29 71t-71 29q-42 0-71-29t-29-71v-200h-60v300H160Zm80-440h240v-200H240v200Zm480 0q17 0 28.5-11.5T760-600q0-17-11.5-28.5T720-640q-17 0-28.5 11.5T680-600q0 17 11.5 28.5T720-560Z"/></svg></span>Precios reales de todas las gasolineras</div>
-    <div class="wlc-feat" role="button" tabindex="0" onclick="startApp()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startApp();}"><span><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#57d97b"><path d="m600-120-240-84-186 72q-20 8-37-4.5T120-170v-560q0-13 7.5-23t20.5-15l212-72 240 84 186-72q20-8 37 4.5t17 33.5v560q0 13-7.5 23T812-192l-212 72Zm-40-98v-468l-160-56v468l160 56Z"/></svg></span>Ubicaciones exactas en el mapa</div>
-    <div class="wlc-feat" role="button" tabindex="0" onclick="startApp()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startApp();}"><span><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#57d97b"><path d="m319-280 161-73 161 73 15-15-176-425-176 425 15 15ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></span>Navega con Waze o Google Maps</div>
+
+  <!-- 1 - Marca y promesa -->
+  <header class="wlc-marca">
+    <img class="wlc-icono" src="icon.png" alt="" aria-hidden="true">
+    <div class="wlc-wordmark">Gasy</div>
+    <h1 class="wlc-promesa">La gasolina más barata cerca de ti</h1>
+  </header>
+
+  <!-- 2 - La accion. Lo unico con forma de boton en la pantalla. -->
+  <div class="wlc-accion">
+    <button class="wlc-btn" onclick="startApp()"><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor" aria-hidden="true"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> Abrir el mapa</button>
+    <p class="wlc-note">Se pedirá permiso de ubicación</p>
   </div>
-  <div id="savings-banner">
-    <div class="savings-label">Ahorro potencial hoy</div>
-    <div class="savings-amount" id="savings-amount">Cargando...</div>
-    <div class="savings-sub" id="savings-sub">por tanque lleno de 40L vs la más cara</div>
+
+  <!-- 3 - El ahorro. Mismos IDs de siempre: loadSavingsBanner no cambia. -->
+  <section class="wlc-ahorro">
+    <p id="savings-banner">
+      Hasta <span class="savings-amount" id="savings-amount">--</span> de ahorro por tanque en tu zona
+      <span class="savings-sub" id="savings-sub" style="display:block;"></span>
+    </p>
+  </section>
+
+  <!-- 4 - Cierre -->
+  <div class="wlc-cierre">
+    <details class="wlc-ciudades">
+      <summary>Buscar por ciudad <span class="flecha">&#9660;</span></summary>
+      <nav class="wlc-lista">
+        <a href="/ciudad-de-mexico">CDMX</a><a href="/guadalajara">Guadalajara</a><a href="/monterrey">Monterrey</a>
+        <a href="/puebla">Puebla</a><a href="/tijuana">Tijuana</a><a href="/leon">León</a>
+        <a href="/ciudad-juarez">Cd. Juárez</a><a href="/cancun">Cancún</a><a href="/merida">Mérida</a>
+        <a href="/queretaro">Querétaro</a><a href="/san-luis-potosi">SLP</a><a href="/culiacan">Culiacán</a>
+        <a href="/torreon">Torreón</a><a href="/acapulco">Acapulco</a><a href="/morelia">Morelia</a>
+        <a href="/veracruz-ciudad">Veracruz</a><a href="/chihuahua-ciudad">Chihuahua</a><a href="/cuernavaca">Cuernavaca</a>
+        <a href="/baja-california">Baja California</a><a href="/jalisco">Jalisco</a><a href="/nuevo-leon">Nuevo León</a>
+        <a href="/yucatan">Yucatán</a><a href="/morelos">Morelos</a>
+        <a class="todas" href="/">Todo México</a>
+      </nav>
+    </details>
+
+    <nav class="wlc-pie">
+      <a href="/blog.html">Noticias</a>
+      <a href="/privacidad">Privacidad</a>
+      <a href="/privacidad#terminos">Términos</a>
+      <a href="/contacto.html">Contacto</a>
+      <a href="/nosotros.html">Quiénes Somos</a>
+    </nav>
   </div>
-  <button class="wlc-btn" onclick="startApp()"><svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#EA3323"><path d="M480-200Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Z"/></svg> Encontrar gasolineras</button>
-  <p class="wlc-note">Se solicitará permiso de ubicación</p>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px;">
-    <a href="/ciudad-de-mexico" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">CDMX</a>
-    <a href="/guadalajara" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Guadalajara</a>
-    <a href="/monterrey" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Monterrey</a>
-    <a href="/puebla" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Puebla</a>
-    <a href="/tijuana" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Tijuana</a>
-    <a href="/leon" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">León</a>
-    <a href="/ciudad-juarez" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Cd. Juárez</a>
-    <a href="/cancun" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Cancún</a>
-    <a href="/merida" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Mérida</a>
-    <a href="/queretaro" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Querétaro</a>
-    <a href="/san-luis-potosi" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">SLP</a>
-    <a href="/culiacan" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Culiacán</a>
-    <a href="/torreon" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Torreón</a>
-    <a href="/acapulco" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Acapulco</a>
-    <a href="/morelia" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Morelia</a>
-    <a href="/veracruz-ciudad" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Veracruz</a>
-    <a href="/chihuahua-ciudad" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Chihuahua</a>
-    <a href="/cuernavaca" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Cuernavaca</a>
-  </div>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px;">
-    <a href="/baja-california" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Baja California</a>
-    <a href="/jalisco" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Jalisco</a>
-    <a href="/nuevo-leon" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Nuevo León</a>
-    <a href="/yucatan" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Yucatán</a>
-    <a href="/morelos" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:11px;color:#7d95aa;text-decoration:none;">Morelos</a>
-    <a href="/" style="background:rgba(87,217,123,0.08);border:1px solid rgba(87,217,123,0.2);border-radius:20px;padding:4px 12px;font-size:11px;color:#57d97b;text-decoration:none;">+ Todo México &#8594;</a>
-  </div>
-  <a href="/blog.html" style="margin-top:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);text-decoration:none;letter-spacing:0.05em;">📰 Noticias de gasolina</a>
-<div style="display:flex;gap:16px;justify-content:center;margin-top:4px;">
-    <a href="/privacidad" style="font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;">Aviso de Privacidad</a>
-    <a href="/privacidad#terminos" style="font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;">Términos y Condiciones</a>
-  <a href="/contacto.html" style="font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;">Contacto</a>
-    <a href="/nosotros.html" style="font-size:11px;color:rgba(255,255,255,0.35);text-decoration:none;">Quiénes Somos</a>
-  </div>
+
 </div>
 
 <div id="loading">

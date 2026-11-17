@@ -557,8 +557,6 @@ fbq('track', 'PageView');</script>
       <button class="rbtn" onclick="setRadio(5,this)">5km</button>
       <button class="rbtn" onclick="setRadio(8,this)">8km</button>
       <button class="rbtn on" onclick="setRadio(12,this)">12km</button>
-      <button class="rbtn" onclick="setRadio(20,this)">20km</button>
-      <button class="rbtn" onclick="setRadio(50,this)">50km</button>
     </div>
   </div>
 </header>
@@ -727,12 +725,6 @@ fbq('track', 'PageView');</script>
       </button>
       <button class="bsheet-opt active" id="bsopt-12" onclick="selectRadioSheet(12)">
         <span>12 km — Recomendado</span><div class="bsheet-check"></div>
-      </button>
-      <button class="bsheet-opt" id="bsopt-20" onclick="selectRadioSheet(20)">
-        <span>20 km</span><div class="bsheet-check"></div>
-      </button>
-      <button class="bsheet-opt" id="bsopt-50" onclick="selectRadioSheet(50)">
-        <span>50 km — Zona amplia</span><div class="bsheet-check"></div>
       </button>
     </div>
   </div>
@@ -1771,7 +1763,7 @@ async function fetchAll(lat,lng){
   } else if(osmStations.length > 0){
     merged = osmStations.map((s,i)=>({...s,id:i}));
   } else if(creStations.length > 0){
-    merged = creStations.filter(s=>s.lat&&s.lng).slice(0,600).map((s,i)=>({...s,id:i}));
+    merged = creStations.filter(s=>s.lat&&s.lng).map((s,i)=>({...s,id:i}));
   }
   if(merged.length === 0){
     merged = generateDemo(lat, lng);
@@ -2014,18 +2006,19 @@ function generateDemo(lat,lng){
 function renderMarkers(f){
   markers.forEach(m=>map.removeLayer(m));
   markers=[];
+  // Sin topes: se dibujan TODAS las gasolineras del radio.
+  // Las que no reportan precio del combustible elegido ya no se ocultan;
+  // salen en gris mas abajo, para que nadie crea que Gasy no las conoce.
   const valid=stations.filter(s=>s.prices[f]!=null&&!isNaN(s.prices[f]));
-  if(!valid.length) return;
+  const sinPrecio=stations.filter(s=>s.lat&&s.lng&&(s.prices[f]==null||isNaN(s.prices[f])));
 
-  // Límite de markers según radio — más radio, más markers permitidos
-  const maxMarkers = currentRadio >= 40000 ? 1000 : currentRadio >= 15000 ? 600 : 400;
   const limited = uLat
-    ? [...valid].map(s=>({...s,_d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a._d-b._d).slice(0,maxMarkers)
-    : valid.slice(0,maxMarkers);
+    ? [...valid].map(s=>({...s,_d:hav(uLat,uLng,s.lat,s.lng)})).sort((a,b)=>a._d-b._d)
+    : valid;
 
   const prices=limited.map(s=>s.prices[f]).sort((a,b)=>a-b);
-  const mn=prices[0];
-  const avg=prices.reduce((a,b)=>a+b,0)/prices.length;
+  const mn=prices.length?prices[0]:null;
+  const avg=prices.length?prices.reduce((a,b)=>a+b,0)/prices.length:0;
   const p33=avg*0.998; // 0.2% debajo del promedio
   const p66=avg*1.002; // 0.2% encima del promedio
   const colors={star:'#FFD700',g:'#00e676',a:'#ffc400',r:'#ff3d57'};
@@ -2081,6 +2074,58 @@ function renderMarkers(f){
       if(window.innerWidth<=768){ mk.closePopup(); openMobStation(s, isStar); }
     });
     markers[s.id]=mk;
+  });
+
+  // ── Gasolineras sin precio del combustible elegido ───────────────────
+  // Pin gris, mas chico y discreto. Se puede abrir y ver los otros
+  // combustibles, valorarla y navegar hacia ella.
+  sinPrecio.forEach((s)=>{
+    const pinHtml = '<div style="width:30px;height:36px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.45))">'
+      + '<div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);'
+      + 'background:#7d95aa;display:flex;align-items:center;justify-content:center;'
+      + 'border:2px solid rgba(255,255,255,0.35)">'
+      + '<div style="transform:rotate(45deg);font-family:\'JetBrains Mono\',monospace;'
+      + 'font-weight:700;font-size:8px;color:#0a0f14">s/d</div></div></div>';
+    const icon=L.divIcon({html:pinHtml,className:'',iconSize:[30,36],iconAnchor:[15,36]});
+    const waze=`https://waze.com/ul?ll=${s.lat},${s.lng}&navigate=yes`;
+    const gmaps=`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&travelmode=driving`;
+    const stationId = s.cre_id || s.osm_id || `osm_${s.id}`;
+    const rawName = s.name || s.brand || 'Gasolinera';
+    const cleanPopName = rawName.replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'').trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ') || 'Gasolinera';
+    const starsSection = starsHtml(stationId, rawName, ratingsCache[stationId] || null);
+    const popup=`<div class="pop"><div id="pop-brand-${stationId}" class="pop-brand">${cleanPopName}</div>`
+      + `<div id="pop-status-${stationId}" class="pop-status" style="display:none"></div>`
+      + `<div id="pop-rating-${stationId}"></div>`
+      + `<div id="pop-amenities-${stationId}" class="pop-amenities"></div>`
+      + `<div id="pop-reports-${stationId}" class="pop-reports"></div>`
+      + `<div class="pop-addr">${(s.addr&&s.addr!=='undefined'&&s.addr.length>2?s.addr:(s.municipio&&s.municipio.length>2?s.municipio:''))}</div>`
+      + `<div class="pop-divider"></div>`
+      + `<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Esta gasolinera no report\u00f3 precio de ${f==='magna'?'Magna':f==='premium'?'Premium':'Di\u00e9sel'} a la CNE</div>`
+      + `<div class="pop-prices">`
+      + `<div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ${s.prices.magna?'':'na'}">${fmt(s.prices.magna)}</span></div>`
+      + `<div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ${s.prices.premium?'':'na'}">${fmt(s.prices.premium)}</span></div>`
+      + `<div class="pop-row"><span class="pop-fuel">Di\u00e9sel</span><span class="pop-val ${s.prices.diesel?'':'na'}">${fmt(s.prices.diesel)}</span></div>`
+      + `</div>${starsSection}`
+      + `<div class="pop-nav"><a href="${waze}" target="_blank" class="nav-btn nav-waze">Waze</a>`
+      + `<a href="${gmaps}" target="_blank" class="nav-btn nav-gmaps">Maps</a></div></div>`;
+    const _isMobile=window.innerWidth<600;
+    const mk=L.marker([s.lat,s.lng],{icon,zIndexOffset:500}).bindPopup(popup,{
+      maxWidth:_isMobile?window.innerWidth-32:300,
+      minWidth:_isMobile?window.innerWidth-32:260,
+      autoPanPaddingTopLeft:L.point(10,_isMobile?120:100),
+      autoPanPaddingBottomRight:L.point(10,_isMobile?220:40),
+      keepInView:true});
+    mk.addTo(map);
+    mk.on('popupopen', async ()=>{
+      try{
+        loadAmenities(stationId);
+        loadReports(stationId);
+        preloadMyRating(stationId);
+        const place = await getPlaceDetails(s.lat, s.lng, rawName, stationId);
+        renderPlacesInfo(place, stationId);
+      }catch(e){ console.warn('popup sin precio:', e); }
+    });
+    markers['sp_'+stationId]=mk;
   });
 }
 

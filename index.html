@@ -1969,6 +1969,7 @@ function normalizeBrand(n){
   if(u.includes('MOBIL')) return 'Mobil';
   if(u.includes('VALERO')) return 'Valero';
   if(u.includes('TOTAL')) return 'TotalEnergies';
+  if(u.includes('COSTCO')) return 'Costco Gas';
   const f=n.trim().split(/\s+/)[0];
   return f.charAt(0).toUpperCase()+f.slice(1).toLowerCase();
 }

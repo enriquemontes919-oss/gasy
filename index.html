@@ -406,14 +406,22 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
   cursor:pointer;padding:6px 0;text-decoration:underline;font-family:var(--sans);}
 .dest-msg{font-size:12px;color:var(--text3);text-align:center;padding:14px;line-height:1.5;}
 
-#destbtn{position:fixed;left:14px;bottom:306px;z-index:400;width:44px;height:44px;
+#destbtn{position:fixed;right:14px;bottom:316px;z-index:400;width:44px;height:44px;
   border-radius:50%;background:var(--bg3);border:1px solid var(--border2);
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:all 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.35);}
 #destbtn:hover{border-color:rgba(87,217,123,0.5);}
 #destbtn:active{transform:scale(0.94);}
 #destbtn:focus-visible{outline:2px solid #57d97b;outline-offset:2px;}
-@media (max-width:380px){ #destbtn{bottom:300px;} }
+@media (max-width:380px){ #destbtn{bottom:310px;} }
+
+.dest-zona{width:100%;margin:4px 0 2px;padding:12px;background:rgba(87,217,123,0.12);
+  border:1px solid rgba(87,217,123,0.35);border-radius:10px;color:#57d97b;
+  font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;
+  transition:background .15s;}
+.dest-zona:hover{background:rgba(87,217,123,0.2);}
+.dest-zona:active{transform:scale(0.985);}
+.dest-zona:focus-visible{outline:2px solid #57d97b;outline-offset:2px;}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4B5V8BHHFQ"></script>
@@ -2360,7 +2368,7 @@ function showDestinoModal(){
       Mira los precios a donde vas antes de salir. Funciona mejor con colonia y ciudad.</div>
     <div class="dest-row">
       <input class="dest-input" id="dest-dir" type="text" autocomplete="off"
-             placeholder="Ej. Polanco, CDMX" aria-label="Direccion de destino">
+             placeholder="Ej. Polanco, CDMX" aria-label="Dirección de destino">
       <button class="dest-go" id="dest-go" onclick="runDestino()">Buscar</button>
     </div>
     <div id="dest-results"></div>
@@ -2460,15 +2468,15 @@ async function runDestino(){
   if(!inp || !box) return;
   const dir = (inp.value||'').trim();
   if(dir.length < 4){
-    box.innerHTML = '<div class="dest-msg">Escribe una direccion mas completa.</div>';
+    box.innerHTML = '<div class="dest-msg">Escribe una dirección más completa.</div>';
     return;
   }
   if(btn) btn.disabled = true;
-  box.innerHTML = '<div class="dest-msg">Buscando la direccion...</div>';
+  box.innerHTML = '<div class="dest-msg">Buscando la dirección...</div>';
   try{
     const hits = await geocodificarMX(dir);
     if(!hits.length){
-      box.innerHTML = '<div class="dest-msg">No encontramos esa direccion. '
+      box.innerHTML = '<div class="dest-msg">No encontramos esa dirección. '
         + 'Intenta con la colonia y la ciudad, por ejemplo "Del Valle, CDMX".</div>';
       if(btn) btn.disabled = false;
       return;
@@ -2477,7 +2485,7 @@ async function runDestino(){
     await mostrarDestino(hits[0], hits.length > 1);
   }catch(e){
     console.warn('destino:', e);
-    box.innerHTML = '<div class="dest-msg">No pudimos buscar esa direccion. '
+    box.innerHTML = '<div class="dest-msg">No pudimos buscar esa dirección. '
       + 'Revisa tu conexion e intenta de nuevo.</div>';
   }
   if(btn) btn.disabled = false;
@@ -2495,7 +2503,7 @@ async function mostrarDestino(hit, hayAlternativas){
   try{
     encontradas = await gasolinerasCercaDe(hit.lat, hit.lng, 5);
   }catch(e){
-    if(box) box.innerHTML = '<div class="dest-msg">Encontramos la direccion, pero no pudimos '
+    if(box) box.innerHTML = '<div class="dest-msg">Encontramos la dirección, pero no pudimos '
       + 'traer los precios de esa zona. Intenta de nuevo en un momento.</div>';
     return;
   }
@@ -2510,33 +2518,169 @@ async function mostrarDestino(hit, hayAlternativas){
 
   if(!box) return;
   const nombreFuel = f==='magna' ? 'Magna' : f==='premium' ? 'Premium' : 'Diesel';
-  let html = '<div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.4;">'
+  let html = '<div style="font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.4;">'
     + 'Mostrando <b style="color:var(--text2)">' + esc(corto(hit.nombre)) + '</b></div>';
 
   if(!conPrecio.length){
-    html += '<div class="dest-msg">Ninguna gasolinera de esa zona reporto precio de '
+    html += '<div class="dest-msg">Ninguna gasolinera de esa zona reportó precio de '
       + nombreFuel + ' hoy. Las que conocemos ya estan marcadas en el mapa.</div>';
-  }else{
-    const mn = conPrecio[0].prices[f];
-    html += conPrecio.slice(0,8).map(function(s,idx){
-      const p = s.prices[f];
-      const color = idx===0 ? '#FFD700' : (p <= mn*1.01 ? '#00e676' : p <= mn*1.03 ? '#ffc400' : '#ff3d57');
-      const waze = 'https://waze.com/ul?ll=' + s.lat + ',' + s.lng + '&navigate=yes';
-      return '<div class="dest-hit">'
-        + '<div style="min-width:0;"><div class="dn">' + (idx===0?'&#11088; ':'') + esc(limpio(s.name)) + '</div>'
-        + '<div class="dd">' + s._d.toFixed(1) + ' km del destino'
-        + ' &middot; <a href="' + waze + '" target="_blank" rel="noopener" style="color:#57d97b;">Waze</a></div></div>'
-        + '<div class="dp" style="color:' + color + '">$' + p.toFixed(2).replace('.',',') + '</div>'
-        + '</div>';
-    }).join('');
-    html += '<div style="font-size:10.5px;color:var(--text3);margin-top:8px;line-height:1.4;">'
-      + 'Precios de ' + nombreFuel + ' reportados a la CNE. El mapa ya esta en esa zona.</div>';
+    html += btnVerZona();
+    if(hayAlternativas) html += '<button class="dest-alt" onclick="verAlternativas()">No es esta dirección</button>';
+    box.innerHTML = html;
+    return;
   }
 
+  // Mismo tratamiento que "Calcula tu ahorro": dos secciones.
+  const estrellas = await estrellasUnificadas(conPrecio);
+  const mx = Math.max.apply(null, conPrecio.map(function(s){ return s.prices[f]; }));
+  const mnP = conPrecio[0].prices[f];
+
+  const baratas = conPrecio.slice(0, 3);
+
+  // "Mejores" = combinacion de precio y calificacion, a partes iguales.
+  // Calificacion: primero las estrellas de Gasy; si esa gasolinera no
+  // tiene, las de Google. Si no hay de ninguna de las dos en toda la
+  // zona, se cae al criterio de la calculadora: marca conocida y precio.
+  const conEstrellas = conPrecio.filter(function(s){
+    const r = estrellas[claveRating(s)];
+    return r && r.count > 0;
+  });
+  let mejores, baseEstrellas;
+  if(conEstrellas.length >= 2){
+    baseEstrellas = true;
+    mejores = conEstrellas.map(function(s){
+      const r = estrellas[claveRating(s)];
+      const pPrecio = mx > mnP ? (mx - s.prices[f]) / (mx - mnP) : 1;
+      return {s: s, r: r, score: 0.5 * pPrecio + 0.5 * (r.avg / 5)};
+    }).sort(function(a, b){ return b.score - a.score; }).slice(0, 3);
+  }else{
+    baseEstrellas = false;
+    mejores = conPrecio.slice().sort(function(a, b){
+      const ma = (a.brand && a.brand !== 'Independiente' && a.brand !== 'Gasolinera') ? 1 : 0;
+      const mb = (b.brand && b.brand !== 'Independiente' && b.brand !== 'Gasolinera') ? 1 : 0;
+      return mb - ma || a.prices[f] - b.prices[f];
+    }).slice(0, 3).map(function(s){ return {s: s, r: estrellas[claveRating(s)] || null}; });
+  }
+
+  html += '<div class="calc-section">'
+    + '<div class="calc-section-title">Más baratas</div>'
+    + baratas.map(function(s, i){ return tarjetaDestino(s, f, mx, estrellas[claveRating(s)], i === 0); }).join('')
+    + '</div>';
+
+  html += '<div class="calc-section">'
+    + '<div class="calc-section-title">' + (baseEstrellas ? 'Mejores: precio y calificación' : 'Mejores: marca conocida y precio') + '</div>'
+    + mejores.map(function(o){ return tarjetaDestino(o.s, f, mx, o.r, false); }).join('')
+    + '</div>';
+
+  html += btnVerZona();
+  html += '<div style="font-size:10.5px;color:var(--text3);margin-top:4px;line-height:1.4;">'
+    + 'Precios de ' + nombreFuel + ' reportados a la CNE. '
+    + conPrecio.length + ' gasolineras con precio en esa zona.</div>';
+
   if(hayAlternativas){
-    html += '<button class="dest-alt" onclick="verAlternativas()">No es esta direccion</button>';
+    html += '<button class="dest-alt" onclick="verAlternativas()">No es esta dirección</button>';
   }
   box.innerHTML = html;
+}
+
+// Calificaciones de una lista: las de Gasy mandan; donde no hay, se usan
+// las de Google (que el Worker ya cachea 7 dias, asi que casi nunca pega
+// a Google de verdad). Devuelve {clave: {avg, count, fuente}}.
+async function estrellasUnificadas(lista){
+  const out = {};
+  const gasy = await calificacionesEnLote(lista);
+  Object.keys(gasy).forEach(function(k){
+    if(gasy[k] && gasy[k].count > 0) out[k] = {avg: gasy[k].avg, count: gasy[k].count, fuente: 'gasy'};
+  });
+
+  // Solo buscamos en Google las que no tienen estrellas de Gasy, y nada
+  // mas para las 10 mas baratas: son las unicas que pueden entrar al top 3.
+  const faltan = lista.slice(0, 10).filter(function(s){ return !out[claveRating(s)]; });
+  if(!faltan.length) return out;
+  try{
+    await Promise.all(faltan.map(async function(s){
+      try{
+        const id = claveRating(s);
+        const place = await getPlaceDetails(s.lat, s.lng, s.name || s.brand || '', id);
+        if(place && place.rating != null && place.reviews != null && place.reviews > 0){
+          out[id] = {avg: place.rating, count: place.reviews, fuente: 'google'};
+        }
+      }catch(e){ /* una gasolinera sin datos de Google no rompe el resto */ }
+    }));
+  }catch(e){ console.warn('estrellas de Google:', e); }
+  return out;
+}
+
+// Clave con la que se guardan las calificaciones de una gasolinera.
+function claveRating(s){ return s.cre_id || s.osm_id || ('osm_' + s.id); }
+
+// Trae las calificaciones de todas las gasolineras en UNA sola peticion.
+async function calificacionesEnLote(lista){
+  const out = {};
+  try{
+    if(typeof SUPA_URL === 'undefined' || typeof SUPA_KEY === 'undefined') return out;
+    const ids = lista.map(claveRating).filter(Boolean).slice(0, 60);
+    if(!ids.length) return out;
+    // Los que ya estan en memoria no se vuelven a pedir.
+    const faltan = ids.filter(function(id){ return ratingsCache[id] === undefined; });
+    ids.forEach(function(id){ if(ratingsCache[id]) out[id] = ratingsCache[id]; });
+    if(!faltan.length) return out;
+    const lista_in = faltan.map(function(id){ return '"' + String(id).replace(/"/g,'') + '"'; }).join(',');
+    const url = SUPA_URL + '/rest/v1/ratings?station_id=in.(' + encodeURIComponent(lista_in)
+      + ')&select=station_id,stars';
+    const res = await Promise.race([
+      fetch(url, {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer ' + SUPA_KEY}}),
+      new Promise(function(_, r){ setTimeout(function(){ r(new Error('timeout')); }, 7000); })
+    ]);
+    if(!res.ok) return out;
+    const filas = await res.json();
+    const agr = {};
+    filas.forEach(function(x){
+      if(!agr[x.station_id]) agr[x.station_id] = {suma:0, n:0};
+      agr[x.station_id].suma += x.stars;
+      agr[x.station_id].n += 1;
+    });
+    faltan.forEach(function(id){
+      const a = agr[id];
+      const r = a ? {avg: parseFloat((a.suma / a.n).toFixed(1)), count: a.n} : {avg:0, count:0};
+      ratingsCache[id] = r;
+      out[id] = r;
+    });
+  }catch(e){ console.warn('calificaciones en lote:', e); }
+  return out;
+}
+
+// Tarjeta de resultado, con el mismo aspecto que las de "Calcula tu ahorro".
+function tarjetaDestino(s, f, maxPrecio, rating, esLaMasBarata){
+  const p = s.prices[f];
+  const ahorro = (maxPrecio - p) * 40;
+  const waze = 'https://waze.com/ul?ll=' + s.lat + ',' + s.lng + '&navigate=yes';
+  const estrellas = (rating && rating.count > 0)
+    ? ' &middot; &#11088; ' + rating.avg + ' (' + rating.count + ')'
+      + (rating.fuente === 'google' ? ' en Google' : '')
+    : '';
+  return '<div class="calc-card">'
+    + '<div class="calc-card-left" style="min-width:0;">'
+    + '<div class="calc-card-name">' + (esLaMasBarata ? '&#11088; ' : '') + esc(limpio(s.name)) + '</div>'
+    + '<div class="calc-card-dist">' + s._d.toFixed(1) + ' km' + estrellas
+    + ' &middot; <a href="' + waze + '" target="_blank" rel="noopener" style="color:#57d97b;">Waze</a></div>'
+    + '</div>'
+    + '<div class="calc-card-right">'
+    + '<div class="calc-card-price">$' + p.toFixed(2).replace('.',',') + '/L</div>'
+    + (ahorro > 0
+        ? '<div class="calc-card-saving">Ahorras ' + ahorro.toFixed(0) + ' MXN</div>'
+        : '<div class="calc-card-nosave">Precio referencia</div>')
+    + '</div></div>';
+}
+
+// Cierra el modal para que se vean los pines de esa zona en el mapa.
+function btnVerZona(){
+  return '<button class="dest-zona" onclick="verEnEstaZona()">Ver en esta zona</button>';
+}
+function verEnEstaZona(){
+  const ov = document.querySelector('.plus-modal-overlay');
+  if(ov) ov.remove();
+  if(typeof gasyTrack === 'function') gasyTrack('destino_ver_zona');
 }
 
 function verAlternativas(){

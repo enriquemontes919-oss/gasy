@@ -372,6 +372,38 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--san
 .calc-input{flex:1;min-width:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
 .calc-select{flex:1;min-width:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;padding:8px 10px;}
 .calc-go{padding:8px 14px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+
+/* ── CONSULTA TU DESTINO ─────────────────────────────────────────── */
+#destino-banner{position:fixed;top:90px;left:50%;transform:translateX(-50%) translateY(-250%);
+  z-index:1200;background:#160828;border:1px solid rgba(87,217,123,0.35);
+  border-radius:24px;padding:7px 8px 7px 15px;display:flex;align-items:center;gap:10px;
+  box-shadow:0 6px 24px rgba(0,0,0,0.45);max-width:calc(100vw - 24px);
+  transition:transform .28s cubic-bezier(.22,1,.36,1);font-size:12px;
+  pointer-events:none;}
+#destino-banner.show{transform:translateX(-50%) translateY(0);pointer-events:auto;}
+#destino-banner .dtxt{color:var(--text2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;max-width:60vw;}
+#destino-banner .dtxt b{color:var(--text);font-weight:700;}
+#destino-banner button{background:rgba(87,217,123,0.14);border:1px solid rgba(87,217,123,0.3);
+  color:#57d97b;font-family:var(--sans);font-size:11px;font-weight:700;
+  padding:6px 12px;border-radius:18px;cursor:pointer;white-space:nowrap;}
+#destino-banner button:active{transform:scale(0.96);}
+.dest-row{display:flex;gap:8px;margin-bottom:12px;}
+.dest-input{flex:1;min-width:0;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:10px;padding:11px 13px;color:var(--text);font-family:var(--sans);
+  font-size:14px;outline:none;}
+.dest-input:focus{border-color:rgba(87,217,123,0.5);}
+.dest-go{background:#57d97b;color:#0a0414;border:none;border-radius:10px;
+  padding:11px 17px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer;}
+.dest-go:disabled{opacity:0.5;cursor:default;}
+.dest-hit{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;border-radius:10px;background:var(--bg3);margin-bottom:6px;}
+.dest-hit .dn{font-size:12.5px;font-weight:600;color:var(--text);line-height:1.3;}
+.dest-hit .dd{font-size:10.5px;color:var(--text3);margin-top:2px;}
+.dest-hit .dp{font-family:var(--mono);font-weight:700;font-size:15px;white-space:nowrap;}
+.dest-alt{background:none;border:none;color:#57d97b;font-size:11.5px;font-weight:600;
+  cursor:pointer;padding:6px 0;text-decoration:underline;font-family:var(--sans);}
+.dest-msg{font-size:12px;color:var(--text3);text-align:center;padding:14px;line-height:1.5;}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4B5V8BHHFQ"></script>
@@ -518,6 +550,11 @@ fbq('track', 'PageView');</script>
 
 </div>
 
+<div id="destino-banner">
+  <span class="dtxt" id="destino-banner-txt"></span>
+  <button onclick="volverDeDestino()">Volver a mi zona</button>
+</div>
+
 <div id="loading">
   <img src="icon.png" style="width:80px;height:80px;border-radius:20px;margin-bottom:8px;" alt="Gasy">
   <div class="load-ring"></div>
@@ -532,6 +569,7 @@ fbq('track', 'PageView');</script>
       <span class="logo-text">Gasy</span>
     </a>
     <a href="/blog.html" class="blog-link-hdr" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;white-space:nowrap;">Noticias</a>
+    <button onclick="showDestinoModal()" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#57d97b;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.3);border-radius:20px;padding:4px 10px;cursor:pointer;white-space:nowrap;"><svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#57d97b"><path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/></svg> Consulta tu destino</button>
     <button onclick="showCalcModal()" style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#57d97b;background:rgba(87,217,123,0.1);border:1px solid rgba(87,217,123,0.3);border-radius:20px;padding:4px 10px;cursor:pointer;white-space:nowrap;"><svg xmlns="http://www.w3.org/2000/svg" height="13px" viewBox="0 -960 960 960" width="13px" fill="#57d97b"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-117.5-77.5Q700-455 700-480t-17.5-42.5Q665-540 640-540t-42.5 17.5Q580-505 580-480t17.5 42.5Q615-420 640-420t42.5-17.5Z"/></svg> Calcula tu ahorro</button>
     <div id="fuel-wrap">
       <button class="fbtn on" onclick="setFuel('magna',this)">Magna</button>
@@ -2287,6 +2325,305 @@ function acceptCookies(){
   document.getElementById('cookie-banner').style.display='none';
 }
 window.addEventListener('load', initCookieBanner);
+
+
+// ══ CONSULTA TU DESTINO ═══════════════════════════════════════════════
+// Busca una direccion, trae las gasolineras de ESA zona y las pinta en el
+// mapa. Equivalente de la funcion que ya existe en las apps; alla la
+// direccion la resuelve el sistema operativo (Location.geocodeAsync), que
+// en el navegador no existe, asi que aqui se usa Nominatim de OSM.
+var destinoMarkers = [];
+var destinoPin = null;
+var _destinoUltimo = 0;
+var _destinoAlternativas = null;
+
+function showDestinoModal(){
+  if(typeof gasyTrack==='function') gasyTrack('destino_open');
+  const ov = document.createElement('div');
+  ov.className = 'plus-modal-overlay';
+  ov.innerHTML = `<div class="plus-modal" style="max-height:85vh;overflow-y:auto;text-align:left;">
+    <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:4px;">Consulta tu destino</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">
+      Mira los precios a donde vas antes de salir. Funciona mejor con colonia y ciudad.</div>
+    <div class="dest-row">
+      <input class="dest-input" id="dest-dir" type="text" autocomplete="off"
+             placeholder="Ej. Polanco, CDMX" aria-label="Direccion de destino">
+      <button class="dest-go" id="dest-go" onclick="runDestino()">Buscar</button>
+    </div>
+    <div id="dest-results"></div>
+    <button class="plus-modal-close" onclick="this.closest('.plus-modal-overlay').remove()">Cerrar</button>
+  </div>`;
+  ov.addEventListener('click', e=>{ if(e.target===ov) ov.remove(); });
+  document.body.appendChild(ov);
+  const inp = document.getElementById('dest-dir');
+  if(inp){
+    inp.focus();
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); runDestino(); } });
+  }
+}
+
+// Convierte texto en coordenadas. Nominatim pide maximo 1 consulta por
+// segundo, por eso el freno de _destinoUltimo.
+async function geocodificarMX(dir){
+  const espera = 1100 - (Date.now() - _destinoUltimo);
+  if(espera > 0) await new Promise(r=>setTimeout(r, espera));
+  _destinoUltimo = Date.now();
+  const url = 'https://nominatim.openstreetmap.org/search'
+    + '?format=jsonv2&countrycodes=mx&limit=5&accept-language=es&q=' + encodeURIComponent(dir);
+  const res = await Promise.race([
+    fetch(url, {headers:{'Accept':'application/json'}}),
+    new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')), 12000))
+  ]);
+  if(!res.ok) throw new Error('geocode ' + res.status);
+  const data = await res.json();
+  return (data||[]).map(d=>({
+    nombre: d.display_name,
+    lat: parseFloat(d.lat),
+    lng: parseFloat(d.lon)
+  })).filter(d=>!isNaN(d.lat) && !isNaN(d.lng));
+}
+
+// Trae del padron de la CNE las gasolineras cercanas a un punto.
+// Lee los tres combustibles, no solo el seleccionado.
+async function gasolinerasCercaDe(lat, lng, radioKm){
+  const [pr, pl] = await Promise.all([
+    fetch(WORKER + '?tipo=prices').catch(()=>null),
+    fetch(WORKER + '?tipo=places').catch(()=>null)
+  ]);
+  if(!pr || !pr.ok || !pl || !pl.ok) throw new Error('sin datos de la CNE');
+  const pricesXml = await pr.text();
+  const placesXml = await pl.text();
+  if(!pricesXml || pricesXml.length < 200) throw new Error('sin datos de la CNE');
+
+  const parser = new DOMParser();
+  const priceMap = {};
+  const prDoc = parser.parseFromString(pricesXml, 'text/xml');
+  for(let p = prDoc.documentElement.firstElementChild; p; p = p.nextElementSibling){
+    const id = p.getAttribute('place_id');
+    if(!id) continue;
+    const o = {magna:null, premium:null, diesel:null};
+    for(let c = p.firstElementChild; c; c = c.nextElementSibling){
+      const t = c.getAttribute('type');
+      const v = parseFloat(c.textContent);
+      if(isNaN(v) || v < 15 || v > 40) continue;
+      if(t === 'regular') o.magna = v;
+      else if(t === 'premium') o.premium = v;
+      else if(t === 'diesel') o.diesel = v;
+    }
+    priceMap[id] = o;
+  }
+
+  const out = [];
+  const plDoc = parser.parseFromString(placesXml, 'text/xml');
+  for(let p = plDoc.documentElement.firstElementChild; p; p = p.nextElementSibling){
+    const id = p.getAttribute('place_id');
+    const nm = p.querySelector('name');
+    const xx = p.querySelector('x'), yy = p.querySelector('y');
+    if(!id || !nm || !xx || !yy) continue;
+    const nombre = (nm.textContent||'').trim();
+    const x = parseFloat(xx.textContent), y = parseFloat(yy.textContent);
+    if(!nombre || isNaN(x) || isNaN(y)) continue;
+    if(y < 14 || y > 33 || x < -118 || x > -86) continue;
+    const d = hav(lat, lng, y, x);
+    if(d > radioKm) continue;
+    const creEl = p.querySelector('cre_id');
+    out.push({
+      cre_id: creEl ? (creEl.textContent||'').trim() : '',
+      name: nombre,
+      brand: normalizeBrand(nombre),
+      lat: y, lng: x,
+      prices: priceMap[id] || {magna:null, premium:null, diesel:null},
+      _d: d,
+      source: 'cre_only'
+    });
+  }
+  return out;
+}
+
+async function runDestino(){
+  const inp = document.getElementById('dest-dir');
+  const box = document.getElementById('dest-results');
+  const btn = document.getElementById('dest-go');
+  if(!inp || !box) return;
+  const dir = (inp.value||'').trim();
+  if(dir.length < 4){
+    box.innerHTML = '<div class="dest-msg">Escribe una direccion mas completa.</div>';
+    return;
+  }
+  if(btn) btn.disabled = true;
+  box.innerHTML = '<div class="dest-msg">Buscando la direccion...</div>';
+  try{
+    const hits = await geocodificarMX(dir);
+    if(!hits.length){
+      box.innerHTML = '<div class="dest-msg">No encontramos esa direccion. '
+        + 'Intenta con la colonia y la ciudad, por ejemplo "Del Valle, CDMX".</div>';
+      if(btn) btn.disabled = false;
+      return;
+    }
+    _destinoAlternativas = hits;
+    await mostrarDestino(hits[0], hits.length > 1);
+  }catch(e){
+    console.warn('destino:', e);
+    box.innerHTML = '<div class="dest-msg">No pudimos buscar esa direccion. '
+      + 'Revisa tu conexion e intenta de nuevo.</div>';
+  }
+  if(btn) btn.disabled = false;
+}
+
+async function elegirAlternativa(i){
+  if(!_destinoAlternativas || !_destinoAlternativas[i]) return;
+  await mostrarDestino(_destinoAlternativas[i], _destinoAlternativas.length > 1);
+}
+
+async function mostrarDestino(hit, hayAlternativas){
+  const box = document.getElementById('dest-results');
+  if(box) box.innerHTML = '<div class="dest-msg">Buscando gasolineras en ' + esc(corto(hit.nombre)) + '...</div>';
+  let encontradas = [];
+  try{
+    encontradas = await gasolinerasCercaDe(hit.lat, hit.lng, 5);
+  }catch(e){
+    if(box) box.innerHTML = '<div class="dest-msg">Encontramos la direccion, pero no pudimos '
+      + 'traer los precios de esa zona. Intenta de nuevo en un momento.</div>';
+    return;
+  }
+  const f = (typeof fuel !== 'undefined' && fuel) ? fuel : 'magna';
+  const conPrecio = encontradas.filter(s=>s.prices[f]!=null && !isNaN(s.prices[f]))
+                               .sort((a,b)=>a.prices[f]-b.prices[f]);
+
+  pintarDestinoEnMapa(encontradas, hit, f);
+
+  if(typeof gasyTrack==='function') gasyTrack('destino_resultado',
+    {resultados: conPrecio.length, tipo_combustible: f});
+
+  if(!box) return;
+  const nombreFuel = f==='magna' ? 'Magna' : f==='premium' ? 'Premium' : 'Diesel';
+  let html = '<div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.4;">'
+    + 'Mostrando <b style="color:var(--text2)">' + esc(corto(hit.nombre)) + '</b></div>';
+
+  if(!conPrecio.length){
+    html += '<div class="dest-msg">Ninguna gasolinera de esa zona reporto precio de '
+      + nombreFuel + ' hoy. Las que conocemos ya estan marcadas en el mapa.</div>';
+  }else{
+    const mn = conPrecio[0].prices[f];
+    html += conPrecio.slice(0,8).map(function(s,idx){
+      const p = s.prices[f];
+      const color = idx===0 ? '#FFD700' : (p <= mn*1.01 ? '#00e676' : p <= mn*1.03 ? '#ffc400' : '#ff3d57');
+      const waze = 'https://waze.com/ul?ll=' + s.lat + ',' + s.lng + '&navigate=yes';
+      return '<div class="dest-hit">'
+        + '<div style="min-width:0;"><div class="dn">' + (idx===0?'&#11088; ':'') + esc(limpio(s.name)) + '</div>'
+        + '<div class="dd">' + s._d.toFixed(1) + ' km del destino'
+        + ' &middot; <a href="' + waze + '" target="_blank" rel="noopener" style="color:#57d97b;">Waze</a></div></div>'
+        + '<div class="dp" style="color:' + color + '">$' + p.toFixed(2).replace('.',',') + '</div>'
+        + '</div>';
+    }).join('');
+    html += '<div style="font-size:10.5px;color:var(--text3);margin-top:8px;line-height:1.4;">'
+      + 'Precios de ' + nombreFuel + ' reportados a la CNE. El mapa ya esta en esa zona.</div>';
+  }
+
+  if(hayAlternativas){
+    html += '<button class="dest-alt" onclick="verAlternativas()">No es esta direccion</button>';
+  }
+  box.innerHTML = html;
+}
+
+function verAlternativas(){
+  const box = document.getElementById('dest-results');
+  if(!box || !_destinoAlternativas) return;
+  box.innerHTML = '<div style="font-size:11px;color:var(--text3);margin-bottom:10px;">'
+    + 'Elige la correcta:</div>'
+    + _destinoAlternativas.map(function(h,i){
+        return '<div class="dest-hit" style="cursor:pointer;" onclick="elegirAlternativa(' + i + ')">'
+          + '<div class="dn" style="font-weight:500;">' + esc(corto(h.nombre)) + '</div></div>';
+      }).join('');
+}
+
+// Pinta las gasolineras del destino y mueve el mapa alla.
+function pintarDestinoEnMapa(lista, hit, f){
+  limpiarDestino();
+  if(typeof map === 'undefined' || !map) return;
+
+  destinoPin = L.marker([hit.lat, hit.lng], {
+    zIndexOffset: 3000,
+    icon: L.divIcon({className:'', iconSize:[34,34], iconAnchor:[17,34],
+      html:'<div style="width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);'
+         + 'background:#4b02f3;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.5)"></div>'})
+  }).addTo(map).bindPopup('<div class="pop"><div class="pop-brand">Tu destino</div>'
+      + '<div class="pop-addr">' + esc(corto(hit.nombre)) + '</div></div>');
+  destinoMarkers.push(destinoPin);
+
+  const conPrecio = lista.filter(s=>s.prices[f]!=null && !isNaN(s.prices[f]));
+  const mn = conPrecio.length ? Math.min.apply(null, conPrecio.map(s=>s.prices[f])) : null;
+
+  lista.forEach(function(s){
+    const p = s.prices[f];
+    const tiene = p != null && !isNaN(p);
+    const color = !tiene ? '#7d95aa'
+      : (p === mn ? '#FFD700' : p <= mn*1.01 ? '#00e676' : p <= mn*1.03 ? '#ffc400' : '#ff3d57');
+    const etiqueta = tiene ? p.toFixed(2).replace('.',',') : 's/d';
+    const tam = tiene ? 42 : 30;
+    const icon = L.divIcon({className:'', iconSize:[tam, tam+8], iconAnchor:[tam/2, tam+8],
+      html:'<div style="width:' + tam + 'px;height:' + tam + 'px;border-radius:50% 50% 50% 0;'
+         + 'transform:rotate(-45deg);background:' + color + ';display:flex;align-items:center;'
+         + 'justify-content:center;border:2px solid rgba(255,255,255,0.35)">'
+         + '<div style="transform:rotate(45deg);font-family:\'JetBrains Mono\',monospace;'
+         + 'font-weight:700;font-size:' + (tiene?'9.5':'8') + 'px;color:#0a0f14">' + etiqueta + '</div></div>'});
+    const waze = 'https://waze.com/ul?ll=' + s.lat + ',' + s.lng + '&navigate=yes';
+    const gmaps = 'https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '&travelmode=driving';
+    const popup = '<div class="pop"><div class="pop-brand">' + esc(limpio(s.name)) + '</div>'
+      + '<div class="pop-addr">' + s._d.toFixed(1) + ' km de tu destino</div>'
+      + '<div class="pop-divider"></div><div class="pop-prices">'
+      + '<div class="pop-row"><span class="pop-fuel">Magna</span><span class="pop-val ' + (s.prices.magna?'':'na') + '">' + fmt(s.prices.magna) + '</span></div>'
+      + '<div class="pop-row"><span class="pop-fuel">Premium</span><span class="pop-val ' + (s.prices.premium?'':'na') + '">' + fmt(s.prices.premium) + '</span></div>'
+      + '<div class="pop-row"><span class="pop-fuel">Di&eacute;sel</span><span class="pop-val ' + (s.prices.diesel?'':'na') + '">' + fmt(s.prices.diesel) + '</span></div>'
+      + '</div><div class="pop-nav">'
+      + '<a href="' + waze + '" target="_blank" rel="noopener" class="nav-btn nav-waze">Waze</a>'
+      + '<a href="' + gmaps + '" target="_blank" rel="noopener" class="nav-btn nav-gmaps">Maps</a></div></div>';
+    const _m = window.innerWidth < 600;
+    const mk = L.marker([s.lat, s.lng], {icon, zIndexOffset: tiene?1500:800})
+      .bindPopup(popup, {maxWidth:_m?window.innerWidth-32:300, minWidth:_m?window.innerWidth-32:260, keepInView:true})
+      .addTo(map);
+    destinoMarkers.push(mk);
+  });
+
+  map.setView([hit.lat, hit.lng], 13);
+  const b = document.getElementById('destino-banner');
+  const t = document.getElementById('destino-banner-txt');
+  if(t) t.innerHTML = 'Viendo <b>' + esc(corto(zona(hit.nombre), 34)) + '</b>';
+  if(b) b.classList.add('show');
+}
+
+function limpiarDestino(){
+  if(typeof map !== 'undefined' && map){
+    destinoMarkers.forEach(function(m){ try{ map.removeLayer(m); }catch(e){} });
+  }
+  destinoMarkers = [];
+  destinoPin = null;
+}
+
+function volverDeDestino(){
+  limpiarDestino();
+  const b = document.getElementById('destino-banner');
+  if(b) b.classList.remove('show');
+  if(typeof map !== 'undefined' && map && uLat && uLng) map.setView([uLat, uLng], 14);
+  if(typeof gasyTrack==='function') gasyTrack('destino_volver');
+}
+
+// Utilidades locales del modulo
+function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function zona(t){
+  const partes = String(t||'').split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+  return partes.slice(0, 2).join(', ') || String(t||'');
+}
+function corto(t, n){ t = String(t||''); n = n || 60;
+  return t.length > n ? t.slice(0, n-1).trim() + '…' : t; }
+function limpio(n){
+  return String(n||'Gasolinera')
+    .replace(/\b(S\.?A\.?\s+DE\s+C\.?V\.?|S\.?A\.?|S\.?R\.?L\.?|DE|C\.?V\.?)\b\.?/gi,'')
+    .trim().replace(/\s+/g,' ')
+    .split(' ').map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase(); })
+    .join(' ') || 'Gasolinera';
+}
 
 function showCalcModal(){
   gasyTrack('calculator_open');
